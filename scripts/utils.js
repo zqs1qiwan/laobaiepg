@@ -72,20 +72,18 @@ export function findChannel(name, aliasIndex) {
 }
 
 /**
- * 格式化为 XMLTV 时间格式
+ * 格式化为 XMLTV 时间格式（UTC，标注 +0000）
  * 输入: Date 对象 或 时间戳(ms)
- * 输出: "20240101120000 +0800"
+ * 输出: "20240101040000 +0000"（UTC 时间）
+ *
+ * 使用 getUTC* 方法，不受运行环境时区影响。
+ * tz 参数保留但已废弃，始终输出 +0000。
  */
-export function formatXmltvTime(dt, tz = '+0800') {
+export function formatXmltvTime(dt, tz = '+0000') {
   const d = dt instanceof Date ? dt : new Date(dt);
   const pad = n => String(n).padStart(2, '0');
-  const year = d.getFullYear();
-  const month = pad(d.getMonth() + 1);
-  const day = pad(d.getDate());
-  const hour = pad(d.getHours());
-  const min = pad(d.getMinutes());
-  const sec = pad(d.getSeconds());
-  return `${year}${month}${day}${hour}${min}${sec} ${tz}`;
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}` +
+         `${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())} +0000`;
 }
 
 /**

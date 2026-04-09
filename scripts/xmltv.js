@@ -83,9 +83,9 @@ function generateProgrammeTag(channelId, prog) {
   const start = prog.start instanceof Date ? prog.start : new Date(prog.start);
   const stop = prog.stop instanceof Date ? prog.stop : (prog.stop ? new Date(prog.stop) : null);
 
-  // 使用北京时间 +0800
-  const startStr = formatXmltvTime(toBeijingTime(start), '+0800');
-  const stopStr = stop ? formatXmltvTime(toBeijingTime(stop), '+0800') : '';
+  // 直接用 UTC 时间输出，标注 +0000，播放器会根据本地时区显示
+  const startStr = formatXmltvTimeUTC(start);
+  const stopStr = stop ? formatXmltvTimeUTC(stop) : '';
 
   const stopAttr = stopStr ? ` stop="${stopStr}"` : '';
   const lines = [
@@ -102,14 +102,16 @@ function generateProgrammeTag(channelId, prog) {
 }
 
 /**
- * 将 UTC 时间转换为北京时间（+8小时）
- * 注意：formatXmltvTime 使用本地时间，所以这里做时区调整
+ * 格式化 Date 为 XMLTV 时间字符串，使用 UTC 时间 + +0000 标注
+ * 这是最通用、最正确的方式：
+ * - Date 内部存储的就是 UTC
+ * - 用 getUTC* 方法直接读 UTC 数字，不受运行环境时区影响
+ * - 播放器根据自身时区设置解释这个时间
  */
-function toBeijingTime(date) {
-  // 调整为北京时间（UTC+8）
-  const utcMs = date.getTime();
-  const beijingOffset = 8 * 60 * 60 * 1000;
-  return new Date(utcMs + beijingOffset);
+function formatXmltvTimeUTC(date) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}` +
+         `${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())} +0000`;
 }
 
 /**
