@@ -41,8 +41,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV1"
-      - type: "cctv"
-        id: "CCTV-1"
 
   - id: "CCTV2"
     name: "CCTV-2 财经"
@@ -57,8 +55,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV2"
-      - type: "cctv"
-        id: "CCTV-2"
 
   - id: "CCTV3"
     name: "CCTV-3 综艺"
@@ -73,8 +69,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV3"
-      - type: "cctv"
-        id: "CCTV-3"
 
   - id: "CCTV4"
     name: "CCTV-4 中文国际"
@@ -89,8 +83,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV4"
-      - type: "cctv"
-        id: "CCTV-4"
 
   - id: "CCTV5"
     name: "CCTV-5 体育"
@@ -105,8 +97,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV5"
-      - type: "cctv"
-        id: "CCTV-5"
 
   - id: "CCTV5+"
     name: "CCTV-5+ 体育赛事"
@@ -119,8 +109,6 @@ channels:
       - "中央五套+"
       - "央视体育赛事"
     sources:
-      - type: "cctv"
-        id: "CCTV-5+"
       - type: "xmltv_url"
         name: "CCTV5+"
 
@@ -137,8 +125,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV6"
-      - type: "cctv"
-        id: "CCTV-6"
 
   - id: "CCTV7"
     name: "CCTV-7 国防军事"
@@ -154,8 +140,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV7"
-      - type: "cctv"
-        id: "CCTV-7"
 
   - id: "CCTV8"
     name: "CCTV-8 电视剧"
@@ -170,8 +154,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV8"
-      - type: "cctv"
-        id: "CCTV-8"
 
   - id: "CCTV9"
     name: "CCTV-9 纪录"
@@ -186,8 +168,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV9"
-      - type: "cctv"
-        id: "CCTV-9"
 
   - id: "CCTV10"
     name: "CCTV-10 科教"
@@ -202,8 +182,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV10"
-      - type: "cctv"
-        id: "CCTV-10"
 
   - id: "CCTV11"
     name: "CCTV-11 戏曲"
@@ -218,8 +196,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV11"
-      - type: "cctv"
-        id: "CCTV-11"
 
   - id: "CCTV12"
     name: "CCTV-12 社会与法"
@@ -233,8 +209,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV12"
-      - type: "cctv"
-        id: "CCTV-12"
 
   - id: "CCTV13"
     name: "CCTV-13 新闻"
@@ -249,8 +223,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV13"
-      - type: "cctv"
-        id: "CCTV-13"
 
   - id: "CCTV14"
     name: "CCTV-14 少儿"
@@ -265,8 +237,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV14"
-      - type: "cctv"
-        id: "CCTV-14"
 
   - id: "CCTV15"
     name: "CCTV-15 音乐"
@@ -281,8 +251,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV15"
-      - type: "cctv"
-        id: "CCTV-15"
 
   - id: "CCTV16"
     name: "CCTV-16 奥林匹克"
@@ -295,8 +263,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV16"
-      - type: "cctv"
-        id: "CCTV-16"
 
   - id: "CCTV17"
     name: "CCTV-17 农业农村"
@@ -309,8 +275,6 @@ channels:
     sources:
       - type: "xmltv_url"
         name: "CCTV17"
-      - type: "cctv"
-        id: "CCTV-17"
 
   # ========== 卫视频道 ==========
   - id: "BTV1"

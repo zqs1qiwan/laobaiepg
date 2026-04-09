@@ -1,12 +1,9 @@
 name: 抓取 EPG 节目单
 
 on:
-  # 定时执行：每天北京时间 0:30 和 12:30（UTC 16:30 和 4:30）
   schedule:
-    - cron: '30 16 * * *'   # 北京时间 0:30
-    - cron: '30 4 * * *'    # 北京时间 12:30
-
-  # 支持手动触发
+    - cron: '30 16 * * *'
+    - cron: '30 4 * * *'
   workflow_dispatch:
     inputs:
       days:
@@ -42,72 +39,35 @@ jobs:
       - name: 安装依赖
         run: npm ci
 
-      # 通过 refresh_token 获取最新 access_token（OAuth token 每小时过期）
-      - name: 刷新 Cloudflare OAuth Token
-        id: refresh_token
-        if: ${{ github.event.inputs.test_mode != 'true' }}
-        run: |
-          RESPONSE=$(curl -s -X POST "https://dash.cloudflare.com/oauth2/token" \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "grant_type=refresh_token&refresh_token=${{ secrets.CF_REFRESH_TOKEN }}&client_id=54d11594-84e4-41aa-b438-e81b8fa78ee7")
-
-          NEW_TOKEN=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('access_token',''))")
-          NEW_REFRESH=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('refresh_token',''))")
-
-          if [ -z "$NEW_TOKEN" ]; then
-            echo "Token 刷新失败，使用备用 token"
-            echo "cf_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "Token 刷新成功"
-            echo "cf_token=$NEW_TOKEN" >> "$GITHUB_OUTPUT"
-
-            # 自动更新 Secret 中的 refresh token（保持 token 链有效）
-            if [ -n "$NEW_REFRESH" ] && [ "$NEW_REFRESH" != "${{ secrets.CF_REFRESH_TOKEN }}" ]; then
-              echo "$NEW_REFRESH" | gh secret set CF_REFRESH_TOKEN --repo "${{ github.repository }}" 2>/dev/null || true
-            fi
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: 执行抓取
         env:
           DEBUG: ${{ runner.debug }}
         run: |
           ARGS=""
-
-          # 自定义天数
           DAYS="${{ github.event.inputs.days || '7' }}"
           ARGS="$ARGS --days $DAYS"
-
-          # 单频道测试
           CHANNEL="${{ github.event.inputs.channel }}"
           if [ -n "$CHANNEL" ]; then
             ARGS="$ARGS --channel $CHANNEL"
           fi
-
-          # 测试模式
           if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
             ARGS="$ARGS --test"
           fi
-
           echo "执行: node scripts/grab.js $ARGS"
           node scripts/grab.js $ARGS
 
       - name: 上传到 Cloudflare R2
         if: ${{ github.event.inputs.test_mode != 'true' }}
         env:
-          CLOUDFLARE_API_TOKEN: ${{ steps.refresh_token.outputs.cf_token || secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          # 上传所有生成的文件到 R2
           UPLOAD_COUNT=0
           for file in output/*.xml output/*.xml.gz output/*.json; do
             if [ -f "$file" ]; then
               filename=$(basename "$file")
               echo "上传 $filename..."
-              npx wrangler r2 object put "epg-data/xmltv/$filename" \
-                --file="$file" \
-                --remote
+              npx wrangler r2 object put "epg-data/xmltv/$filename" --file="$file" --remote
               UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
             fi
           done
@@ -116,12 +76,13 @@ jobs:
       - name: 使 KV 缓存失效
         if: ${{ github.event.inputs.test_mode != 'true' }}
         run: |
-          CF_TOKEN="${{ steps.refresh_token.outputs.cf_token || secrets.CLOUDFLARE_API_TOKEN }}"
           KV_ID="${{ secrets.KV_NAMESPACE_ID }}"
+          CF_TOKEN="${{ secrets.CLOUDFLARE_API_TOKEN }}"
           if [ -n "$KV_ID" ] && [ -n "$CF_TOKEN" ]; then
-            curl -s -X DELETE \
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
               "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/storage/kv/namespaces/$KV_ID/values/channels_index" \
-              -H "Authorization: Bearer $CF_TOKEN" -o /dev/null && echo "KV 缓存已清除" || true
+              -H "Authorization: Bearer $CF_TOKEN")
+            echo "KV 缓存清除 HTTP: $HTTP_CODE"
           fi
 
       - name: 生成抓取摘要
@@ -130,14 +91,12 @@ jobs:
           if [ -f "output/channels.json" ]; then
             TOTAL=$(python3 -c "import json; d=json.load(open('output/channels.json')); print(len(d))")
             HAS_EPG=$(python3 -c "import json; d=json.load(open('output/channels.json')); print(sum(1 for c in d if c.get('hasEpg')))")
-            echo "### 📺 EPG 抓取结果" >> $GITHUB_STEP_SUMMARY
+            echo "### EPG 抓取结果" >> $GITHUB_STEP_SUMMARY
             echo "| 项目 | 数量 |" >> $GITHUB_STEP_SUMMARY
             echo "|------|------|" >> $GITHUB_STEP_SUMMARY
             echo "| 总频道数 | $TOTAL |" >> $GITHUB_STEP_SUMMARY
             echo "| 有节目单 | $HAS_EPG |" >> $GITHUB_STEP_SUMMARY
             echo "| 完成时间 | $(date -u +'%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**EPG 访问地址:** https://laobaiepg.laobaitv.workers.dev/guide.xml" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: 保存输出为 Artifact
