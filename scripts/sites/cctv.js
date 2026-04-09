@@ -7,7 +7,7 @@
  * 接口3 (备用):        https://api.danmu.com/getCCTV?channel=CCTV-1&date=20240101
  */
 
-import { fetchWithRetry, logger } from '../utils.js';
+import { fetchWithRetry, logger, formatBeijingDate } from '../utils.js';
 
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -22,7 +22,7 @@ const HEADERS = {
  * @returns {Array} [{start, stop, title, desc}]
  */
 export async function getEpgCctv(channel, channelId, date) {
-  const dateStr = formatDate(date);
+  const dateStr = formatBeijingDate(date);
 
   // 尝试接口1: JSONP (旧)
   let epgs = await tryOldApi(channel, channelId, dateStr);
@@ -114,9 +114,4 @@ export async function getChannelsCctv() {
   ];
 }
 
-function formatDate(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}${m}${d}`;
-}
+// formatDate 已由 utils.js 的 formatBeijingDate 替代

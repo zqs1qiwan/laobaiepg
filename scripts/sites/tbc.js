@@ -3,7 +3,7 @@
  * 参考 supzhang/epg crawl/spiders/tbc.py
  */
 
-import { fetchWithRetry, logger } from '../utils.js';
+import { fetchWithRetry, logger, formatBeijingDate } from '../utils.js';
 
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -12,7 +12,7 @@ const HEADERS = {
 
 export async function getEpgTbc(channel, channelId, date) {
   const epgs = [];
-  const dateStr = formatDate(date); // "20240101"
+  const dateStr = formatBeijingDate(date); // "20240101"（北京时间）
 
   // 台湾宽频 EPG API
   const url = `https://data.tbc.net.tw/tbc/api/EPG/EPGList/${channelId}/${dateStr}`;
@@ -60,12 +60,7 @@ export async function getChannelsTbc() {
   ];
 }
 
-function formatDate(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}${m}${d}`;
-}
+// formatDate 已由 utils.js 的 formatBeijingDate 替代
 
 function parseDateTime(date, timeStr) {
   // timeStr 可能是 "HH:MM" 或完整 ISO 字符串
@@ -73,7 +68,6 @@ function parseDateTime(date, timeStr) {
     return new Date(timeStr);
   }
   const [hh, mm] = timeStr.split(':').map(Number);
-  const dt = new Date(date);
-  dt.setHours(hh, mm, 0, 0);
-  return dt;
+  // date 是北京时间 midnight 的 UTC 基准，直接加时分偏移
+  return new Date(date.getTime() + hh * 3600000 + mm * 60000);
 }

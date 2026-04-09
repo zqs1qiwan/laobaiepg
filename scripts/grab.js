@@ -65,15 +65,23 @@ function loadConfig() {
 
 // ============================================================
 // 生成需要抓取的日期列表
+// 返回以北京时间 midnight（UTC 16:00 前一天）为基准的 Date 数组
+// 各爬虫用这个基准日期 + 北京时间 HH:MM 换算 UTC
 // ============================================================
 function getDateRange(days) {
   const dates = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // 获取当前北京时间的日期（UTC+8）
+  const nowUTC = Date.now();
+  const beijingNow = new Date(nowUTC + 8 * 3600000); // 当前北京时间
+  // 北京时间当天 midnight = UTC 前一天 16:00
+  const beijingMidnightUTC = Date.UTC(
+    beijingNow.getUTCFullYear(),
+    beijingNow.getUTCMonth(),
+    beijingNow.getUTCDate(),
+    -8, 0, 0, 0  // UTC: 北京 00:00 = UTC -8:00 = 前一天 16:00
+  );
   for (let i = 0; i < days; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    dates.push(d);
+    dates.push(new Date(beijingMidnightUTC + i * 86400000));
   }
   return dates;
 }

@@ -3,7 +3,7 @@
  * 参考 supzhang/epg crawl/spiders/tvb.py
  */
 
-import { fetchWithRetry, logger } from '../utils.js';
+import { fetchWithRetry, logger, formatBeijingDateDash } from '../utils.js';
 
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -17,7 +17,7 @@ const HEADERS = {
  */
 export async function getEpgTvb(channel, channelId, date) {
   const epgs = [];
-  const dateStr = formatDate(date); // "2024-01-01"
+  const dateStr = formatBeijingDateDash(date); // "2024-01-01"
 
   // TVB EPG API
   const url = `https://www.tvb.com/api/channel/getScheduleByDate?channel=${channelId}&date=${dateStr}`;
@@ -54,7 +54,7 @@ export async function getEpgTvb(channel, channelId, date) {
  */
 async function getEpgTvbFallback(channel, channelId, date) {
   const epgs = [];
-  const dateStr = formatDate(date);
+  const dateStr = formatBeijingDateDash(date);
   const chName = channelId === 'J' ? 'jade' : 'pearl';
   const url = `https://www.tvb.com/schedules/${chName}?date=${dateStr}`;
 
@@ -77,9 +77,4 @@ export async function getChannelsTvb() {
   ];
 }
 
-function formatDate(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
+// formatDate 已由 utils.js 的 formatBeijingDateDash 替代

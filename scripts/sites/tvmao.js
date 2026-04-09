@@ -63,13 +63,14 @@ export async function getEpgTvmao(channel, channelId, date) {
 
     for (const prog of progs) {
       const title = prog.name || '';
-      const timeStr = prog.time || ''; // "HH:MM" 格式
+      const timeStr = prog.time || ''; // "HH:MM" 格式（北京时间）
       // status=-1 表示该节目为占位/未播出，但仍然是真实节目信息，保留
       if (!title || !timeStr) continue;
 
       const [hh, mm] = timeStr.split(':').map(Number);
-      const start = new Date(date);
-      start.setHours(hh, mm, 0, 0);
+      // date 是北京时间 midnight 的 UTC 基准（UTC 前一天 16:00）
+      // 北京时间 HH:MM = UTC HH:MM - 8h = date基准 + HH*3600s + MM*60s
+      const start = new Date(date.getTime() + hh * 3600000 + mm * 60000);
 
       epgs.push({ start, stop: null, title, desc: '' });
     }
@@ -78,11 +79,9 @@ export async function getEpgTvmao(channel, channelId, date) {
     for (let i = 0; i < epgs.length - 1; i++) {
       epgs[i].stop = epgs[i + 1].start;
     }
-    // 最后一条节目的 stop 设为当天 23:59:59
+    // 最后一条节目的 stop 设为当天北京时间 23:59:59（= date基准 + 23h59m59s）
     if (epgs.length > 0) {
-      const lastStop = new Date(date);
-      lastStop.setHours(23, 59, 59, 0);
-      epgs[epgs.length - 1].stop = lastStop;
+      epgs[epgs.length - 1].stop = new Date(date.getTime() + 23 * 3600000 + 59 * 60000 + 59000);
     }
 
     logger.info(`[tvmao] ${channel.name} (${shortId}) day=${dayParam}: ${epgs.length} 条节目`);
