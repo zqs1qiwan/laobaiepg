@@ -1,0 +1,46 @@
+name: 部署 Cloudflare Worker
+
+on:
+  # 代码推送到 main 分支时自动部署
+  push:
+    branches:
+      - main
+    paths:
+      - 'worker/**'
+      - 'wrangler.jsonc'
+
+  # 手动触发
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 部署 Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 部署到 Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
+
+      - name: 验证部署
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "部署完成，验证 Worker..."
+          npx wrangler deployments list --name laobaiepg 2>/dev/null | head -5 || true

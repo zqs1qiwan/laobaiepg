@@ -1,0 +1,27 @@
+{
+  "name": "laobaiepg",
+  "version": "1.0.0",
+  "description": "IPTV EPG 管理系统 - 基于 Cloudflare Edge + GitHub Actions",
+  "type": "module",
+  "scripts": {
+    "grab": "node scripts/grab.js",
+    "grab:test": "node scripts/grab.js --test",
+    "grab:channel": "node scripts/grab.js --channel",
+    "deploy:worker": "wrangler deploy",
+    "dev:worker": "wrangler dev",
+    "dev:admin": "cd admin && npm run dev"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.2",
+    "dayjs": "^1.11.10",
+    "fflate": "^0.8.2",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "wrangler": "^3.60.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

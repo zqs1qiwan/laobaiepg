@@ -1,0 +1,214 @@
+# EPG 数据源配置文件
+# 定义所有可用的数据来源
+#
+# 数据源类型：
+#   xmltv_url  - 直接拉取现成的 XMLTV 格式文件（epg.pw等）
+#   cctv       - 央视官方 API（内置爬虫）
+#   tvmao      - 电视猫（内置爬虫，supzhang/epg 模式）
+#   tvsou      - 搜视（内置爬虫）
+#   tvb        - 香港无线电视（内置爬虫）
+#   nowtv      - 香港 NOW TV（内置爬虫）
+#   icable     - 香港有线电视（内置爬虫）
+#   mod        - 台湾中华电信 MOD（内置爬虫）
+#   tbc        - 台湾宽频（内置爬虫）
+#
+# 全局爬虫设置：
+crawl:
+  days: 7               # 抓取未来几天的节目单
+  retry: 2              # 失败重试次数
+  timeout: 10           # 单次请求超时秒数
+  delay: 500            # 请求间隔毫秒数（防止被封）
+  change_source: true   # 主数据源失败时自动切换备用源
+
+# ========================================================
+# XMLTV URL 数据源（直接拉取现成节目单）
+# ========================================================
+xmltv_sources:
+  # epg.pw - 中国大陆频道（覆盖最全）
+  - id: "epgpw_cn"
+    name: "epg.pw 中国大陆"
+    url: "https://epg.pw/xmltv/epg_CN.xml.gz"
+    enabled: true
+    encoding: "utf-8"
+    note: "覆盖CCTV、卫视等数百个中国大陆频道"
+
+  # epg.pw - 香港频道
+  - id: "epgpw_hk"
+    name: "epg.pw 香港"
+    url: "https://epg.pw/xmltv/epg_HK.xml.gz"
+    enabled: true
+    encoding: "utf-8"
+    note: "覆盖TVB、凤凰等香港频道"
+
+  # epg.pw - 台湾频道
+  - id: "epgpw_tw"
+    name: "epg.pw 台湾"
+    url: "https://epg.pw/xmltv/epg_TW.xml.gz"
+    enabled: true
+    encoding: "utf-8"
+    note: "覆盖台湾主要电视台"
+
+  # 备用: iptv-org 社区爬虫（国际频道）
+  - id: "iptvorg_api"
+    name: "iptv-org API"
+    url: "https://iptv-org.github.io/api/guides.json"
+    enabled: false
+    note: "iptv-org 社区提供的频道EPG映射（格式不同，需特殊处理）"
+
+  # 用户自定义 XMLTV 源 1
+  - id: "custom_1"
+    name: "自定义源 1"
+    url: ""
+    enabled: false
+    note: "填写你自己的 XMLTV URL"
+
+  # 用户自定义 XMLTV 源 2
+  - id: "custom_2"
+    name: "自定义源 2"
+    url: ""
+    enabled: false
+    note: "填写你自己的 XMLTV URL"
+
+  # 用户自定义 XMLTV 源 3
+  - id: "custom_3"
+    name: "自定义源 3"
+    url: ""
+    enabled: false
+    note: "填写你自己的 XMLTV URL"
+
+# ========================================================
+# 内置爬虫数据源（学习 supzhang/epg 的方式实现）
+# ========================================================
+scraper_sources:
+  # 央视官方 API（最权威）
+  - id: "cctv"
+    name: "央视官方 API"
+    enabled: true
+    note: "通过 api.cntv.cn 获取央视各频道节目单，无需爬取页面"
+    channels_count: 17  # 支持 CCTV-1 至 CCTV-17
+
+  # 电视猫（覆盖最广，含大量地方台）
+  - id: "tvmao"
+    name: "电视猫"
+    enabled: true
+    note: "https://www.tvmao.com 覆盖全国数百个频道，含央视、卫视、地方台"
+
+  # 搜视（备用）
+  - id: "tvsou"
+    name: "搜视"
+    enabled: true
+    note: "https://www.tvsou.com 备用来源"
+
+  # 香港无线电视
+  - id: "tvb"
+    name: "香港无线电视 TVB"
+    enabled: true
+    note: "翡翠台、明珠台等 TVB 频道"
+
+  # 香港 NOW TV
+  - id: "nowtv"
+    name: "香港 NOW TV"
+    enabled: true
+    note: "Now News 等 NOW TV 频道"
+
+  # 香港有线电视
+  - id: "icable"
+    name: "香港有线电视"
+    enabled: true
+    note: "有线新闻台等频道"
+
+  # 台湾中华电信 MOD
+  - id: "mod"
+    name: "台湾中华电信 MOD"
+    enabled: true
+    note: "台湾中华电信 MOD 频道"
+
+  # 台湾宽频
+  - id: "tbc"
+    name: "台湾宽频"
+    enabled: true
+    note: "台视、中视、华视等台湾本土频道"
+
+  # 广东卫视（官方）
+  - id: "gdtv"
+    name: "广东卫视官网"
+    enabled: true
+    note: "广东卫视官网 EPG"
+
+  # 北京卫视（官方）
+  - id: "btv"
+    name: "北京卫视官网"
+    enabled: true
+    note: "北京卫视(BTV)官网 EPG"
+
+  # 香港卫视
+  - id: "hks"
+    name: "香港卫视"
+    enabled: false
+    note: "香港卫视频道"
+
+  # ViuTV
+  - id: "viu"
+    name: "ViuTV"
+    enabled: true
+    note: "香港 ViuTV 频道"
+
+  # 中数（数字付费）
+  - id: "zhongshu"
+    name: "中数"
+    enabled: true
+    note: "中国数字电视付费频道"
+
+  # 川流 TV（需要 Authorization）
+  - id: "chuanliu"
+    name: "川流TV"
+    enabled: false
+    authorization: ""   # 需填写 Authorization token
+    note: "川流TV频道，需要提供授权token"
+
+  # myTV SUPER（香港）
+  - id: "mytvsuper"
+    name: "myTV SUPER"
+    enabled: true
+    note: "香港 myTV SUPER 频道"
+
+  # 广西网络电视
+  - id: "gxntv"
+    name: "广西网络电视"
+    enabled: true
+    note: "广西卫视等频道"
+
+  # 山东卫视官网
+  - id: "sdtv"
+    name: "山东卫视官网"
+    enabled: true
+    note: "山东卫视官网 EPG"
+
+# ========================================================
+# 输出配置
+# ========================================================
+output:
+  # 生成的 XMLTV 文件列表
+  files:
+    - id: "all"
+      filename: "guide.xml"
+      groups: []   # 空代表包含所有分组
+      note: "完整节目单（所有频道）"
+
+    - id: "mainland"
+      filename: "guide_mainland.xml"
+      groups: ["央视", "卫视", "卫星", "数字付费"]
+      note: "中国大陆频道"
+
+    - id: "hktw"
+      filename: "guide_hktw.xml"
+      groups: ["港澳台"]
+      note: "香港台湾频道"
+
+  # R2 存储配置（上传到 Cloudflare R2）
+  r2:
+    bucket: "epg-data"
+    prefix: "xmltv/"
+
+  # 本地输出目录
+  local_dir: "./output"

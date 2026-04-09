@@ -1,0 +1,122 @@
+name: 抓取 EPG 节目单
+
+on:
+  # 定时执行：每天北京时间 0:30 和 12:30（UTC 16:30 和 4:30）
+  schedule:
+    - cron: '30 16 * * *'   # 北京时间 0:30
+    - cron: '30 4 * * *'    # 北京时间 12:30
+
+  # 支持手动触发
+  workflow_dispatch:
+    inputs:
+      days:
+        description: '抓取天数（默认7天）'
+        required: false
+        default: '7'
+      channel:
+        description: '单频道测试（留空=全部）'
+        required: false
+        default: ''
+      test_mode:
+        description: '测试模式（不上传到R2）'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  grab:
+    name: 抓取节目单
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 执行抓取
+        env:
+          DEBUG: ${{ runner.debug }}
+        run: |
+          ARGS=""
+
+          # 自定义天数
+          DAYS="${{ github.event.inputs.days || '7' }}"
+          ARGS="$ARGS --days $DAYS"
+
+          # 单频道测试
+          CHANNEL="${{ github.event.inputs.channel }}"
+          if [ -n "$CHANNEL" ]; then
+            ARGS="$ARGS --channel $CHANNEL"
+          fi
+
+          # 测试模式
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+            ARGS="$ARGS --test"
+          fi
+
+          echo "执行: node scripts/grab.js $ARGS"
+          node scripts/grab.js $ARGS
+
+      - name: 上传到 Cloudflare R2
+        if: ${{ github.event.inputs.test_mode != 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # 安装 wrangler（已在 devDependencies 中）
+          npx wrangler --version
+
+          # 上传所有生成的文件到 R2
+          for file in output/*.xml output/*.xml.gz output/*.json; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              echo "上传 $filename..."
+              npx wrangler r2 object put "epg-data/xmltv/$filename" \
+                --file="$file" \
+                --remote
+            fi
+          done
+
+      - name: 使 KV 缓存失效
+        if: ${{ github.event.inputs.test_mode != 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # 删除 KV 中的频道缓存（Worker 下次请求时会重新从 R2 加载）
+          KV_ID="${{ secrets.KV_NAMESPACE_ID }}"
+          if [ -n "$KV_ID" ]; then
+            curl -s -X DELETE \
+              "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/storage/kv/namespaces/$KV_ID/values/channels_index" \
+              -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" || true
+            echo "KV 缓存已清除"
+          fi
+
+      - name: 上传抓取摘要
+        if: always()
+        run: |
+          if [ -f "output/channels.json" ]; then
+            TOTAL=$(cat output/channels.json | python3 -c "import sys,json; data=json.load(sys.stdin); print(len(data))")
+            HAS_EPG=$(cat output/channels.json | python3 -c "import sys,json; data=json.load(sys.stdin); print(sum(1 for c in data if c.get('hasEpg')))")
+            echo "### 抓取结果" >> $GITHUB_STEP_SUMMARY
+            echo "- 总频道数: $TOTAL" >> $GITHUB_STEP_SUMMARY
+            echo "- 有节目单: $HAS_EPG" >> $GITHUB_STEP_SUMMARY
+            echo "- 完成时间: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 保存日志为 Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: epg-grab-logs-${{ github.run_number }}
+          path: output/
+          retention-days: 7

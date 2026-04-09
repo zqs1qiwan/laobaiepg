@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaobaiEPG 管理面板</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    header .badge {
+      background: var(--accent);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ---- Stats ---- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-card .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* ---- Tabs ---- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      color: var(--muted);
+      transition: all 0.15s;
+      background: none;
+      border: none;
+      font-size: 14px;
+    }
+
+    .tab.active {
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-bottom-color: var(--card);
+      margin-bottom: -1px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ---- Config Editor ---- */
+    .config-url {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    input[type="text"], input[type="url"] {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: opacity 0.15s;
+    }
+
+    button:hover { opacity: 0.85; }
+    button.secondary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    button.danger { background: var(--red); }
+
+    /* ---- Channel List ---- */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .channel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .channel-card .ch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .channel-card .ch-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .channel-card .ch-group {
+      background: var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .channel-card .ch-id {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+      font-family: monospace;
+    }
+
+    .channel-card .ch-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.red { background: var(--red); }
+    .dot.yellow { background: var(--yellow); }
+
+    .ch-aliases {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .alias-tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    /* ---- Match Test ---- */
+    .match-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .match-result {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .match-result.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--green);
+    }
+
+    .match-result.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--red);
+    }
+
+    /* ---- Source List ---- */
+    .source-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .source-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .source-card .src-info { flex: 1; }
+    .source-card .src-name { font-weight: 600; margin-bottom: 4px; }
+    .source-card .src-url {
+      color: var(--muted);
+      font-size: 12px;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ---- EPG URL copy box ---- */
+    .epg-url-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .epg-url-box h3 { margin-bottom: 12px; font-size: 16px; }
+
+    .url-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .url-label {
+      color: var(--muted);
+      font-size: 12px;
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .url-value {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--accent);
+      background: var(--bg);
+      padding: 6px 10px;
+      border-radius: 4px;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .search-bar {
+      margin-bottom: 16px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .filter-btn {
+      padding: 4px 12px;
+      font-size: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>LaobaiEPG</h1>
+  <span class="badge">管理面板</span>
+  <span style="margin-left: auto; color: var(--muted); font-size: 12px;" id="workerUrl"></span>
+</header>
+
+<div class="container">
+
+  <!-- 统计卡片 -->
+  <div class="stats" id="statsArea">
+    <div class="stat-card">
+      <div class="value" id="statTotal">-</div>
+      <div class="label">总频道数</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" id="statHasEpg">-</div>
+      <div class="label">有节目单</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" id="statGroups">-</div>
+      <div class="label">频道分组</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" id="statSources">-</div>
+      <div class="label">启用数据源</div>
+    </div>
+  </div>
+
+  <!-- EPG URL 区域 -->
+  <div class="epg-url-box">
+    <h3>EPG 接入地址</h3>
+    <div class="url-row">
+      <span class="url-label">完整节目单</span>
+      <span class="url-value" id="guideUrl">设置 Worker URL 后显示</span>
+      <button class="copy-btn" onclick="copyUrl('guideUrl')">复制</button>
+    </div>
+    <div class="url-row">
+      <span class="url-label">压缩版 (推荐)</span>
+      <span class="url-value" id="guideGzUrl">设置 Worker URL 后显示</span>
+      <button class="copy-btn" onclick="copyUrl('guideGzUrl')">复制</button>
+    </div>
+    <div class="url-row">
+      <span class="url-label">大陆频道</span>
+      <span class="url-value" id="guideMlUrl">设置 Worker URL 后显示</span>
+      <button class="copy-btn" onclick="copyUrl('guideMlUrl')">复制</button>
+    </div>
+    <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+      <input type="url" id="workerUrlInput" placeholder="输入你的 Worker URL，例如 https://laobaiepg.xxx.workers.dev"
+             style="flex:1; max-width: 500px;" oninput="updateUrls(this.value)">
+      <button onclick="saveWorkerUrl()">保存</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('channels')">频道列表</button>
+    <button class="tab" onclick="switchTab('match')">匹配测试</button>
+    <button class="tab" onclick="switchTab('sources')">数据源</button>
+    <button class="tab" onclick="switchTab('guide')">使用指南</button>
+  </div>
+
+  <!-- 频道列表 -->
+  <div class="tab-panel active" id="tab-channels">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索频道名或别名..." oninput="filterChannels()">
+    </div>
+    <div class="filter-bar" id="groupFilters"></div>
+    <div class="channel-grid" id="channelGrid">
+      <div class="loading">加载中...</div>
+    </div>
+  </div>
+
+  <!-- 匹配测试 -->
+  <div class="tab-panel" id="tab-match">
+    <div class="match-box">
+      <h3 style="margin-bottom: 12px;">频道名匹配测试</h3>
+      <p style="color: var(--muted); margin-bottom: 16px; font-size: 13px;">
+        输入你的 IPTV 播放列表中的 tvg-name，测试是否能正确匹配到 EPG 节目单。
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="matchInput" placeholder="输入频道名，例如：浙江卫视4K、CCTV1、翡翠台" style="flex:1">
+        <button onclick="testMatch()">测试匹配</button>
+      </div>
+      <div id="matchResult" style="display:none" class="match-result"></div>
+    </div>
+
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+      <h3 style="margin-bottom: 12px;">批量测试</h3>
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 12px;">
+        粘贴你的频道名列表（每行一个），批量测试匹配结果
+      </p>
+      <textarea id="batchInput"
+        placeholder="浙江卫视&#10;浙江卫视4K&#10;CCTV1&#10;中央一套&#10;翡翠台"
+        style="width:100%; height:120px; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;"
+      ></textarea>
+      <div style="margin-top: 8px;">
+        <button onclick="batchTest()">批量测试</button>
+      </div>
+      <div id="batchResult" style="margin-top: 16px; display: none;">
+        <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border); color: var(--muted);">
+              <th style="text-align:left; padding: 8px;">输入名称</th>
+              <th style="text-align:left; padding: 8px;">匹配结果</th>
+              <th style="text-align:left; padding: 8px;">频道 ID</th>
+              <th style="text-align:left; padding: 8px;">状态</th>
+            </tr>
+          </thead>
+          <tbody id="batchResultBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 数据源 -->
+  <div class="tab-panel" id="tab-sources">
+    <div style="margin-bottom: 16px; display: flex; gap: 8px;">
+      <button onclick="triggerGrab()" style="background: var(--green);">立即抓取</button>
+      <a href="https://github.com" target="_blank" id="actionsLink">
+        <button class="secondary">查看 GitHub Actions</button>
+      </a>
+    </div>
+    <div class="source-list" id="sourceList">
+      <div class="loading">数据源配置从 sources.yaml 加载，请查看 GitHub 仓库编辑</div>
+    </div>
+  </div>
+
+  <!-- 使用指南 -->
+  <div class="tab-panel" id="tab-guide">
+    <div style="max-width: 800px;">
+      <div style="background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 16px;">如何使用 LaobaiEPG</h2>
+
+        <h3 style="color: var(--accent); margin-bottom: 8px;">1. IPTV 播放器配置</h3>
+        <p style="color: var(--muted); margin-bottom: 12px;">在你的 IPTV 播放器（TiviMate、Kodi、Perfect Player 等）中设置 EPG 地址：</p>
+        <pre style="background: var(--bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow: auto;">EPG URL: https://your-worker.workers.dev/guide.xml
+       或
+EPG URL: https://your-worker.workers.dev/guide.xml.gz（推荐，更小）</pre>
+
+        <h3 style="color: var(--accent); margin-bottom: 8px; margin-top: 20px;">2. M3U 播放列表格式</h3>
+        <p style="color: var(--muted); margin-bottom: 12px;">你的 M3U 播放列表中的 tvg-name 会自动匹配到对应的频道节目单：</p>
+        <pre style="background: var(--bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow: auto;">#EXTM3U
+#EXTINF:-1 tvg-name="浙江卫视4K" group-title="卫视",浙江卫视
+http://stream.example.com/zjtv.m3u8
+
+#EXTINF:-1 tvg-name="CCTV1" group-title="央视",CCTV-1
+http://stream.example.com/cctv1.m3u8</pre>
+
+        <h3 style="color: var(--accent); margin-bottom: 8px; margin-top: 20px;">3. 添加新频道</h3>
+        <p style="color: var(--muted); margin-bottom: 12px;">编辑 GitHub 仓库中的 <code>config/channels.yaml</code>：</p>
+        <pre style="background: var(--bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow: auto;">channels:
+  - id: "MyChannel"
+    name: "我的频道"
+    group: "卫视"
+    aliases:
+      - "我的频道"
+      - "MyChannelHD"
+      - "我的频道4K"
+    sources:
+      - type: "xmltv_url"
+        name: "我的频道"   # 在 XMLTV 源中的频道名</pre>
+
+        <h3 style="color: var(--accent); margin-bottom: 8px; margin-top: 20px;">4. 添加数据源</h3>
+        <p style="color: var(--muted); margin-bottom: 12px;">编辑 <code>config/sources.yaml</code> 中的 <code>xmltv_sources</code>：</p>
+        <pre style="background: var(--bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow: auto;">xmltv_sources:
+  - id: "my_source"
+    name: "我的数据源"
+    url: "https://example.com/guide.xml.gz"
+    enabled: true</pre>
+
+        <h3 style="color: var(--accent); margin-bottom: 8px; margin-top: 20px;">5. 部署步骤（首次使用）</h3>
+        <ol style="color: var(--muted); line-height: 2; padding-left: 20px;">
+          <li>Fork 本项目到你的 GitHub 账号</li>
+          <li>在 Cloudflare 创建 R2 Bucket（名称：<code>epg-data</code>）</li>
+          <li>在 Cloudflare 创建 KV Namespace，记录 ID</li>
+          <li>将 <code>wrangler.jsonc</code> 中的 KV ID 替换为真实 ID</li>
+          <li>在 GitHub Secrets 中配置：<code>CLOUDFLARE_API_TOKEN</code>、<code>CLOUDFLARE_ACCOUNT_ID</code>、<code>KV_NAMESPACE_ID</code></li>
+          <li>推送代码，GitHub Actions 自动部署 Worker 并执行首次抓取</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  LaobaiEPG &nbsp;·&nbsp; 基于 Cloudflare Workers + GitHub Actions &nbsp;·&nbsp;
+  <a href="https://github.com" target="_blank" id="githubLink" style="color: var(--accent);">GitHub</a>
+</footer>
+
+<script>
+  // ---- 配置 ----
+  let workerUrl = localStorage.getItem('epg_worker_url') || '';
+  let channels = [];
+  let filteredChannels = [];
+  let activeGroup = 'ALL';
+
+  // ---- 初始化 ----
+  document.addEventListener('DOMContentLoaded', () => {
+    if (workerUrl) {
+      document.getElementById('workerUrlInput').value = workerUrl;
+      updateUrls(workerUrl);
+      loadChannels();
+    }
+    renderSources();
+  });
+
+  // ---- Worker URL ----
+  function updateUrls(url) {
+    url = url.replace(/\/$/, '');
+    document.getElementById('workerUrl').textContent = url;
+    document.getElementById('guideUrl').textContent = url ? `${url}/guide.xml` : '请设置 Worker URL';
+    document.getElementById('guideGzUrl').textContent = url ? `${url}/guide.xml.gz` : '';
+    document.getElementById('guideMlUrl').textContent = url ? `${url}/guide_mainland.xml` : '';
+  }
+
+  function saveWorkerUrl() {
+    workerUrl = document.getElementById('workerUrlInput').value.replace(/\/$/, '');
+    localStorage.setItem('epg_worker_url', workerUrl);
+    updateUrls(workerUrl);
+    loadChannels();
+  }
+
+  function copyUrl(elemId) {
+    const text = document.getElementById(elemId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector(`[onclick="copyUrl('${elemId}')"]`);
+      const orig = btn.textContent;
+      btn.textContent = '已复制!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    });
+  }
+
+  // ---- 标签切换 ----
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      const panels = document.querySelectorAll('.tab-panel');
+      const tabs = document.querySelectorAll('.tab');
+      if (t.textContent.includes({ channels:'频道列表', match:'匹配测试', sources:'数据源', guide:'使用指南' }[name])) {
+        t.classList.add('active');
+      } else {
+        t.classList.remove('active');
+      }
+    });
+
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${name}`).classList.add('active');
+  }
+
+  // ---- 加载频道 ----
+  async function loadChannels() {
+    if (!workerUrl) return;
+    try {
+      const res = await fetch(`${workerUrl}/channels.json`);
+      channels = await res.json();
+      filteredChannels = channels;
+      updateStats();
+      renderGroupFilters();
+      renderChannels();
+    } catch(e) {
+      document.getElementById('channelGrid').innerHTML =
+        `<div class="loading" style="color: var(--red);">加载失败: ${e.message}<br>请检查 Worker URL 是否正确</div>`;
+    }
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = channels.length;
+    document.getElementById('statHasEpg').textContent = channels.filter(c => c.hasEpg).length;
+    const groups = new Set(channels.map(c => c.group));
+    document.getElementById('statGroups').textContent = groups.size;
+    document.getElementById('statSources').textContent = '查看配置';
+  }
+
+  function renderGroupFilters() {
+    const groups = ['ALL', ...new Set(channels.map(c => c.group))];
+    const bar = document.getElementById('groupFilters');
+    bar.innerHTML = groups.map(g => `
+      <button class="filter-btn ${g === activeGroup ? 'active' : ''}"
+              onclick="filterByGroup('${g}')">
+        ${g === 'ALL' ? '全部' : g}
+      </button>
+    `).join('');
+  }
+
+  function filterByGroup(group) {
+    activeGroup = group;
+    renderGroupFilters();
+    filterChannels();
+  }
+
+  function filterChannels() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    filteredChannels = channels.filter(ch => {
+      const groupMatch = activeGroup === 'ALL' || ch.group === activeGroup;
+      if (!groupMatch) return false;
+      if (!q) return true;
+      return ch.name.toLowerCase().includes(q) ||
+             ch.id.toLowerCase().includes(q) ||
+             (ch.aliases || []).some(a => a.toLowerCase().includes(q));
+    });
+    renderChannels();
+  }
+
+  function renderChannels() {
+    const grid = document.getElementById('channelGrid');
+    if (!filteredChannels.length) {
+      grid.innerHTML = '<div class="loading">没有匹配的频道</div>';
+      return;
+    }
+    grid.innerHTML = filteredChannels.map(ch => `
+      <div class="channel-card">
+        <div class="ch-header">
+          <span class="ch-name">${ch.name}</span>
+          <span class="ch-group">${ch.group || ''}</span>
+        </div>
+        <div class="ch-id">${ch.id}</div>
+        <div class="ch-status">
+          <span class="dot ${ch.hasEpg ? 'green' : 'red'}"></span>
+          <span style="color: var(--muted)">
+            ${ch.hasEpg ? `有节目单 (${ch.programmeCount} 条)` : '暂无节目单'}
+          </span>
+        </div>
+        <div class="ch-aliases">
+          ${(ch.aliases || []).slice(0, 6).map(a =>
+            `<span class="alias-tag">${a}</span>`
+          ).join('')}
+          ${(ch.aliases || []).length > 6 ? `<span class="alias-tag">+${ch.aliases.length - 6}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ---- 匹配测试 ----
+  async function testMatch() {
+    const name = document.getElementById('matchInput').value.trim();
+    if (!name) return;
+    if (!workerUrl) {
+      alert('请先设置 Worker URL');
+      return;
+    }
+
+    const resultEl = document.getElementById('matchResult');
+    resultEl.style.display = 'block';
+    resultEl.textContent = '测试中...';
+    resultEl.className = 'match-result';
+
+    try {
+      const res = await fetch(`${workerUrl}/match?name=${encodeURIComponent(name)}`);
+      const data = await res.json();
+      resultEl.className = `match-result ${data.success ? 'success' : 'error'}`;
+      resultEl.textContent = JSON.stringify(data, null, 2);
+    } catch(e) {
+      resultEl.className = 'match-result error';
+      resultEl.textContent = `请求失败: ${e.message}`;
+    }
+  }
+
+  async function batchTest() {
+    const lines = document.getElementById('batchInput').value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (!lines.length || !workerUrl) return;
+
+    const tbody = document.getElementById('batchResultBody');
+    const resultDiv = document.getElementById('batchResult');
+    resultDiv.style.display = 'block';
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:8px; color:var(--muted)">测试中...</td></tr>`;
+
+    const rows = [];
+    for (const name of lines) {
+      try {
+        const res = await fetch(`${workerUrl}/match?name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        rows.push({ name, matched: data.matched, success: data.success });
+      } catch(e) {
+        rows.push({ name, matched: null, success: false, error: e.message });
+      }
+    }
+
+    tbody.innerHTML = rows.map(r => `
+      <tr style="border-bottom: 1px solid var(--border);">
+        <td style="padding: 8px;">${r.name}</td>
+        <td style="padding: 8px;">${r.matched ? r.matched.name : '-'}</td>
+        <td style="padding: 8px; font-family: monospace; color: var(--muted);">${r.matched ? r.matched.id : '-'}</td>
+        <td style="padding: 8px;">
+          <span style="color: ${r.success ? 'var(--green)' : 'var(--red)'}">
+            ${r.success ? '✓ 匹配成功' : '✗ 未匹配'}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ---- 数据源展示 ----
+  function renderSources() {
+    const sources = [
+      { name: 'epg.pw 中国大陆', url: 'https://epg.pw/xmltv/epg_CN.xml.gz', enabled: true, type: 'XMLTV URL' },
+      { name: 'epg.pw 香港', url: 'https://epg.pw/xmltv/epg_HK.xml.gz', enabled: true, type: 'XMLTV URL' },
+      { name: 'epg.pw 台湾', url: 'https://epg.pw/xmltv/epg_TW.xml.gz', enabled: true, type: 'XMLTV URL' },
+      { name: '央视官方 API', url: 'api.cntv.cn', enabled: true, type: '内置爬虫' },
+      { name: '电视猫', url: 'lighttv.tvmao.com', enabled: true, type: '内置爬虫' },
+      { name: 'TVB 香港无线', url: 'www.tvb.com', enabled: true, type: '内置爬虫' },
+      { name: 'NOW TV 香港', url: 'www.nowtv.com', enabled: true, type: '内置爬虫' },
+      { name: '台湾宽频', url: 'data.tbc.net.tw', enabled: true, type: '内置爬虫' },
+      { name: '自定义源 1', url: '(未配置)', enabled: false, type: 'XMLTV URL' },
+      { name: '自定义源 2', url: '(未配置)', enabled: false, type: 'XMLTV URL' },
+    ];
+
+    document.getElementById('sourceList').innerHTML = sources.map(s => `
+      <div class="source-card">
+        <div class="src-info">
+          <div class="src-name">${s.name} <span style="color:var(--muted); font-size:11px; font-weight:400;">[${s.type}]</span></div>
+          <div class="src-url">${s.url}</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" ${s.enabled ? 'checked' : ''} disabled>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `).join('');
+  }
+
+  function triggerGrab() {
+    const ghUrl = document.getElementById('actionsLink').href;
+    alert('请前往 GitHub Actions 页面手动触发 "抓取 EPG 节目单" workflow，或等待定时自动执行。\n\n' +
+          '配置路径：仓库 → Actions → 抓取 EPG 节目单 → Run workflow');
+  }
+</script>
+
+</body>
+</html>

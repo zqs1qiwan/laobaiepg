@@ -1,0 +1,925 @@
+# EPG 频道配置文件
+# 每个频道定义一个 id（唯一标识），多个别名，和多个数据源
+# 数据源按优先级顺序排列，第一个可用的数据源会被使用
+#
+# 格式说明：
+#   id: 频道唯一标识（英文，会作为 XMLTV channel id）
+#   name: 频道显示名称
+#   logo: 频道台标 URL（可选）
+#   group: 分组（央视/卫视/港澳台/地方台/数字付费）
+#   aliases: 别名列表（支持模糊匹配，忽略大小写/空格/全半角）
+#   sources: 数据源列表（按优先级）
+#     - type: 数据源类型（xmltv_url/cctv/tvmao/tvsou/tvb/nowtv/icable/mod/...)
+#       id: 该数据源中的频道 ID
+#
+# 数据源类型说明：
+#   xmltv_url - 从 sources.yaml 中定义的 XMLTV URL 提取（按 channel display-name 匹配）
+#   cctv      - 央视官方 API (api.cntv.cn)
+#   tvmao     - 电视猫 (tvmao.com)
+#   tvsou     - 搜视 (tvsou.com)
+#   tvb       - 香港无线电视
+#   nowtv     - 香港 NOW TV
+#   icable    - 香港有线电视
+#   mod       - 台湾中华电信 MOD
+#   tbc       - 台湾宽频
+
+channels:
+  # ========== 央视频道 ==========
+  - id: "CCTV1"
+    name: "CCTV-1 综合"
+    logo: "https://epg.pw/logos/CCTV1.png"
+    group: "央视"
+    aliases:
+      - "CCTV1"
+      - "CCTV-1"
+      - "CCTV 1"
+      - "中央一套"
+      - "央视一套"
+      - "央视综合"
+      - "CCTV1综合"
+      - "CCTV-1综合"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV1"
+      - type: "cctv"
+        id: "CCTV-1"
+
+  - id: "CCTV2"
+    name: "CCTV-2 财经"
+    group: "央视"
+    aliases:
+      - "CCTV2"
+      - "CCTV-2"
+      - "CCTV 2"
+      - "中央二套"
+      - "央视财经"
+      - "CCTV2财经"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV2"
+      - type: "cctv"
+        id: "CCTV-2"
+
+  - id: "CCTV3"
+    name: "CCTV-3 综艺"
+    group: "央视"
+    aliases:
+      - "CCTV3"
+      - "CCTV-3"
+      - "CCTV 3"
+      - "中央三套"
+      - "央视综艺"
+      - "CCTV3综艺"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV3"
+      - type: "cctv"
+        id: "CCTV-3"
+
+  - id: "CCTV4"
+    name: "CCTV-4 中文国际"
+    group: "央视"
+    aliases:
+      - "CCTV4"
+      - "CCTV-4"
+      - "CCTV 4"
+      - "中央四套"
+      - "央视中文国际"
+      - "CCTV4中文国际"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV4"
+      - type: "cctv"
+        id: "CCTV-4"
+
+  - id: "CCTV5"
+    name: "CCTV-5 体育"
+    group: "央视"
+    aliases:
+      - "CCTV5"
+      - "CCTV-5"
+      - "CCTV 5"
+      - "中央五套"
+      - "央视体育"
+      - "CCTV5体育"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV5"
+      - type: "cctv"
+        id: "CCTV-5"
+
+  - id: "CCTV5+"
+    name: "CCTV-5+ 体育赛事"
+    group: "央视"
+    aliases:
+      - "CCTV5+"
+      - "CCTV-5+"
+      - "CCTV 5+"
+      - "CCTV5PLUS"
+      - "中央五套+"
+      - "央视体育赛事"
+    sources:
+      - type: "cctv"
+        id: "CCTV-5+"
+      - type: "xmltv_url"
+        name: "CCTV5+"
+
+  - id: "CCTV6"
+    name: "CCTV-6 电影"
+    group: "央视"
+    aliases:
+      - "CCTV6"
+      - "CCTV-6"
+      - "CCTV 6"
+      - "中央六套"
+      - "央视电影"
+      - "CCTV6电影"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV6"
+      - type: "cctv"
+        id: "CCTV-6"
+
+  - id: "CCTV7"
+    name: "CCTV-7 国防军事"
+    group: "央视"
+    aliases:
+      - "CCTV7"
+      - "CCTV-7"
+      - "CCTV 7"
+      - "中央七套"
+      - "央视军事"
+      - "CCTV7军事"
+      - "CCTV7农业"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV7"
+      - type: "cctv"
+        id: "CCTV-7"
+
+  - id: "CCTV8"
+    name: "CCTV-8 电视剧"
+    group: "央视"
+    aliases:
+      - "CCTV8"
+      - "CCTV-8"
+      - "CCTV 8"
+      - "中央八套"
+      - "央视电视剧"
+      - "CCTV8电视剧"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV8"
+      - type: "cctv"
+        id: "CCTV-8"
+
+  - id: "CCTV9"
+    name: "CCTV-9 纪录"
+    group: "央视"
+    aliases:
+      - "CCTV9"
+      - "CCTV-9"
+      - "CCTV 9"
+      - "中央九套"
+      - "央视纪录"
+      - "CCTV9纪录"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV9"
+      - type: "cctv"
+        id: "CCTV-9"
+
+  - id: "CCTV10"
+    name: "CCTV-10 科教"
+    group: "央视"
+    aliases:
+      - "CCTV10"
+      - "CCTV-10"
+      - "CCTV 10"
+      - "中央十套"
+      - "央视科教"
+      - "CCTV10科教"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV10"
+      - type: "cctv"
+        id: "CCTV-10"
+
+  - id: "CCTV11"
+    name: "CCTV-11 戏曲"
+    group: "央视"
+    aliases:
+      - "CCTV11"
+      - "CCTV-11"
+      - "CCTV 11"
+      - "中央十一套"
+      - "央视戏曲"
+      - "CCTV11戏曲"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV11"
+      - type: "cctv"
+        id: "CCTV-11"
+
+  - id: "CCTV12"
+    name: "CCTV-12 社会与法"
+    group: "央视"
+    aliases:
+      - "CCTV12"
+      - "CCTV-12"
+      - "CCTV 12"
+      - "中央十二套"
+      - "央视社会法制"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV12"
+      - type: "cctv"
+        id: "CCTV-12"
+
+  - id: "CCTV13"
+    name: "CCTV-13 新闻"
+    group: "央视"
+    aliases:
+      - "CCTV13"
+      - "CCTV-13"
+      - "CCTV 13"
+      - "中央十三套"
+      - "央视新闻"
+      - "CCTV13新闻"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV13"
+      - type: "cctv"
+        id: "CCTV-13"
+
+  - id: "CCTV14"
+    name: "CCTV-14 少儿"
+    group: "央视"
+    aliases:
+      - "CCTV14"
+      - "CCTV-14"
+      - "CCTV 14"
+      - "中央十四套"
+      - "央视少儿"
+      - "CCTV14少儿"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV14"
+      - type: "cctv"
+        id: "CCTV-14"
+
+  - id: "CCTV15"
+    name: "CCTV-15 音乐"
+    group: "央视"
+    aliases:
+      - "CCTV15"
+      - "CCTV-15"
+      - "CCTV 15"
+      - "中央十五套"
+      - "央视音乐"
+      - "CCTV15音乐"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV15"
+      - type: "cctv"
+        id: "CCTV-15"
+
+  - id: "CCTV16"
+    name: "CCTV-16 奥林匹克"
+    group: "央视"
+    aliases:
+      - "CCTV16"
+      - "CCTV-16"
+      - "CCTV 16"
+      - "央视奥林匹克"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV16"
+      - type: "cctv"
+        id: "CCTV-16"
+
+  - id: "CCTV17"
+    name: "CCTV-17 农业农村"
+    group: "央视"
+    aliases:
+      - "CCTV17"
+      - "CCTV-17"
+      - "CCTV 17"
+      - "央视农业农村"
+    sources:
+      - type: "xmltv_url"
+        name: "CCTV17"
+      - type: "cctv"
+        id: "CCTV-17"
+
+  # ========== 卫视频道 ==========
+  - id: "BTV1"
+    name: "北京卫视"
+    group: "卫视"
+    aliases:
+      - "北京卫视"
+      - "BTV1"
+      - "BTV卫视"
+      - "北京台"
+    sources:
+      - type: "xmltv_url"
+        name: "北京卫视"
+      - type: "tvmao"
+        id: "BTV-BTV1"
+
+  - id: "HunanTV"
+    name: "湖南卫视"
+    group: "卫视"
+    aliases:
+      - "湖南卫视"
+      - "芒果TV"
+      - "湖南台"
+      - "HunanTV"
+      - "HNTV"
+    sources:
+      - type: "xmltv_url"
+        name: "湖南卫视"
+      - type: "tvmao"
+        id: "HNTV-HNTV1"
+
+  - id: "ZhejiangTV"
+    name: "浙江卫视"
+    group: "卫视"
+    aliases:
+      - "浙江卫视"
+      - "浙江卫视4K"
+      - "浙江台"
+      - "ZhejiangTV"
+      - "ZJTV"
+      - "浙江"
+    sources:
+      - type: "xmltv_url"
+        name: "浙江卫视"
+      - type: "tvmao"
+        id: "ZJTV-ZJTV1"
+
+  - id: "JiangsuTV"
+    name: "江苏卫视"
+    group: "卫视"
+    aliases:
+      - "江苏卫视"
+      - "江苏台"
+      - "JiangsuTV"
+      - "JSTV"
+      - "荔枝TV"
+    sources:
+      - type: "xmltv_url"
+        name: "江苏卫视"
+      - type: "tvmao"
+        id: "JSTV-JSTV1"
+
+  - id: "DragonTV"
+    name: "东方卫视"
+    group: "卫视"
+    aliases:
+      - "东方卫视"
+      - "东方台"
+      - "DragonTV"
+      - "上海卫视"
+      - "SMG"
+    sources:
+      - type: "xmltv_url"
+        name: "东方卫视"
+      - type: "tvmao"
+        id: "DFTV-DFTV1"
+
+  - id: "AnhuiTV"
+    name: "安徽卫视"
+    group: "卫视"
+    aliases:
+      - "安徽卫视"
+      - "安徽台"
+      - "AnhuiTV"
+      - "AHTV"
+    sources:
+      - type: "xmltv_url"
+        name: "安徽卫视"
+      - type: "tvmao"
+        id: "AHTV-AHTV1"
+
+  - id: "ShandongTV"
+    name: "山东卫视"
+    group: "卫视"
+    aliases:
+      - "山东卫视"
+      - "山东台"
+      - "ShandongTV"
+      - "SDTV"
+    sources:
+      - type: "xmltv_url"
+        name: "山东卫视"
+      - type: "tvmao"
+        id: "SDTV-SDTV1"
+
+  - id: "SichuanTV"
+    name: "四川卫视"
+    group: "卫视"
+    aliases:
+      - "四川卫视"
+      - "四川台"
+      - "SichuanTV"
+      - "SCTV"
+    sources:
+      - type: "xmltv_url"
+        name: "四川卫视"
+      - type: "tvmao"
+        id: "SCTV-SCTV1"
+
+  - id: "HenanTV"
+    name: "河南卫视"
+    group: "卫视"
+    aliases:
+      - "河南卫视"
+      - "河南台"
+      - "HenanTV"
+      - "HNTV河南"
+    sources:
+      - type: "xmltv_url"
+        name: "河南卫视"
+      - type: "tvmao"
+        id: "HNTV-HNVS"
+
+  - id: "GuangdongTV"
+    name: "广东卫视"
+    group: "卫视"
+    aliases:
+      - "广东卫视"
+      - "广东台"
+      - "GuangdongTV"
+      - "GDTV"
+    sources:
+      - type: "xmltv_url"
+        name: "广东卫视"
+      - type: "tvmao"
+        id: "GDTV-GDTV1"
+
+  - id: "ChongqingTV"
+    name: "重庆卫视"
+    group: "卫视"
+    aliases:
+      - "重庆卫视"
+      - "重庆台"
+      - "ChongqingTV"
+    sources:
+      - type: "xmltv_url"
+        name: "重庆卫视"
+
+  - id: "LiaoningTV"
+    name: "辽宁卫视"
+    group: "卫视"
+    aliases:
+      - "辽宁卫视"
+      - "辽宁台"
+      - "LiaoningTV"
+      - "LNTV"
+    sources:
+      - type: "xmltv_url"
+        name: "辽宁卫视"
+      - type: "tvmao"
+        id: "LNTV-LNTV1"
+
+  - id: "HubeiTV"
+    name: "湖北卫视"
+    group: "卫视"
+    aliases:
+      - "湖北卫视"
+      - "湖北台"
+      - "HubeiTV"
+      - "HBTV"
+    sources:
+      - type: "xmltv_url"
+        name: "湖北卫视"
+
+  - id: "JiangxiTV"
+    name: "江西卫视"
+    group: "卫视"
+    aliases:
+      - "江西卫视"
+      - "江西台"
+      - "JiangxiTV"
+      - "JXTV"
+    sources:
+      - type: "xmltv_url"
+        name: "江西卫视"
+
+  - id: "ShanxiTV"
+    name: "山西卫视"
+    group: "卫视"
+    aliases:
+      - "山西卫视"
+      - "山西台"
+      - "ShanxiTV"
+    sources:
+      - type: "xmltv_url"
+        name: "山西卫视"
+
+  - id: "ShaanxiTV"
+    name: "陕西卫视"
+    group: "卫视"
+    aliases:
+      - "陕西卫视"
+      - "陕西台"
+      - "ShaanxiTV"
+    sources:
+      - type: "xmltv_url"
+        name: "陕西卫视"
+
+  - id: "YunnanTV"
+    name: "云南卫视"
+    group: "卫视"
+    aliases:
+      - "云南卫视"
+      - "云南台"
+      - "YunnanTV"
+    sources:
+      - type: "xmltv_url"
+        name: "云南卫视"
+
+  - id: "GuizhouTV"
+    name: "贵州卫视"
+    group: "卫视"
+    aliases:
+      - "贵州卫视"
+      - "贵州台"
+      - "GuizhouTV"
+    sources:
+      - type: "xmltv_url"
+        name: "贵州卫视"
+
+  - id: "GansuTV"
+    name: "甘肃卫视"
+    group: "卫视"
+    aliases:
+      - "甘肃卫视"
+      - "甘肃台"
+      - "GansuTV"
+    sources:
+      - type: "xmltv_url"
+        name: "甘肃卫视"
+
+  - id: "FujianTV"
+    name: "福建卫视"
+    group: "卫视"
+    aliases:
+      - "福建卫视"
+      - "福建台"
+      - "FujianTV"
+      - "FJTV"
+    sources:
+      - type: "xmltv_url"
+        name: "福建卫视"
+
+  - id: "HeilongjiangTV"
+    name: "黑龙江卫视"
+    group: "卫视"
+    aliases:
+      - "黑龙江卫视"
+      - "黑龙江台"
+      - "HeilongjiangTV"
+    sources:
+      - type: "xmltv_url"
+        name: "黑龙江卫视"
+
+  - id: "JilinTV"
+    name: "吉林卫视"
+    group: "卫视"
+    aliases:
+      - "吉林卫视"
+      - "吉林台"
+      - "JilinTV"
+    sources:
+      - type: "xmltv_url"
+        name: "吉林卫视"
+
+  - id: "TianjinTV"
+    name: "天津卫视"
+    group: "卫视"
+    aliases:
+      - "天津卫视"
+      - "天津台"
+      - "TianjinTV"
+      - "TJTV"
+    sources:
+      - type: "xmltv_url"
+        name: "天津卫视"
+
+  - id: "HainanTV"
+    name: "海南卫视"
+    group: "卫视"
+    aliases:
+      - "海南卫视"
+      - "海南台"
+      - "HainanTV"
+    sources:
+      - type: "xmltv_url"
+        name: "海南卫视"
+
+  - id: "InnerMongoliaTV"
+    name: "内蒙古卫视"
+    group: "卫视"
+    aliases:
+      - "内蒙古卫视"
+      - "内蒙古台"
+      - "InnerMongoliaTV"
+    sources:
+      - type: "xmltv_url"
+        name: "内蒙古卫视"
+
+  - id: "XinjiangTV"
+    name: "新疆卫视"
+    group: "卫视"
+    aliases:
+      - "新疆卫视"
+      - "新疆台"
+      - "XinjiangTV"
+    sources:
+      - type: "xmltv_url"
+        name: "新疆卫视"
+
+  - id: "XizangTV"
+    name: "西藏卫视"
+    group: "卫视"
+    aliases:
+      - "西藏卫视"
+      - "西藏台"
+      - "XizangTV"
+    sources:
+      - type: "xmltv_url"
+        name: "西藏卫视"
+
+  - id: "NingxiaTV"
+    name: "宁夏卫视"
+    group: "卫视"
+    aliases:
+      - "宁夏卫视"
+      - "宁夏台"
+      - "NingxiaTV"
+    sources:
+      - type: "xmltv_url"
+        name: "宁夏卫视"
+
+  - id: "QinghaiTV"
+    name: "青海卫视"
+    group: "卫视"
+    aliases:
+      - "青海卫视"
+      - "青海台"
+      - "QinghaiTV"
+    sources:
+      - type: "xmltv_url"
+        name: "青海卫视"
+
+  # ========== 凤凰/卫星 ==========
+  - id: "PhoenixChinese"
+    name: "凤凰中文台"
+    group: "卫星"
+    aliases:
+      - "凤凰中文台"
+      - "凤凰中文"
+      - "PhoenixChinese"
+      - "凤凰中文频道"
+    sources:
+      - type: "xmltv_url"
+        name: "凤凰中文台"
+
+  - id: "PhoenixInfonews"
+    name: "凤凰资讯台"
+    group: "卫星"
+    aliases:
+      - "凤凰资讯台"
+      - "凤凰资讯"
+      - "PhoenixInfonews"
+    sources:
+      - type: "xmltv_url"
+        name: "凤凰资讯台"
+
+  - id: "PhoenixHK"
+    name: "凤凰香港台"
+    group: "卫星"
+    aliases:
+      - "凤凰香港台"
+      - "凤凰香港"
+      - "PhoenixHK"
+    sources:
+      - type: "xmltv_url"
+        name: "凤凰香港台"
+
+  # ========== 香港频道 ==========
+  - id: "TVBJade"
+    name: "TVB 翡翠台"
+    group: "港澳台"
+    aliases:
+      - "TVB翡翠台"
+      - "翡翠台"
+      - "TVBJade"
+      - "TVB Jade"
+      - "TVB1"
+    sources:
+      - type: "tvb"
+        id: "J"
+      - type: "xmltv_url"
+        name: "翡翠台"
+
+  - id: "TVBPearl"
+    name: "TVB 明珠台"
+    group: "港澳台"
+    aliases:
+      - "TVB明珠台"
+      - "明珠台"
+      - "TVBPearl"
+      - "TVB Pearl"
+      - "TVB2"
+    sources:
+      - type: "tvb"
+        id: "P"
+      - type: "xmltv_url"
+        name: "明珠台"
+
+  - id: "ViuTV"
+    name: "ViuTV"
+    group: "港澳台"
+    aliases:
+      - "ViuTV"
+      - "Viu TV"
+      - "香港ViuTV"
+    sources:
+      - type: "xmltv_url"
+        name: "ViuTV"
+
+  - id: "NowNews"
+    name: "Now 新闻台"
+    group: "港澳台"
+    aliases:
+      - "Now新闻台"
+      - "NowNews"
+      - "Now News"
+    sources:
+      - type: "nowtv"
+        id: "330"
+      - type: "xmltv_url"
+        name: "Now新闻台"
+
+  - id: "CableNews"
+    name: "有线新闻台"
+    group: "港澳台"
+    aliases:
+      - "有线新闻台"
+      - "CableNews"
+      - "i-Cable News"
+    sources:
+      - type: "icable"
+        id: "110"
+      - type: "xmltv_url"
+        name: "有线新闻台"
+
+  - id: "RTHK31"
+    name: "香港电台 第31频道"
+    group: "港澳台"
+    aliases:
+      - "RTHK31"
+      - "香港电台31"
+      - "港台31"
+    sources:
+      - type: "xmltv_url"
+        name: "RTHK31"
+
+  - id: "RTHK32"
+    name: "香港电台 第32频道"
+    group: "港澳台"
+    aliases:
+      - "RTHK32"
+      - "香港电台32"
+      - "港台32"
+    sources:
+      - type: "xmltv_url"
+        name: "RTHK32"
+
+  # ========== 台湾频道 ==========
+  - id: "TaiwanTVS"
+    name: "台视"
+    group: "港澳台"
+    aliases:
+      - "台视"
+      - "TTV"
+      - "台湾台视"
+    sources:
+      - type: "tbc"
+        id: "11"
+      - type: "mod"
+        id: "4"
+      - type: "xmltv_url"
+        name: "台视"
+
+  - id: "TaiwanCTI"
+    name: "中视"
+    group: "港澳台"
+    aliases:
+      - "中视"
+      - "CTV"
+      - "台湾中视"
+    sources:
+      - type: "tbc"
+        id: "12"
+      - type: "xmltv_url"
+        name: "中视"
+
+  - id: "TaiwanCTS"
+    name: "华视"
+    group: "港澳台"
+    aliases:
+      - "华视"
+      - "CTS"
+      - "台湾华视"
+    sources:
+      - type: "tbc"
+        id: "13"
+      - type: "xmltv_url"
+        name: "华视"
+
+  - id: "TaiwanPTS"
+    name: "公视"
+    group: "港澳台"
+    aliases:
+      - "公视"
+      - "PTS"
+      - "台湾公视"
+    sources:
+      - type: "tbc"
+        id: "15"
+      - type: "xmltv_url"
+        name: "公视"
+
+  - id: "TaiwanFTV"
+    name: "民视"
+    group: "港澳台"
+    aliases:
+      - "民视"
+      - "FTV"
+      - "台湾民视"
+    sources:
+      - type: "tbc"
+        id: "16"
+      - type: "xmltv_url"
+        name: "民视"
+
+  - id: "TVBS"
+    name: "TVBS"
+    group: "港澳台"
+    aliases:
+      - "TVBS"
+      - "台湾TVBS"
+    sources:
+      - type: "tbc"
+        id: "53"
+      - type: "xmltv_url"
+        name: "TVBS"
+
+  # ========== 数字付费 ==========
+  - id: "CHCAction"
+    name: "CHC 动作电影"
+    group: "数字付费"
+    aliases:
+      - "CHC动作电影"
+      - "CHC动作"
+      - "CHCAction"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC动作电影"
+
+  - id: "CHCFamily"
+    name: "CHC 家庭影院"
+    group: "数字付费"
+    aliases:
+      - "CHC家庭影院"
+      - "CHC家庭"
+      - "CHCFamily"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC家庭影院"
+
+  - id: "CHCHits"
+    name: "CHC 精品电影"
+    group: "数字付费"
+    aliases:
+      - "CHC精品电影"
+      - "CHC精品"
+      - "CHCHits"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC精品电影"
+
+  - id: "CGTN"
+    name: "CGTN"
+    group: "卫星"
+    aliases:
+      - "CGTN"
+      - "中国国际电视台"
+      - "CGTNEnglish"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN"
