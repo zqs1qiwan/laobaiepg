@@ -64,6 +64,7 @@ export async function getEpgTvmao(channel, channelId, date) {
     for (const prog of progs) {
       const title = prog.name || '';
       const timeStr = prog.time || ''; // "HH:MM" 格式
+      // status=-1 表示该节目为占位/未播出，但仍然是真实节目信息，保留
       if (!title || !timeStr) continue;
 
       const [hh, mm] = timeStr.split(':').map(Number);

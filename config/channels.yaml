@@ -535,7 +535,9 @@ channels:
       - "FJTV"
     sources:
       - type: "xmltv_url"
-        name: "福建卫视"
+        name: "海峡卫视"
+      - type: "tvmao"
+        id: "FJTV1"
 
   - id: "HeilongjiangTV"
     name: "黑龙江卫视"
@@ -576,9 +578,12 @@ channels:
     group: "卫视"
     aliases:
       - "海南卫视"
+      - "旅游卫视"
       - "海南台"
       - "HainanTV"
     sources:
+      - type: "tvmao"
+        id: "HNTV2"
       - type: "xmltv_url"
         name: "海南卫视"
 
@@ -689,8 +694,8 @@ channels:
       - "TVB Jade"
       - "TVB1"
     sources:
-      - type: "tvb"
-        id: "J"
+      - type: "xmltv_url"
+        name: "TVB 翡翠台"
       - type: "xmltv_url"
         name: "翡翠台"
 
@@ -704,8 +709,8 @@ channels:
       - "TVB Pearl"
       - "TVB2"
     sources:
-      - type: "tvb"
-        id: "P"
+      - type: "xmltv_url"
+        name: "TVB Pearl"
       - type: "xmltv_url"
         name: "明珠台"
 
@@ -728,8 +733,8 @@ channels:
       - "NowNews"
       - "Now News"
     sources:
-      - type: "nowtv"
-        id: "330"
+      - type: "xmltv_url"
+        name: "Now 新聞台"
       - type: "xmltv_url"
         name: "Now新闻台"
 
@@ -741,8 +746,8 @@ channels:
       - "CableNews"
       - "i-Cable News"
     sources:
-      - type: "icable"
-        id: "110"
+      - type: "xmltv_url"
+        name: "有線新聞台"
       - type: "xmltv_url"
         name: "有线新闻台"
 
@@ -755,7 +760,7 @@ channels:
       - "港台31"
     sources:
       - type: "xmltv_url"
-        name: "RTHK31"
+        name: "港台电视31"
 
   - id: "RTHK32"
     name: "香港电台 第32频道"
@@ -766,7 +771,7 @@ channels:
       - "港台32"
     sources:
       - type: "xmltv_url"
-        name: "RTHK32"
+        name: "港台电视32"
 
   # ========== 台湾频道 ==========
   - id: "TaiwanTVS"
@@ -777,12 +782,10 @@ channels:
       - "TTV"
       - "台湾台视"
     sources:
-      - type: "tbc"
-        id: "11"
-      - type: "mod"
-        id: "4"
       - type: "xmltv_url"
-        name: "台视"
+        name: "台視"
+      - type: "xmltv_url"
+        name: "台視HD"
 
   - id: "TaiwanCTI"
     name: "中视"
@@ -792,10 +795,8 @@ channels:
       - "CTV"
       - "台湾中视"
     sources:
-      - type: "tbc"
-        id: "12"
       - type: "xmltv_url"
-        name: "中视"
+        name: "中視新聞HD"
 
   - id: "TaiwanCTS"
     name: "华视"
@@ -805,8 +806,8 @@ channels:
       - "CTS"
       - "台湾华视"
     sources:
-      - type: "tbc"
-        id: "13"
+      - type: "xmltv_url"
+        name: "華視教育體育文化台"
       - type: "xmltv_url"
         name: "华视"
 
@@ -818,8 +819,8 @@ channels:
       - "PTS"
       - "台湾公视"
     sources:
-      - type: "tbc"
-        id: "15"
+      - type: "xmltv_url"
+        name: "公視(HD)"
       - type: "xmltv_url"
         name: "公视"
 
@@ -831,10 +832,10 @@ channels:
       - "FTV"
       - "台湾民视"
     sources:
-      - type: "tbc"
-        id: "16"
       - type: "xmltv_url"
-        name: "民视"
+        name: "民視"
+      - type: "xmltv_url"
+        name: "民視HD"
 
   - id: "TVBS"
     name: "TVBS"
@@ -843,44 +844,27 @@ channels:
       - "TVBS"
       - "台湾TVBS"
     sources:
-      - type: "tbc"
-        id: "53"
       - type: "xmltv_url"
         name: "TVBS"
+      - type: "xmltv_url"
+        name: "TVBS精采台HD"
 
   # ========== 数字付费 ==========
   - id: "CHCAction"
-    name: "CHC 动作电影"
+    name: "CHC 高清电影"
     group: "数字付费"
     aliases:
+      - "CHC高清电影"
       - "CHC动作电影"
       - "CHC动作"
       - "CHCAction"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC动作电影"
-
-  - id: "CHCFamily"
-    name: "CHC 家庭影院"
-    group: "数字付费"
-    aliases:
+      - "CHCHits"
+      - "CHC精品电影"
       - "CHC家庭影院"
-      - "CHC家庭"
       - "CHCFamily"
     sources:
       - type: "xmltv_url"
-        name: "CHC家庭影院"
-
-  - id: "CHCHits"
-    name: "CHC 精品电影"
-    group: "数字付费"
-    aliases:
-      - "CHC精品电影"
-      - "CHC精品"
-      - "CHCHits"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC精品电影"
+        name: "CHC高清电影"
 
   - id: "CGTN"
     name: "CGTN"
@@ -890,6 +874,9 @@ channels:
       - "中国国际电视台"
       - "CGTNEnglish"
       - "CGTN英语"
+      - "CGTN记录"
+      - "CGTN纪录"
+      - "CGTNDoc"
     sources:
       - type: "xmltv_url"
         name: "CGTN (中國環球電視網)英語頻道"
@@ -980,17 +967,7 @@ channels:
       - type: "xmltv_url"
         name: "茶频道"
 
-  # ========== CGTN 多语言频道（epg.pw HK 已有） ==========
-  - id: "CGTNDoc"
-    name: "CGTN 纪录"
-    group: "卫星"
-    aliases:
-      - "CGTN记录"
-      - "CGTN纪录"
-      - "CGTNDoc"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN记录"
+  # CGTN纪录：epg.pw 无单独源，暂合并到 CGTN 主频道别名中（见上方 CGTN 条目）
 
   # ========== 北京各子频道（tvmao BTV1-10） ==========
   - id: "BTV1"
