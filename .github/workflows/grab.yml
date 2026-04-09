@@ -106,7 +106,8 @@ jobs:
               filename=$(basename "$file")
               echo "上传 $filename..."
               npx wrangler r2 object put "epg-data/xmltv/$filename" \
-                --file="$file"
+                --file="$file" \
+                --remote
               UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
             fi
           done
