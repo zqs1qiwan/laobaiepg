@@ -850,6 +850,17 @@ channels:
         name: "TVBS精采台HD"
 
   # ========== 数字付费 ==========
+  - id: "CHCHd"
+    name: "CHC 高清电影"
+    group: "数字付费"
+    aliases:
+      - "CHC高清电影"
+      - "CHC高清"
+      - "CHCHd"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC高清电影"
+
   - id: "CHCAction"
     name: "CHC 动作电影"
     group: "数字付费"
@@ -857,33 +868,36 @@ channels:
       - "CHC动作电影"
       - "CHC动作"
       - "CHCAction"
+      - "动作影院"
     sources:
       - type: "xmltv_url"
-        name: "CHC高清电影"
+        name: "CHC动作电影"
 
   - id: "CHCFamily"
-    name: "CHC 家庭影院"
+    name: "CHC 家庭电影"
     group: "数字付费"
     aliases:
+      - "CHC家庭电影"
       - "CHC家庭影院"
       - "CHC家庭"
       - "CHCFamily"
       - "家庭影院"
     sources:
       - type: "xmltv_url"
-        name: "CHC高清电影"
+        name: "CHC家庭电影"
 
   - id: "CHCHits"
-    name: "CHC 精品电影"
+    name: "CHC 影迷电影"
     group: "数字付费"
     aliases:
+      - "CHC影迷电影"
       - "CHC精品电影"
       - "CHC精品"
       - "CHCHits"
       - "经典电影"
     sources:
       - type: "xmltv_url"
-        name: "CHC高清电影"
+        name: "CHC影迷电影"
 
   - id: "CGTN"
     name: "CGTN"
