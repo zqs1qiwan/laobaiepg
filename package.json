@@ -12,14 +12,14 @@
     "dev:admin": "cd admin && npm run dev"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0",
-    "node-fetch": "^3.3.2",
     "dayjs": "^1.11.10",
     "fflate": "^0.8.2",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.2",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "wrangler": "^3.60.0"
+    "wrangler": "^4.81.0"
   },
   "engines": {
     "node": ">=18"
