@@ -851,17 +851,36 @@ channels:
 
   # ========== 数字付费 ==========
   - id: "CHCAction"
-    name: "CHC 高清电影"
+    name: "CHC 动作电影"
     group: "数字付费"
     aliases:
-      - "CHC高清电影"
       - "CHC动作电影"
       - "CHC动作"
       - "CHCAction"
-      - "CHCHits"
-      - "CHC精品电影"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC高清电影"
+
+  - id: "CHCFamily"
+    name: "CHC 家庭影院"
+    group: "数字付费"
+    aliases:
       - "CHC家庭影院"
+      - "CHC家庭"
       - "CHCFamily"
+      - "家庭影院"
+    sources:
+      - type: "xmltv_url"
+        name: "CHC高清电影"
+
+  - id: "CHCHits"
+    name: "CHC 精品电影"
+    group: "数字付费"
+    aliases:
+      - "CHC精品电影"
+      - "CHC精品"
+      - "CHCHits"
+      - "经典电影"
     sources:
       - type: "xmltv_url"
         name: "CHC高清电影"
@@ -874,14 +893,62 @@ channels:
       - "中国国际电视台"
       - "CGTNEnglish"
       - "CGTN英语"
-      - "CGTN记录"
-      - "CGTN纪录"
-      - "CGTNDoc"
     sources:
       - type: "xmltv_url"
         name: "CGTN (中國環球電視網)英語頻道"
       - type: "xmltv_url"
         name: "CGTN"
+
+  - id: "CGTNDoc"
+    name: "CGTN 纪录"
+    group: "卫星"
+    aliases:
+      - "CGTN记录"
+      - "CGTN纪录"
+      - "CGTNDoc"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN纪录"
+
+  - id: "CGTNSpanish"
+    name: "CGTN 西语"
+    group: "卫星"
+    aliases:
+      - "CGTN西语"
+      - "CGTNSpanish"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN西语"
+
+  - id: "CGTNFrench"
+    name: "CGTN 法语"
+    group: "卫星"
+    aliases:
+      - "CGTN法语"
+      - "CGTNFrench"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN法语"
+
+  - id: "CGTNArabic"
+    name: "CGTN 阿语"
+    group: "卫星"
+    aliases:
+      - "CGTN阿语"
+      - "CGTNArabic"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN阿语"
+
+  - id: "CGTNRussian"
+    name: "CGTN 俄语"
+    group: "卫星"
+    aliases:
+      - "CGTN俄语"
+      - "CGTNRussian"
+    sources:
+      - type: "xmltv_url"
+        name: "CGTN俄语"
 
   # ========== CCTV 4K / 国际频道（epg.pw CN 已有，补充别名） ==========
   - id: "CCTV4K"
@@ -892,10 +959,19 @@ channels:
       - "CCTV-4K"
       - "CCTV 4K"
       - "央视4K"
-      - "爱上4K"
     sources:
       - type: "xmltv_url"
         name: "CCTV4K"
+
+  - id: "AiShang4K"
+    name: "爱上4K"
+    group: "数字付费"
+    aliases:
+      - "爱上4K"
+      - "AiShang4K"
+    sources:
+      - type: "xmltv_url"
+        name: "爱上4K"
 
   - id: "CCTV4Euro"
     name: "CCTV-4 欧洲"
@@ -1071,20 +1147,29 @@ channels:
       - "北京纪实"
       - "BTV纪实"
     sources:
-      - type: "tvmao"
-        id: "BTV9"
+      - type: "xmltv_url"
+        name: "北京纪实科教"
 
-  # ========== 北京淘系列（IPTV付费） ==========
+  # ========== 北京淘系列（北京 IPTV 专属，无公开 EPG 源） ==========
+  - id: "BTVTaoEntertain"
+    name: "北京淘娱乐"
+    group: "地方台"
+    aliases:
+      - "北京淘娱乐"
+      - "淘娱乐"
+    sources:
+      - type: "xmltv_url"
+        name: "北京淘娱乐"
+
   - id: "BTVTaoDrama"
     name: "北京淘剧场"
     group: "地方台"
     aliases:
       - "北京淘剧场"
-      - "北京淘娱乐"
       - "淘剧场"
     sources:
-      - type: "tvmao"
-        id: "BTV4"
+      - type: "xmltv_url"
+        name: "北京淘剧场"
 
   - id: "BTVTaoMovie"
     name: "北京淘电影"
@@ -1093,8 +1178,8 @@ channels:
       - "北京淘电影"
       - "淘电影"
     sources:
-      - type: "tvmao"
-        id: "BTV4"
+      - type: "xmltv_url"
+        name: "北京淘电影"
 
   # ========== 深圳卫视（tvmao SZTV1） ==========
   - id: "ShenzhenTV"
