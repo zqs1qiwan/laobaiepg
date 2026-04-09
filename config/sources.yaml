@@ -25,27 +25,32 @@ crawl:
 # ========================================================
 xmltv_sources:
   # epg.pw - 中国大陆频道（覆盖最全）
+  # ⚠️ epg.pw 已知 BUG：XMLTV 文件时间数字是当地时间，但 offset 错写成 +0000
+  #    API 接口返回正确的 +0800。fix_offset: "+0800" 让解析时忽略文件里的 offset
   - id: "epgpw_cn"
     name: "epg.pw 中国大陆"
     url: "https://epg.pw/xmltv/epg_CN.xml.gz"
     enabled: true
     encoding: "utf-8"
+    fix_offset: "+0800"
     note: "覆盖CCTV、卫视等数百个中国大陆频道"
 
-  # epg.pw - 香港频道
+  # epg.pw - 香港频道（同样的 +0000 bug，实际是 +0800）
   - id: "epgpw_hk"
     name: "epg.pw 香港"
     url: "https://epg.pw/xmltv/epg_HK.xml.gz"
     enabled: true
     encoding: "utf-8"
+    fix_offset: "+0800"
     note: "覆盖TVB、凤凰等香港频道"
 
-  # epg.pw - 台湾频道
+  # epg.pw - 台湾频道（同样的 +0000 bug，实际是 +0800）
   - id: "epgpw_tw"
     name: "epg.pw 台湾"
     url: "https://epg.pw/xmltv/epg_TW.xml.gz"
     enabled: true
     encoding: "utf-8"
+    fix_offset: "+0800"
     note: "覆盖台湾主要电视台"
 
   # 备用: iptv-org 社区爬虫（国际频道）

@@ -4,16 +4,42 @@
  * 根据频道名从 XMLTV 中提取对应频道的节目单
  */
 
-import { parseXmltvTime, fetchWithRetry, logger, normalizeName } from '../utils.js';
+import { fetchWithRetry, logger, normalizeName } from '../utils.js';
 import { gunzipSync } from 'zlib';
 import { parseStringPromise } from 'xml2js';
 
 /**
- * 解析 XMLTV 内容，返回按频道名索引的节目数据
- * @param {string} xmlContent - XMLTV XML 字符串
- * @returns {Map<string, {channel: Object, programmes: Array}>}
+ * 解析 XMLTV 时间字符串为 UTC Date
+ *
+ * @param {string} timeStr   - 如 "20260409005700 +0000" 或 "20260409085700 +0800"
+ * @param {string} fixOffset - 覆盖文件中的 offset（用于修复 epg.pw 的 +0000 bug）
+ *                             如 "+0800" 表示把文件里的时间数字当作 +0800 处理
  */
-async function parseXmltv(xmlContent) {
+function parseTime(timeStr, fixOffset) {
+  if (!timeStr) return null;
+  const match = timeStr.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\s*([+-]\d{4})?/);
+  if (!match) return null;
+  const [, year, month, day, hour, min, sec, fileOffset] = match;
+
+  // 使用 fixOffset（若指定）覆盖文件里的 offset
+  const tz = fixOffset || fileOffset || '+0000';
+  const tzSign  = tz[0] === '+' ? 1 : -1;
+  const tzHours = parseInt(tz.slice(1, 3));
+  const tzMins  = parseInt(tz.slice(3, 5));
+  const offsetMs = tzSign * (tzHours * 60 + tzMins) * 60000;
+
+  // 时间数字表示该时区下的时刻，转为 UTC
+  const utcMs = Date.UTC(+year, +month - 1, +day, +hour, +min, +sec) - offsetMs;
+  return new Date(utcMs);
+}
+
+/**
+ * 解析 XMLTV 内容，返回按频道名索引的节目数据
+ *
+ * @param {string} xmlContent  - XMLTV XML 字符串
+ * @param {string} fixOffset   - 覆盖时区（如 "+0800"），用于修复数据源的 offset 错误
+ */
+async function parseXmltv(xmlContent, fixOffset) {
   const result = await parseStringPromise(xmlContent, {
     explicitArray: false,
     ignoreAttrs: false,
@@ -30,7 +56,6 @@ async function parseXmltv(xmlContent) {
     const id = ch.$ ? ch.$.id : ch.id;
     if (!id) continue;
 
-    // 获取所有 display-name
     const displayNames = [];
     if (ch['display-name']) {
       const names = Array.isArray(ch['display-name']) ? ch['display-name'] : [ch['display-name']];
@@ -42,7 +67,7 @@ async function parseXmltv(xmlContent) {
 
     for (const name of displayNames) {
       channelMap.set(normalizeName(name), id);
-      channelMap.set(name, id); // 保留原始名
+      channelMap.set(name, id);
     }
   }
 
@@ -55,8 +80,9 @@ async function parseXmltv(xmlContent) {
 
     const title = extractText(prog.title);
     const desc = extractText(prog.desc);
-    const start = parseXmltvTime(attrs.start);
-    const stop = parseXmltvTime(attrs.stop);
+    // 使用 fixOffset 修正时区
+    const start = parseTime(attrs.start, fixOffset);
+    const stop  = parseTime(attrs.stop,  fixOffset);
 
     if (!start || !title) continue;
 
@@ -114,8 +140,10 @@ async function downloadXmltv(source) {
   }
 
   const xmlContent = buffer.toString('utf-8');
-  logger.info(`[xmltv_url] 解析 ${source.name}，大小 ${(buffer.length / 1024).toFixed(0)} KB`);
-  return parseXmltv(xmlContent);
+  const sizeKB = (buffer.length / 1024).toFixed(0);
+  const fixMsg = source.fix_offset ? ` (fix_offset: ${source.fix_offset})` : '';
+  logger.info(`[xmltv_url] 解析 ${source.name}，大小 ${sizeKB} KB${fixMsg}`);
+  return parseXmltv(xmlContent, source.fix_offset || null);
 }
 
 // 全局缓存：避免同一个 source 在一次 grab 中重复下载
