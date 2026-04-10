@@ -127,6 +127,7 @@ function writeChannelIndex(channels, epgData) {
   const index = channels.map(ch => ({
     id: ch.id, name: ch.name, group: ch.group, logo: ch.logo || '',
     aliases: ch.aliases || [],
+    sources: (ch.sources || []).map(s => ({ type: s.type, id: s.id || s.name || '' })),
     hasEpg: (epgData.get(ch.id) || []).length > 0,
     programmeCount: (epgData.get(ch.id) || []).length,
   }));

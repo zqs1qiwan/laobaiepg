@@ -18,6 +18,7 @@
  */
 
 import { buildAliasIndex, findChannel, normalizeName } from './matcher.js';
+import { ADMIN_HTML } from './admin.js';
 
 // R2 对象路径前缀
 const R2_PREFIX = 'xmltv/';
@@ -51,6 +52,13 @@ export default {
     try {
       // 路由分发
       if (path === '/' || path === '') {
+        // 浏览器访问返回管理页，API 调用（curl 等）返回 JSON
+        const accept = request.headers.get('Accept') || '';
+        if (accept.includes('text/html')) {
+          return new Response(ADMIN_HTML, {
+            headers: { 'Content-Type': 'text/html;charset=utf-8' },
+          });
+        }
         return handleInfo(request, env, corsHeaders);
       }
 
