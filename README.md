@@ -1,336 +1,229 @@
 # LaobaiEPG
 
-基于 **Cloudflare Workers + R2 + KV + GitHub Actions** 构建的纯边缘化 IPTV EPG 管理系统。
+**A pure edge-based IPTV EPG management system built on Cloudflare Workers + R2 + GitHub Actions.**
 
-**EPG 地址：** `https://laobaiepg.laobaitv.workers.dev/guide.xml.gz`
+> 基于 Cloudflare Workers + R2 + GitHub Actions 的纯边缘化 IPTV EPG 管理系统
 
----
-
-## 目录
-
-- [日常使用：新增频道别名](#新增频道别名)
-- [日常使用：添加新频道](#添加新频道)
-- [日常使用：添加新数据源](#添加新数据源)
-- [进阶：编写自定义爬虫](#编写自定义爬虫)
-- [如何找到频道在数据源中的名字](#如何找到频道在数据源中的名字)
-- [API 端点](#api-端点)
-- [部署文档](#部署文档)
+[![GitHub Actions](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml/badge.svg)](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## 新增频道别名
+## ✨ Features / 特性
 
-**场景**：你的 M3U 播放列表里某个频道名字对不上，比如写的是"浙江卫视4K HD"，但没有匹配到节目单。
-
-**操作**：只需编辑 `config/channels.yaml`，在对应频道的 `aliases` 列表里加一行。
-
-```yaml
-# config/channels.yaml
-
-- id: "ZhejiangTV"
-  name: "浙江卫视"
-  group: "卫视"
-  aliases:
-    - "浙江卫视"
-    - "浙江卫视4K"
-    - "浙江卫视4K HD"    # ← 加这一行
-    - "ZJTV"
-  sources:
-    - type: "xmltv_url"
-      name: "浙江卫视"
-```
-
-提交到 GitHub → Actions 自动抓取 → 约 10 分钟后生效。
-
-**验证匹配**：
-```
-https://laobaiepg.laobaitv.workers.dev/match?name=浙江卫视4K HD
-```
+- **Pure edge deployment** — runs entirely on Cloudflare's global network, no server needed
+- **Multi-source EPG** — aggregates from epg.pw (CN/HK/TW), tvmao, and more
+- **Smart alias matching** — `浙江卫视4K` auto-matches to `浙江卫视`'s programme guide
+- **Auto-refresh** — GitHub Actions updates EPG data every 8 hours automatically
+- **Web admin panel** — built-in management UI at the root URL
+- **Zero config for users** — just paste the EPG URL into your IPTV player
 
 ---
 
-## 添加新频道
+## 📺 Public EPG Service / 公共服务
 
-**场景**：想添加一个目前没有收录的频道，比如"大湾区卫视"。
+> **No deployment needed.** Just use the URL below directly in your IPTV player.
 
-### 第一步：确认数据源里有这个频道
+| Format | URL |
+|--------|-----|
+| Full (all channels) | `https://laobaiepg.laobaitv.workers.dev/guide.xml` |
+| **Compressed (recommended)** | `https://laobaiepg.laobaitv.workers.dev/guide.xml.gz` |
+| Mainland China channels | `https://laobaiepg.laobaitv.workers.dev/guide_mainland.xml` |
+| HK & Taiwan channels | `https://laobaiepg.laobaitv.workers.dev/guide_hktw.xml` |
 
-先去 [epg.pw 频道列表](https://epg.pw/check_guide.php) 搜索，看看有没有这个频道。也可以用下面的工具测试当前数据源里的频道名：
+**Admin panel:** https://laobaiepg.laobaitv.workers.dev/
+
+---
+
+## 🚀 Deploy Your Own Instance / 自己部署
+
+Fork this project and deploy your own EPG service with full control over channel configuration.
+
+### Prerequisites / 前提
+
+- GitHub account
+- Cloudflare account (free tier is sufficient)
+- Node.js 18+
+
+### Step 1: Fork & Clone
 
 ```bash
-# 本地测试：先抓一次数据，看 epg.pw 里有没有这个频道名
-node scripts/grab.js --test --channel 大湾区卫视
+# Fork this repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/laobaiepg.git
+cd laobaiepg
+npm install
 ```
 
-### 第二步：在 channels.yaml 末尾添加
-
-```yaml
-# config/channels.yaml
-
-  - id: "DawanquTV"          # 英文 ID，唯一，不能重复
-    name: "大湾区卫视"         # 显示名称
-    group: "卫视"             # 分组：央视/卫视/港澳台/数字付费/卫星
-    logo: ""                  # 台标图片 URL，可留空
-    aliases:                  # 所有可能出现的频道名写法
-      - "大湾区卫视"
-      - "DawanquTV"
-      - "大湾区"
-    sources:                  # 数据源（按优先级）
-      - type: "xmltv_url"
-        name: "大湾区卫视"    # 在 epg.pw 等 XMLTV 源里的频道名
-```
-
-### 第三步：提交
+### Step 2: Create Cloudflare Resources
 
 ```bash
-git add config/channels.yaml
-git commit -m "feat: 添加大湾区卫视"
-git push
-```
-
-Actions 自动触发，约 10 分钟后节目单更新。
-
----
-
-## 添加新数据源
-
-系统支持两类数据源。根据你要添加的来源选择对应方式：
-
-### 方式 A：添加 XMLTV URL 源（最简单，推荐）
-
-**适用**：对方已经提供了标准 XMLTV 格式的节目单文件（`.xml` 或 `.xml.gz`）。
-
-**第一步**：在 `config/sources.yaml` 的 `xmltv_sources` 列表里添加：
-
-```yaml
-# config/sources.yaml
-
-xmltv_sources:
-  # ... 已有的源 ...
-
-  # 新增：你的自定义源
-  - id: "my_custom_source"       # 唯一 ID，英文
-    name: "我的自定义 EPG"         # 显示名称
-    url: "https://example.com/epg/guide.xml.gz"  # XMLTV 文件地址
-    enabled: true
-    note: "某某网站提供的 EPG"
-```
-
-**第二步**：在 `config/channels.yaml` 里，让需要用这个源的频道指向它：
-
-```yaml
-  - id: "MyChannel"
-    name: "某频道"
-    aliases:
-      - "某频道"
-    sources:
-      - type: "xmltv_url"
-        name: "某频道"    # 在新数据源里这个频道叫什么名字
-```
-
-系统会自动遍历所有启用的 `xmltv_sources`，直到找到匹配的频道为止。**不需要指定从哪个源拿**，按 `sources.yaml` 里的顺序依次尝试。
-
----
-
-### 方式 B：添加自定义 API 爬虫
-
-**适用**：对方没有现成 XMLTV，但有 JSON/HTML 格式的节目单页面，需要自己写解析代码。
-
-#### 第一步：创建爬虫文件
-
-在 `scripts/sites/` 目录下新建文件，模板如下：
-
-```javascript
-// scripts/sites/mysite.js
-
-import { fetchWithRetry, logger, sleep } from '../utils.js';
-
-/**
- * 获取某频道某天的节目单
- *
- * @param {Object} channel   - 频道配置对象（来自 channels.yaml）
- * @param {string} channelId - 在本数据源里该频道的 ID（来自 channels.yaml 的 sources[].id）
- * @param {Date}   date      - 要抓取哪天（北京时间 00:00:00 的 Date 对象）
- * @returns {Array}          - 节目数组，每项：{ start: Date, stop: Date|null, title: string, desc: string }
- */
-export async function getEpgMysite(channel, channelId, date) {
-  const epgs = [];
-
-  // 格式化日期，很多 API 用 "20240101" 或 "2024-01-01"
-  const dateStr = date.toISOString().slice(0, 10); // "2024-01-01"
-
-  const url = `https://example.com/api/epg?channel=${channelId}&date=${dateStr}`;
-
-  try {
-    await sleep(300); // 礼貌等待，防止被限速
-
-    const res = await fetchWithRetry(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0' },
-    }, 2, 10000); // 重试 2 次，超时 10 秒
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const json = await res.json();
-
-    // 根据实际接口格式解析，这里是示例
-    for (const item of json.programs || []) {
-      const start = new Date(item.startTime);   // 根据实际字段调整
-      const stop  = new Date(item.endTime);
-      const title = item.name || item.title || '';
-      const desc  = item.description || '';
-
-      if (!title) continue;
-      epgs.push({ start, stop, title, desc });
-    }
-
-    logger.info(`[mysite] ${channel.name} ${dateStr}: ${epgs.length} 条节目`);
-  } catch (err) {
-    logger.error(`[mysite] ${channel.name} ${dateStr} 失败: ${err.message}`);
-  }
-
-  return epgs;
-}
-
-// 频道列表（可选，用于自动发现频道，不用可以留空）
-export async function getChannelsMysite() {
-  return [];
-}
-```
-
-#### 第二步：注册到数据源入口
-
-编辑 `scripts/sites/index.js`，加两行：
-
-```javascript
-// scripts/sites/index.js
-
-import { getEpgMysite, getChannelsMysite } from './mysite.js';   // ← 新增
-
-export const scraperRegistry = {
-  // ... 已有的 ...
-  mysite: {                          // ← 新增，key 就是 channels.yaml 里 type 的值
-    getEpg: getEpgMysite,
-    getChannels: getChannelsMysite,
-  },
-};
-```
-
-#### 第三步：在 channels.yaml 里引用
-
-```yaml
-  - id: "MyChannel"
-    name: "某频道"
-    aliases:
-      - "某频道"
-    sources:
-      - type: "mysite"       # ← 对应 scraperRegistry 里的 key
-        id: "channel_001"    # ← 传给 getEpgMysite 的 channelId 参数
-```
-
-#### 第四步：本地测试
-
-```bash
-node scripts/grab.js --test --channel 某频道 --days 1
-```
-
-看到 `✓ 某频道: 获取 XX 条节目` 即成功，然后提交即可。
-
----
-
-## 如何找到频道在数据源中的名字
-
-当你添加一个新频道，需要知道它在 epg.pw 等数据源里叫什么名字。
-
-**方法 1：使用 epg.pw 的频道搜索**
-
-打开 https://epg.pw/check_guide.php，选择 `China`，搜索频道名。  
-页面显示的 `Channel name` 就是你在 `channels.yaml` 的 `sources[].name` 里填的值。
-
-**方法 2：本地搜索 XMLTV 文件**
-
-```bash
-# 下载 epg.pw 的中国大陆数据（约 2MB gzip）
-curl -L https://epg.pw/xmltv/epg_CN.xml.gz | gunzip | grep -o 'display-name[^<]*<[^>]*>[^<]*' | grep "浙江" | head -10
-```
-
-**方法 3：用 --test 模式观察日志**
-
-先随便填一个名字运行，日志里会提示"未找到频道"，你可以根据日志去源文件里确认正确的名字。
-
----
-
-## API 端点
-
-| 端点 | 说明 |
-|------|------|
-| `GET /guide.xml` | 完整节目单（所有频道） |
-| `GET /guide.xml.gz` | gzip 压缩版本（**推荐，体积小 80%**） |
-| `GET /guide_mainland.xml` | 仅大陆频道（央视+卫视） |
-| `GET /guide_hktw.xml` | 仅港澳台频道 |
-| `GET /channels.json` | 频道列表（含别名、EPG 状态） |
-| `GET /match?name=浙江卫视4K` | 测试频道名是否能匹配 |
-| `GET /status` | 服务状态（含最后更新时间） |
-
----
-
-## 部署文档
-
-### 首次部署
-
-**需要**：Cloudflare 账号 + GitHub 账号
-
-```bash
-# 1. Fork 或 clone 本项目
-git clone https://github.com/zqs1qiwan/laobaiepg.git
-cd laobaiepg && npm install
-
-# 2. 登录 Cloudflare
+# Login to Cloudflare
 npx wrangler login
 
-# 3. 创建 R2 Bucket
+# Create R2 bucket for EPG files
 npx wrangler r2 bucket create epg-data
 
-# 4. 创建 KV Namespace
+# Create KV namespace for channel index cache
 npx wrangler kv namespace create EPG_KV
-# → 记录返回的 id 和 preview_id，填入 wrangler.jsonc
+# → Note the returned id and preview_id
+```
 
-# 5. 部署 Worker
+### Step 3: Configure wrangler.jsonc
+
+Edit `wrangler.jsonc` and fill in the values from Step 2:
+
+```jsonc
+{
+  "kv_namespaces": [
+    {
+      "binding": "EPG_KV",
+      "id": "YOUR_KV_NAMESPACE_ID",        // ← from step 2
+      "preview_id": "YOUR_KV_PREVIEW_ID"   // ← from step 2
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "GITHUB_REPO": "YOUR_USERNAME/laobaiepg"  // ← your fork
+  }
+}
+```
+
+### Step 4: Configure GitHub Secrets
+
+In your GitHub repository → **Settings → Secrets and variables → Actions**, add:
+
+| Secret | Where to get it |
+|--------|----------------|
+| `CLOUDFLARE_API_TOKEN` | [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) → Create Token → **Edit Cloudflare Workers** template, also add R2 Edit permission |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard → right sidebar |
+| `KV_NAMESPACE_ID` | The `id` returned from `wrangler kv namespace create` in Step 2 |
+
+### Step 5: Deploy Worker
+
+```bash
 npx wrangler deploy
 ```
 
-### GitHub Actions 配置
+### Step 6: Push & Auto-run
 
-在仓库 Settings → Secrets 中添加：
-
-| Secret | 获取方式 |
-|--------|---------|
-| `CLOUDFLARE_API_TOKEN` | [Dashboard](https://dash.cloudflare.com/profile/api-tokens) → Create Token → Edit Cloudflare Workers 模板，额外添加 R2 Edit 权限 |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 主页右侧 Account ID |
-| `KV_NAMESPACE_ID` | 上一步 `wrangler kv namespace create` 返回的 id |
-
-### 自动运行
-
-- **每天北京时间 0:30、12:30** 自动抓取更新
-- `worker/**` 或 `wrangler.jsonc` 有修改时自动重新部署 Worker
-- 手动触发：GitHub → Actions → 抓取 EPG 节目单 → Run workflow
+Push your code to `main`. GitHub Actions will automatically deploy the Worker and run the first EPG grab (~3 minutes). Your service will be live at `https://laobaiepg.YOUR_SUBDOMAIN.workers.dev/`.
 
 ---
 
-## 数据源现状
+## 📋 Channel Management / 频道管理
 
-| 数据源 | 类型 | 覆盖 | 状态 |
-|--------|------|------|------|
-| epg.pw 中国大陆 | XMLTV URL | CCTV、卫视等 500+ 频道 | ✅ 正常 |
-| epg.pw 香港 | XMLTV URL | TVB、凤凰等港台频道 | ✅ 正常 |
-| epg.pw 台湾 | XMLTV URL | 台湾主要电视台 | ✅ 正常 |
-| 电视猫 tvmao | 爬虫 | 全国数百频道（备用） | ✅ 正常 |
-| TVB 香港无线 | 爬虫 | 翡翠台、明珠台 | ✅ 正常 |
-| NOW TV | 爬虫 | 香港 NOW TV | ✅ 正常 |
-| 台湾宽频 | 爬虫 | 台湾本土频道 | ✅ 正常 |
+All configuration is done by editing YAML files — changes take effect within 3-5 minutes after commit.
+
+### Adding a Channel Alias / 添加频道别名
+
+Edit `config/channels.yaml`:
+
+```yaml
+- id: "ZhejiangTV"
+  name: "浙江卫视"
+  aliases:
+    - "浙江卫视"
+    - "浙江卫视4K"       # ← add your variant here
+    - "浙江卫视 4K HD"
+    - "ZJTV"
+```
+
+### Adding a New Channel / 添加新频道
+
+```yaml
+- id: "MyChannel"            # unique ID (English)
+  name: "我的频道"             # display name
+  group: "卫视"               # 央视/卫视/港澳台/地方台/数字付费/卫星
+  aliases:
+    - "我的频道"
+    - "我的频道4K"
+  sources:
+    - type: "epgpw_api"
+      id: "12345"             # epg.pw channel ID
+```
+
+Find epg.pw channel IDs at [epg.pw/check_guide.php](https://epg.pw/check_guide.php).
 
 ---
 
-## 鸣谢
+## 🏗️ Architecture / 架构
 
-- [supzhang/epg](https://github.com/supzhang/epg) - 多源抓取架构参考
-- [epg.pw](https://epg.pw) - 主要 XMLTV 数据源
+```
+GitHub Repository
+        │
+        ├── GitHub Actions (every 8 hours)
+        │   └── scripts/grab.js  ─→  Cloudflare R2 (guide.xml, channels.json)
+        │
+        └── Cloudflare Worker
+                ├── GET /            Web admin panel (browser) / JSON info (API)
+                ├── GET /guide.xml   XMLTV programme guide
+                ├── GET /channels.json  Channel list with EPG status
+                ├── GET /match?name= Alias matching test
+                └── GET /status      Service status
+```
+
+**Cloudflare resources (all free tier):**
+
+| Resource | Usage | Free Limit |
+|----------|-------|-----------|
+| Workers | EPG API | 100k req/day |
+| R2 | XMLTV files (~2 MB) | 10 GB |
+| KV | Channel index cache | 100k reads/day |
+
+---
+
+## 📊 API Reference / API 接口
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /` | Admin panel (browser) or JSON service info (curl/API) |
+| `GET /guide.xml` | Full XMLTV programme guide |
+| `GET /guide.xml.gz` | Compressed version **(recommended)** |
+| `GET /guide_mainland.xml` | Mainland China channels only |
+| `GET /guide_hktw.xml` | Hong Kong & Taiwan channels only |
+| `GET /channels.json` | Channel list with aliases and EPG status |
+| `GET /match?name=浙江卫视4K` | Test channel alias matching |
+| `GET /status` | Service status and last update time |
+
+---
+
+## 🔄 Update Schedule / 更新计划
+
+EPG refreshes **3 times daily** (Beijing Time / UTC):
+
+| BJT | UTC | Notes |
+|-----|-----|-------|
+| 09:00 | 01:00 | 1 hour after epg.pw daily data update |
+| 17:00 | 09:00 | Midday refresh |
+| 01:00 | 17:00 | Overnight refresh |
+
+---
+
+## ⚙️ Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `config/channels.yaml` | Channel definitions, aliases, data sources |
+| `config/sources.yaml` | Crawl settings (days, delay, retry) |
+| `wrangler.jsonc` | Cloudflare Worker config |
+| `.github/workflows/grab.yml` | EPG auto-update schedule |
+
+---
+
+## 🙏 Acknowledgements / 致谢
+
+- [epg.pw](https://epg.pw) — Primary EPG data source
+- [supzhang/epg](https://github.com/supzhang/epg) — Multi-source scraping architecture reference
+- [iptv-org](https://github.com/iptv-org) — Community EPG resources
+
+---
+
+## 📄 License
+
+MIT License — feel free to fork and deploy your own instance.
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/zqs1qiwan">laobai</a> · <a href="https://laobaiepg.laobaitv.workers.dev/">Public EPG Service</a></sub>
+</div>

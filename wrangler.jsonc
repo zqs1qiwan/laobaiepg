@@ -36,8 +36,10 @@
   ],
 
   // 环境变量（非敏感）
+  // Fork 部署时修改 GITHUB_REPO 为自己的仓库（用户名/仓库名）
   "vars": {
-    "ENVIRONMENT": "production"
+    "ENVIRONMENT": "production",
+    "GITHUB_REPO": "zqs1qiwan/laobaiepg"
   },
 
   // 自定义域名（可选）

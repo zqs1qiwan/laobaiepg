@@ -2,10 +2,9 @@
  * LaobaiEPG 管理页面 HTML
  * 内嵌在 Worker 中，通过根路径 / 提供服务
  *
- * 性能优化：
- * - 台标懒加载（IntersectionObserver，仅在进入视口时发出图片请求）
- * - 分批渲染（前30个立即显示，其余 requestAnimationFrame 追加）
- * - channels.json 在状态页加载后缓存，频道列表直接复用，无重复请求
+ * 开源设计：
+ * - GitHub 链接从 / API 动态读取（env.GITHUB_REPO），Fork 者无需修改此文件
+ * - Footer 的 "Powered by LaobaiEPG" 永远指向原始项目，保留归因
  */
 
 export const ADMIN_HTML = `<!DOCTYPE html>
@@ -21,13 +20,16 @@ export const ADMIN_HTML = `<!DOCTYPE html>
   --text:#e2e8f0;--muted:#64748b;--accent:#3b82f6;--accent2:#60a5fa;
   --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh;display:flex;flex-direction:column}
+main{flex:1}
 a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
 
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
 .header-logo{font-size:18px;font-weight:700;color:var(--accent)}
 .header-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
-.header-url{margin-left:auto;color:var(--muted);font-size:12px;font-family:monospace}
+.header-gh{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:5px;transition:.15s}
+.header-gh:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.header-gh svg{opacity:.7}
 
 .tabs{display:flex;gap:2px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border)}
 .tab{padding:10px 18px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s}
@@ -70,12 +72,9 @@ a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
 .ch-card:hover{border-color:var(--accent);background:var(--surface2)}
 .ch-card.no-epg{border-color:rgba(239,68,68,.3)}
 .ch-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-
-/* 台标容器 — 懒加载用 */
 .ch-logo-wrap{width:40px;height:40px;flex-shrink:0;position:relative}
 .ch-logo{width:40px;height:40px;border-radius:6px;object-fit:contain;background:var(--bg);border:1px solid var(--border);display:block}
 .ch-logo-fallback{width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;text-align:center;line-height:1.2;padding:3px;word-break:break-all}
-
 .ch-title{flex:1;min-width:0}
 .ch-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ch-group-tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;margin-top:2px;font-weight:500;color:#fff}
@@ -84,8 +83,6 @@ a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
 .source-badge{font-size:10px;padding:1px 5px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);font-family:monospace}
 .ch-epg-status{display:flex;align-items:center;gap:5px;font-size:12px;margin-bottom:4px}
 .ch-epg-status.ok{color:var(--green)}.ch-epg-status.none{color:var(--red)}
-
-/* 别名 — 默认隐藏，expanded 后显示 */
 .ch-aliases{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 .ch-card.expanded .ch-aliases{display:block}
 .alias-label{font-size:11px;color:var(--muted);margin-bottom:5px}
@@ -117,14 +114,23 @@ a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
 .code-block{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:monospace;font-size:12px;line-height:1.6;overflow-x:auto;margin:10px 0;color:var(--accent2)}
 .loading-text{text-align:center;color:var(--muted);padding:40px;font-size:13px}
 .empty-text{text-align:center;color:var(--muted);padding:30px;font-size:13px}
+
+/* Footer */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.footer a{color:var(--muted)}.footer a:hover{color:var(--accent2);text-decoration:none}
+.footer-sep{opacity:.3}
 </style>
 </head>
 <body>
+<main>
 
 <div class="header">
   <span class="header-logo">LaobaiEPG</span>
   <span class="header-badge">管理面板</span>
-  <span class="header-url" id="workerHost"></span>
+  <a class="header-gh" id="header-repo-link" href="https://github.com/zqs1qiwan/laobaiepg" target="_blank">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    <span id="header-repo-text">GitHub</span>
+  </a>
 </div>
 
 <div class="tabs">
@@ -200,16 +206,22 @@ a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
     <h3>在 IPTV 播放器中配置</h3>
     <p>在 TiviMate、Kodi、Perfect Player 等播放器的 EPG 设置中，填入以下地址：</p>
     <div class="code-block" id="guide-epg-url">加载中…</div>
-    <p>播放器会自动根据播放列表中的 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">tvg-name</code> 匹配到对应频道的节目单。</p>
+    <p>播放器会根据播放列表中的 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">tvg-name</code> 自动匹配频道节目单。别名匹配已内置，例如 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">浙江卫视4K</code> 会自动匹配到浙江卫视的节目单。</p>
   </div>
   <div class="guide-section">
-    <h3>别名匹配机制</h3>
-    <p>每个频道可以配置多个别名，系统会自动匹配。例如播放列表中写的是 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">浙江卫视4K</code>，会自动匹配到<strong>浙江卫视</strong>的节目单。</p>
-    <p>匹配规则：精确匹配 → 忽略大小写/空格/全半角 → 去除"高清/4K/HD"后缀</p>
+    <h3>添加频道别名</h3>
+    <p>编辑仓库中的 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">config/channels.yaml</code>，在对应频道的 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">aliases</code> 列表里添加你的频道名写法，提交后约 3-5 分钟生效。</p>
+    <div class="code-block">- id: "ZhejiangTV"
+  name: "浙江卫视"
+  aliases:
+    - "浙江卫视"
+    - "浙江卫视4K"    ← 添加新别名
+    - "ZJTV"</div>
+    <p><a id="link-channels-yaml" href="#" target="_blank">→ 在 GitHub 上编辑 channels.yaml</a></p>
   </div>
   <div class="guide-section">
-    <h3>添加频道或别名</h3>
-    <p>编辑 GitHub 仓库中的 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">config/channels.yaml</code> 文件，提交后约 3-5 分钟生效。</p>
+    <h3>添加新频道</h3>
+    <p>在 <code style="background:var(--bg);padding:1px 4px;border-radius:3px">config/channels.yaml</code> 末尾添加新频道条目：</p>
     <div class="code-block">- id: "MyChannel"
   name: "我的频道"
   group: "卫视"
@@ -218,54 +230,67 @@ a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
     - "我的频道4K"
   sources:
     - type: "epgpw_api"
-      id: "12345"</div>
-    <p><a href="https://github.com/zqs1qiwan/laobaiepg/blob/main/config/channels.yaml" target="_blank">→ 在 GitHub 上编辑 channels.yaml</a></p>
+      id: "12345"    ← epg.pw 频道 ID</div>
+    <p>epg.pw 频道 ID 可在 <a href="https://epg.pw/check_guide.php" target="_blank">epg.pw 频道列表</a> 中搜索获取。</p>
+  </div>
+  <div class="guide-section">
+    <h3>部署自己的实例</h3>
+    <p>Fork 本项目后按照 README 的步骤部署，即可拥有完全属于自己的 EPG 服务。</p>
+    <p>
+      <a id="link-repo" href="#" target="_blank">→ 查看本实例的 GitHub 仓库</a>
+      &nbsp;&nbsp;
+      <a href="https://github.com/zqs1qiwan/laobaiepg" target="_blank">→ LaobaiEPG 项目主页</a>
+    </p>
   </div>
   <div class="guide-section">
     <h3>手动触发更新</h3>
-    <p>正常情况下每8小时自动更新（北京时间 09:00 / 17:00 / 01:00）。如需立即更新，前往 GitHub Actions 手动触发。</p>
-    <p><a href="https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml" target="_blank">→ 在 GitHub Actions 中手动触发抓取</a></p>
+    <p>节目单每 8 小时自动更新（北京时间 09:00 / 17:00 / 01:00）。如需立即更新，前往 GitHub Actions 手动触发。</p>
+    <p><a id="link-actions" href="#" target="_blank">→ 在 GitHub Actions 中手动触发抓取</a></p>
   </div>
 </div>
+
+</main>
+
+<!-- Footer：Powered by 永远指向原始项目 -->
+<footer class="footer">
+  <span>Powered by <a href="https://github.com/zqs1qiwan/laobaiepg" target="_blank"><strong>LaobaiEPG</strong></a></span>
+  <span class="footer-sep">·</span>
+  <a id="footer-instance-link" href="#" target="_blank" style="display:none">本实例仓库</a>
+  <span id="footer-instance-sep" class="footer-sep" style="display:none">·</span>
+  <a href="https://epg.pw" target="_blank">epg.pw</a>
+  <span class="footer-sep">·</span>
+  <span id="footer-host" style="font-family:monospace"></span>
+</footer>
 
 <script>
 const BASE = window.location.origin;
 let allChannels = [];
 let activeGroup = 'ALL';
-let renderAbortKey = 0; // 用于中止上一次未完成的渲染
+let renderAbortKey = 0;
+// 当前实例 repo 信息（从 / API 读取）
+let instanceRepo = 'zqs1qiwan/laobaiepg';
 
-// 分组颜色
 const GC = {
   '央视':'#3b82f6','卫视':'#8b5cf6','港澳台':'#ec4899',
-  '地方台':'#f59e0b','数字付费':'#10b981','卫星':'#06b6d4',
-  '少儿':'#f97316'
+  '地方台':'#f59e0b','数字付费':'#10b981','卫星':'#06b6d4','少儿':'#f97316'
 };
 const gc = g => GC[g] || '#64748b';
 
-// ── 台标懒加载 Observer ──
+// ── 台标懒加载 ──
 const logoObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     const wrap = entry.target;
     if (wrap.dataset.loaded) return;
     wrap.dataset.loaded = '1';
-    const id = wrap.dataset.id;
-    const color = wrap.dataset.color;
-    const name = wrap.dataset.name;
     const img = document.createElement('img');
     img.className = 'ch-logo';
-    img.alt = name;
-    img.onload = () => {
-      // 加载成功：移除占位文字
-      const fb = wrap.querySelector('.ch-logo-fallback');
-      if (fb) fb.remove();
-      wrap.appendChild(img);
-    };
-    img.onerror = () => { /* 保留占位文字，不做任何事 */ };
-    img.src = 'https://logo.laobaitv.net/' + id;
+    img.onload = () => { wrap.querySelector('.ch-logo-fallback')?.remove(); wrap.appendChild(img); };
+    img.onerror = () => {};
+    img.src = 'https://logo.laobaitv.net/' + wrap.dataset.id;
     logoObserver.unobserve(wrap);
   });
-}, { rootMargin: '200px 0px' }); // 提前 200px 预加载
+}, { rootMargin: '200px 0px' });
 
 // ── Tab 切换 ──
 function switchTab(name) {
@@ -274,41 +299,73 @@ function switchTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if (name === 'channels') {
-    if (allChannels.length > 0) {
-      // 数据已缓存，直接渲染（不重新请求）
-      if (!document.getElementById('channelGrid').querySelector('.ch-card')) {
-        buildGroupFilters();
-        renderChannels(allChannels);
-      }
-    } else {
+    if (allChannels.length > 0 && !document.getElementById('channelGrid').querySelector('.ch-card')) {
+      buildGroupFilters(); renderChannels(allChannels);
+    } else if (allChannels.length === 0) {
       loadChannels();
     }
   }
 }
 
-// ── 初始化 ──
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('workerHost').textContent = window.location.host;
+// ── 初始化：先加载 info，再加载数据 ──
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('footer-host').textContent = window.location.host;
+  // EPG URLs（先用当前 origin 填写，不等 API）
   const paths = ['/guide.xml','/guide.xml.gz','/guide_mainland.xml','/guide_hktw.xml'];
   ['url-full','url-gz','url-ml','url-hktw'].forEach((id,i) =>
     document.getElementById(id).textContent = BASE + paths[i]);
   document.getElementById('guide-epg-url').textContent = BASE + '/guide.xml.gz';
+
+  // 加载 info（获取 repo 信息）和数据（并行）
+  await loadInfo();
   loadStatus();
 });
+
+// ── 加载实例信息（repo、github 链接）──
+async function loadInfo() {
+  try {
+    const res = await fetch(BASE + '/');
+    // 注意：浏览器 fetch / 会收到 HTML，需用 JSON 接口
+    // Worker 对 Accept: text/html 返回 HTML，其他返回 JSON
+    // 这里直接 fetch（无 text/html header）会拿到 JSON
+    const info = await res.json();
+    instanceRepo = info.repo || 'zqs1qiwan/laobaiepg';
+    const repoUrl = info.github || ('https://github.com/' + instanceRepo);
+
+    // Header GitHub 链接
+    const headerLink = document.getElementById('header-repo-link');
+    headerLink.href = repoUrl;
+    document.getElementById('header-repo-text').textContent = instanceRepo;
+
+    // 使用指南 Tab 里的动态链接
+    document.getElementById('link-channels-yaml').href = repoUrl + '/blob/main/config/channels.yaml';
+    document.getElementById('link-repo').href = repoUrl;
+    document.getElementById('link-actions').href = repoUrl + '/actions/workflows/grab.yml';
+
+    // Footer：只有当实例 repo 不是原始项目时，才显示"本实例仓库"链接
+    if (instanceRepo !== 'zqs1qiwan/laobaiepg') {
+      document.getElementById('footer-instance-link').href = repoUrl;
+      document.getElementById('footer-instance-link').textContent = instanceRepo;
+      document.getElementById('footer-instance-link').style.display = '';
+      document.getElementById('footer-instance-sep').style.display = '';
+    }
+  } catch(e) {
+    // 加载失败时使用默认值，静默处理
+  }
+}
 
 // ── 复制 URL ──
 function copyUrl(elemId) {
   const text = document.getElementById(elemId).textContent;
   navigator.clipboard.writeText(text).then(() => {
-    const btnId = 'copy-' + elemId.replace('url-','');
-    const btn = document.getElementById(btnId);
+    const btn = document.getElementById('copy-' + elemId.replace('url-',''));
     if (!btn) return;
     btn.textContent = '已复制!'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 1800);
   });
 }
 
-// ── 加载状态 ──
+// ── 加载状态总览 ──
 async function loadStatus() {
   try {
     const [sRes, cRes] = await Promise.all([
@@ -317,7 +374,7 @@ async function loadStatus() {
     ]);
     const status = await sRes.json();
     const channels = await cRes.json();
-    allChannels = channels; // 缓存，频道列表直接使用
+    allChannels = channels;
 
     const total = channels.length;
     const hasEpg = channels.filter(c => c.hasEpg).length;
@@ -330,18 +387,14 @@ async function loadStatus() {
     document.getElementById('progress-fill').style.width = rate + '%';
 
     const gx = status.guide_xml;
-    if (gx?.last_modified) {
-      document.getElementById('stat-updated').textContent =
-        new Date(gx.last_modified).toISOString().replace('T',' ').slice(0,16);
-    } else {
-      document.getElementById('stat-updated').textContent = '未知';
-    }
+    document.getElementById('stat-updated').textContent = gx?.last_modified
+      ? new Date(gx.last_modified).toISOString().replace('T',' ').slice(0,16) : '未知';
 
     document.getElementById('statusRows').innerHTML = [
-      statusRow('guide.xml',     !!gx, gx ? (gx.size/1024).toFixed(0)+' KB' : '不存在',
+      sRow('guide.xml', !!gx, gx ? (gx.size/1024).toFixed(0)+' KB' : '不存在',
         gx?.last_modified ? new Date(gx.last_modified).toISOString().replace('T',' ').slice(0,16)+' UTC' : ''),
-      statusRow('guide.xml.gz',  !!gx, '', ''),
-      statusRow('channels.json', channels.length > 0, channels.length + ' 个频道', ''),
+      sRow('guide.xml.gz', !!gx, '', ''),
+      sRow('channels.json', channels.length > 0, channels.length + ' 个频道', ''),
     ].join('');
   } catch(e) {
     document.getElementById('statusRows').innerHTML =
@@ -349,7 +402,7 @@ async function loadStatus() {
   }
 }
 
-function statusRow(name, ok, meta, time) {
+function sRow(name, ok, meta, time) {
   return \`<div class="status-row">
     <div class="status-dot \${ok?'ok':'err'}"></div>
     <span class="status-filename">\${name}</span>
@@ -358,13 +411,12 @@ function statusRow(name, ok, meta, time) {
   </div>\`;
 }
 
-// ── 加载频道列表（首次或刷新）──
+// ── 频道列表 ──
 async function loadChannels() {
   document.getElementById('channelGrid').innerHTML = '<div class="loading-text">加载中…</div>';
   try {
     if (allChannels.length === 0) {
-      const res = await fetch(BASE + '/channels.json');
-      allChannels = await res.json();
+      allChannels = await (await fetch(BASE + '/channels.json')).json();
     }
     buildGroupFilters();
     renderChannels(allChannels);
@@ -381,11 +433,7 @@ function buildGroupFilters() {
     .join('');
 }
 
-function setGroup(g) {
-  activeGroup = g;
-  buildGroupFilters();
-  filterChannels();
-}
+function setGroup(g) { activeGroup = g; buildGroupFilters(); filterChannels(); }
 
 function filterChannels() {
   const q = (document.getElementById('searchInput')?.value||'').toLowerCase().trim();
@@ -399,127 +447,91 @@ function filterChannels() {
   renderChannels(filtered);
 }
 
-// ── 分批渲染（核心性能优化）──
 function renderChannels(channels) {
   const grid = document.getElementById('channelGrid');
-  const count = document.getElementById('listCount');
-  if (count) count.textContent = channels.length + ' 个频道';
-
-  if (channels.length === 0) {
-    grid.innerHTML = '<div class="empty-text">没有匹配的频道</div>';
-    return;
-  }
-
-  grid.innerHTML = ''; // 清空旧内容
-  const myKey = ++renderAbortKey; // 每次渲染有唯一 key，防止旧渲染覆盖新渲染
-  const BATCH = 30;
+  const countEl = document.getElementById('listCount');
+  if (countEl) countEl.textContent = channels.length + ' 个频道';
+  if (channels.length === 0) { grid.innerHTML = '<div class="empty-text">没有匹配的频道</div>'; return; }
+  grid.innerHTML = '';
+  const myKey = ++renderAbortKey;
   let i = 0;
-
   function appendBatch() {
-    if (myKey !== renderAbortKey) return; // 已被新渲染中止
+    if (myKey !== renderAbortKey) return;
     const frag = document.createDocumentFragment();
-    const end = Math.min(i + BATCH, channels.length);
-    for (; i < end; i++) {
-      frag.appendChild(makeCard(channels[i]));
-    }
+    const end = Math.min(i + 30, channels.length);
+    for (; i < end; i++) frag.appendChild(makeCard(channels[i]));
     grid.appendChild(frag);
     if (i < channels.length) requestAnimationFrame(appendBatch);
   }
-
   requestAnimationFrame(appendBatch);
 }
 
-// ── 生成频道卡片 DOM（不用 innerHTML，直接操作 DOM）──
 function makeCard(ch) {
   const color = gc(ch.group);
   const card = document.createElement('div');
   card.className = 'ch-card ' + (ch.hasEpg ? 'has-epg' : 'no-epg');
   card.addEventListener('click', () => card.classList.toggle('expanded'));
 
-  // 台标占位（懒加载）
   const logoWrap = document.createElement('div');
   logoWrap.className = 'ch-logo-wrap';
   logoWrap.dataset.id = ch.id;
-  logoWrap.dataset.color = color;
-  logoWrap.dataset.name = ch.name;
   const fallback = document.createElement('div');
   fallback.className = 'ch-logo-fallback';
   fallback.style.background = color;
-  fallback.textContent = ch.name; // 完整频道名
+  fallback.textContent = ch.name;
   logoWrap.appendChild(fallback);
-  logoObserver.observe(logoWrap); // 注册懒加载
+  logoObserver.observe(logoWrap);
 
-  // 标题区
-  const title = document.createElement('div');
-  title.className = 'ch-title';
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'ch-title';
   const nameEl = document.createElement('div');
-  nameEl.className = 'ch-name';
-  nameEl.textContent = ch.name;
+  nameEl.className = 'ch-name'; nameEl.textContent = ch.name;
   const tagEl = document.createElement('span');
-  tagEl.className = 'ch-group-tag';
-  tagEl.style.background = color;
-  tagEl.textContent = ch.group || '';
-  title.appendChild(nameEl);
-  title.appendChild(tagEl);
+  tagEl.className = 'ch-group-tag'; tagEl.style.background = color; tagEl.textContent = ch.group || '';
+  titleDiv.appendChild(nameEl); titleDiv.appendChild(tagEl);
 
-  // header = 台标 + 标题
   const header = document.createElement('div');
   header.className = 'ch-header';
-  header.appendChild(logoWrap);
-  header.appendChild(title);
+  header.appendChild(logoWrap); header.appendChild(titleDiv);
 
-  // ID
   const idEl = document.createElement('div');
-  idEl.className = 'ch-id';
-  idEl.textContent = ch.id;
+  idEl.className = 'ch-id'; idEl.textContent = ch.id;
 
-  // 数据源
   const srcEl = document.createElement('div');
   srcEl.className = 'ch-source';
-  const sources = ch.sources || [];
-  if (sources.length > 0) {
-    sources.forEach(s => {
-      const badge = document.createElement('span');
-      badge.className = 'source-badge';
-      badge.textContent = s.type + ':' + (s.id || '');
-      srcEl.appendChild(badge);
-    });
-  } else {
-    const badge = document.createElement('span');
-    badge.className = 'source-badge';
-    badge.style.color = 'var(--red)';
-    badge.textContent = '无数据源';
-    srcEl.appendChild(badge);
+  (ch.sources || []).forEach(s => {
+    const b = document.createElement('span');
+    b.className = 'source-badge';
+    b.textContent = s.type + ':' + (s.id || '');
+    srcEl.appendChild(b);
+  });
+  if (!ch.sources || ch.sources.length === 0) {
+    const b = document.createElement('span');
+    b.className = 'source-badge'; b.style.color = 'var(--red)'; b.textContent = '无数据源';
+    srcEl.appendChild(b);
   }
 
-  // EPG 状态
   const epgEl = document.createElement('div');
   epgEl.className = 'ch-epg-status ' + (ch.hasEpg ? 'ok' : 'none');
   epgEl.textContent = ch.hasEpg ? '✓ ' + ch.programmeCount + ' 条节目' : '✗ 无节目单';
 
-  // 别名（默认隐藏，点击展开）
   const aliasBox = document.createElement('div');
   aliasBox.className = 'ch-aliases';
   const aliasLabel = document.createElement('div');
   aliasLabel.className = 'alias-label';
   const aliases = ch.aliases || [];
-  aliasLabel.textContent = '别名列表（共 ' + aliases.length + ' 个）';
+  aliasLabel.textContent = '别名（共 ' + aliases.length + ' 个）';
   const aliasTags = document.createElement('div');
   aliasTags.className = 'alias-tags';
   aliases.forEach(a => {
     const tag = document.createElement('span');
-    tag.className = 'alias-tag';
-    tag.textContent = a;
+    tag.className = 'alias-tag'; tag.textContent = a;
     aliasTags.appendChild(tag);
   });
-  aliasBox.appendChild(aliasLabel);
-  aliasBox.appendChild(aliasTags);
+  aliasBox.appendChild(aliasLabel); aliasBox.appendChild(aliasTags);
 
-  card.appendChild(header);
-  card.appendChild(idEl);
-  card.appendChild(srcEl);
-  card.appendChild(epgEl);
-  card.appendChild(aliasBox);
+  card.appendChild(header); card.appendChild(idEl);
+  card.appendChild(srcEl); card.appendChild(epgEl); card.appendChild(aliasBox);
   return card;
 }
 
@@ -530,8 +542,7 @@ async function testMatch() {
   const res = document.getElementById('matchResult');
   res.style.display = 'block'; res.className = 'match-result loading'; res.innerHTML = '测试中…';
   try {
-    const r = await fetch(BASE + '/match?name=' + encodeURIComponent(name));
-    const d = await r.json();
+    const d = await (await fetch(BASE + '/match?name=' + encodeURIComponent(name))).json();
     if (d.matched) {
       res.className = 'match-result ok';
       res.innerHTML = '✓ 匹配成功'
@@ -541,29 +552,25 @@ async function testMatch() {
       res.innerHTML = '✗ 未匹配到任何频道'
         + \`<div class="match-detail">输入: \${d.query}<br>归一化: \${d.normalized}</div>\`;
     }
-  } catch(e) {
-    res.className = 'match-result fail'; res.innerHTML = '请求失败: ' + e.message;
-  }
+  } catch(e) { res.className = 'match-result fail'; res.innerHTML = '请求失败: ' + e.message; }
 }
 
 async function batchTest() {
-  const lines = document.getElementById('batchInput').value
-    .split('\\n').map(s=>s.trim()).filter(Boolean);
+  const lines = document.getElementById('batchInput').value.split('\\n').map(s=>s.trim()).filter(Boolean);
   if (!lines.length) return;
   document.getElementById('batchResult').style.display = 'block';
   const tbody = document.getElementById('batchBody');
   tbody.innerHTML = '<tr><td colspan="3" style="color:var(--muted);padding:8px">测试中…</td></tr>';
   const rows = await Promise.all(lines.map(async name => {
     try {
-      const r = await fetch(BASE + '/match?name=' + encodeURIComponent(name));
-      const d = await r.json();
+      const d = await (await fetch(BASE + '/match?name=' + encodeURIComponent(name))).json();
       return { name, matched: d.matched, ok: d.success };
     } catch { return { name, matched: null, ok: false }; }
   }));
   tbody.innerHTML = rows.map(r =>
     \`<tr>
       <td>\${r.name}</td>
-      <td>\${r.matched ? r.matched.name+' <span style="color:var(--muted);font-size:11px">('+r.matched.id+')</span>' : '-'}</td>
+      <td>\${r.matched ? r.matched.name+' <span style="color:var(--muted);font-size:11px">(\${r.matched.id})</span>' : '-'}</td>
       <td class="\${r.ok?'ok-text':'fail-text'}">\${r.ok?'✓ 匹配':'✗ 未匹配'}</td>
     </tr>\`
   ).join('');

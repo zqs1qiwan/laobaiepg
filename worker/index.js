@@ -111,10 +111,15 @@ export default {
  * GET / - 服务信息
  */
 async function handleInfo(request, env, corsHeaders) {
+  const repo = env.GITHUB_REPO || 'zqs1qiwan/laobaiepg';
+  const origin = new URL(request.url).origin;
   const info = {
     name: 'LaobaiEPG',
     description: 'IPTV EPG 管理系统 - 纯边缘化实现',
     version: '1.0.0',
+    project: 'https://github.com/zqs1qiwan/laobaiepg',  // 永远指向原始项目
+    repo,                                                  // 当前实例的仓库
+    github: `https://github.com/${repo}`,                 // 当前实例仓库完整 URL
     endpoints: {
       guide: '/guide.xml',
       guide_gz: '/guide.xml.gz',
@@ -125,7 +130,7 @@ async function handleInfo(request, env, corsHeaders) {
       status: '/status',
     },
     usage: {
-      iptv_player: 'EPG URL: https://your-worker.workers.dev/guide.xml',
+      iptv_player: `EPG URL: ${origin}/guide.xml.gz`,
       note: '支持频道名别名匹配，"浙江卫视4K" 会自动匹配到 "浙江卫视" 的节目单',
     },
   };
