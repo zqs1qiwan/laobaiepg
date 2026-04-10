@@ -26,12 +26,12 @@
 
 | Format | URL |
 |--------|-----|
-| Full (all channels) | `https://laobaiepg.laobaitv.workers.dev/guide.xml` |
-| **Compressed (recommended)** | `https://laobaiepg.laobaitv.workers.dev/guide.xml.gz` |
-| Mainland China channels | `https://laobaiepg.laobaitv.workers.dev/guide_mainland.xml` |
-| HK & Taiwan channels | `https://laobaiepg.laobaitv.workers.dev/guide_hktw.xml` |
+| Full (all channels) | `https://laobaiepg.laobaitv.net/guide.xml` |
+| **Compressed (recommended)** | `https://laobaiepg.laobaitv.net/guide.xml.gz` |
+| Mainland China channels | `https://laobaiepg.laobaitv.net/guide_mainland.xml` |
+| HK & Taiwan channels | `https://laobaiepg.laobaitv.net/guide_hktw.xml` |
 
-**Admin panel:** https://laobaiepg.laobaitv.workers.dev/
+**Admin panel:** https://laobaiepg.laobaitv.net/
 
 ---
 
@@ -225,5 +225,5 @@ MIT License — feel free to fork and deploy your own instance.
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/zqs1qiwan">laobai</a> · <a href="https://laobaiepg.laobaitv.workers.dev/">Public EPG Service</a></sub>
+  <sub>Built with ❤️ by <a href="https://github.com/zqs1qiwan">laobai</a> · <a href="https://laobaiepg.laobaitv.net/">Public EPG Service</a></sub>
 </div>

@@ -13,6 +13,8 @@ export const ADMIN_HTML = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LaobaiEPG 管理面板</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" href="/favicon.ico">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{

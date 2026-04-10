@@ -43,10 +43,11 @@
   },
 
   // 自定义域名（可选）
-  // 配置后可以用你自己的域名访问，例如 epg.yourdomain.com
-  // "routes": [
-  //   { "pattern": "epg.yourdomain.com/*", "zone_name": "yourdomain.com" }
-  // ],
+  // 配置后可以用你自己的域名访问
+  // Fork 部署时替换为自己的域名，或直接删除此配置使用 workers.dev 子域名
+  "routes": [
+    { "pattern": "laobaiepg.laobaitv.net/*", "zone_name": "laobaitv.net" }
+  ],
 
   // 开发环境配置
   "dev": {

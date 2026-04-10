@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+  </defs>
+  <!-- 背景圆角矩形 -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- 电视机外框 -->
+  <rect x="4" y="6" width="24" height="16" rx="2" fill="url(#screen)" stroke="#3b82f6" stroke-width="1.5"/>
+  <!-- 屏幕内容：EPG 波形线 -->
+  <!-- 静态横线（节目条） -->
+  <rect x="7" y="9" width="10" height="2" rx="1" fill="#3b82f6" opacity="0.9"/>
+  <rect x="7" y="13" width="14" height="2" rx="1" fill="#8b5cf6" opacity="0.8"/>
+  <rect x="7" y="17" width="7" height="2" rx="1" fill="#3b82f6" opacity="0.7"/>
+  <!-- 右侧时间指示器（小方块堆叠） -->
+  <rect x="19" y="9" width="3" height="2" rx="0.5" fill="#22c55e" opacity="0.9"/>
+  <rect x="19" y="13" width="5" height="2" rx="0.5" fill="#f59e0b" opacity="0.8"/>
+  <!-- 天线/信号图标（右上角小） -->
+  <circle cx="26" cy="8" r="1.5" fill="#60a5fa" opacity="0.9"/>
+  <path d="M23.5 6 Q26 4 28.5 6" stroke="#60a5fa" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- 底座 -->
+  <rect x="13" y="22" width="6" height="1.5" rx="0.5" fill="#3b82f6" opacity="0.7"/>
+  <rect x="11" y="23.5" width="10" height="1.5" rx="1" fill="#3b82f6" opacity="0.5"/>
+  <!-- 文字 L (老白首字母，小巧) -->
+  <text x="16" y="20.5" font-family="'SF Pro', system-ui, sans-serif" font-size="3.5" font-weight="800" fill="#60a5fa" text-anchor="middle" opacity="0" display="none">EPG</text>
+</svg>

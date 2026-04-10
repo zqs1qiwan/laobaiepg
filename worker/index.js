@@ -19,6 +19,7 @@
 
 import { buildAliasIndex, findChannel, normalizeName } from './matcher.js';
 import { ADMIN_HTML } from './admin.js';
+import { FAVICON_SVG } from './favicon.js';
 
 // R2 对象路径前缀
 const R2_PREFIX = 'xmltv/';
@@ -60,6 +61,17 @@ export default {
           });
         }
         return handleInfo(request, env, corsHeaders);
+      }
+
+      // Favicon
+      if (path === '/favicon.svg') {
+        return new Response(FAVICON_SVG, {
+          headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' },
+        });
+      }
+      if (path === '/favicon.ico') {
+        // 重定向到 SVG（浏览器会回退到 SVG）
+        return Response.redirect(new URL('/favicon.svg', request.url).toString(), 302);
       }
 
       if (path === '/status') {
