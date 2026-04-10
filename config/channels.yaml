@@ -902,8 +902,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495067'
-
-  # ========== 新增：epg.pw 已有频道 ==========
   - id: GuangxiTV
     name: 广西卫视
     group: 卫视
@@ -914,7 +912,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495020'
-
   - id: JinyingCartoon
     name: 金鹰卡通
     group: 少儿
@@ -926,7 +923,6 @@ channels:
         id: '495041'
       - type: tvmao
         id: HUNANTV2
-
   - id: LiYuanTV
     name: 梨园
     group: 数字付费
@@ -936,7 +932,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495051'
-
   - id: HappyFishing
     name: 快乐垂钓
     group: 数字付费
@@ -948,7 +943,6 @@ channels:
         id: '495074'
       - type: tvmao
         id: KUAILECHUIDIAO
-
   - id: FourSeaFishing
     name: 四海钓鱼
     group: 数字付费
@@ -960,7 +954,6 @@ channels:
         id: '495077'
       - type: tvmao
         id: BAMC4
-
   - id: GuoxueTV
     name: 国学
     group: 数字付费
@@ -970,8 +963,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495086'
-
-  # ========== 新增：tvmao 专属频道 ==========
   - id: JiajiaCartoon
     name: 嘉佳卡通
     group: 少儿
@@ -981,7 +972,6 @@ channels:
     sources:
       - type: tvmao
         id: GDTV7
-
   - id: JinyingDoc
     name: 金鹰纪实
     group: 数字付费
@@ -991,7 +981,6 @@ channels:
     sources:
       - type: tvmao
         id: HNETV3
-
   - id: FiveStarSports
     name: 五星体育
     group: 数字付费
@@ -1001,7 +990,6 @@ channels:
     sources:
       - type: tvmao
         id: SHHAI5
-
   - id: ShandongEdu
     name: 山东教育
     group: 地方台
@@ -1011,7 +999,6 @@ channels:
     sources:
       - type: tvmao
         id: SDETV1
-
   - id: IPTVKids
     name: IPTV少儿动画
     group: 数字付费
@@ -1021,7 +1008,6 @@ channels:
     sources:
       - type: tvmao
         id: IPTVSEDH
-
   - id: IPTVFashion
     name: IPTV魅力时尚
     group: 数字付费
@@ -1031,7 +1017,6 @@ channels:
     sources:
       - type: tvmao
         id: IPTVMLSS
-
   - id: IPTVDrama
     name: IPTV热播剧场
     group: 数字付费
@@ -1041,7 +1026,6 @@ channels:
     sources:
       - type: tvmao
         id: IPTVRBJC
-
   - id: GuZhuangJC
     name: 古装剧场
     group: 数字付费
@@ -1051,7 +1035,6 @@ channels:
     sources:
       - type: tvmao
         id: GZJC
-
   - id: BTV1
     name: 北京卫视
     group: 卫视

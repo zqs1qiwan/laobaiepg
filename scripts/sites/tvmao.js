@@ -53,7 +53,7 @@ export async function getEpgTvmao(channel, channelId, date) {
   const url = `https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=${shortId}&op=getProgramByChnid&epgName=&isNew=on&day=${dayParam}`;
 
   try {
-    await sleep(500); // 防封
+    await sleep(1000); // 防封（1秒间隔，避免 tvmao 限速）
     const res = await fetchWithRetry(url, { headers: HEADERS }, 2, 10000);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
