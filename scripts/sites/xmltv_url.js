@@ -121,8 +121,11 @@ function extractText(elem) {
  * 下载并解析 XMLTV 数据源
  */
 async function downloadXmltv(source) {
-  const url = source.url;
-  logger.info(`[xmltv_url] 下载 ${source.name}: ${url}`);
+  // 在 URL 加时间戳参数，绕过 CDN 边缘缓存（epg.pw 使用 Cloudflare CDN，
+  // 不同出口 IP 可能命中不同 PoP 的旧缓存）
+  const ts = Math.floor(Date.now() / 3600000); // 每小时变化一次，避免每次都是全新请求
+  const url = source.url + (source.url.includes('?') ? '&' : '?') + `_t=${ts}`;
+  logger.info(`[xmltv_url] 下载 ${source.name}: ${source.url}`);
 
   const res = await fetchWithRetry(url, {
     headers: {
