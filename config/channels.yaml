@@ -545,6 +545,16 @@ channels:
     sources:
       - type: epgpw_api
         id: '495035'
+  - id: BingtuanTV
+    name: 兵团卫视
+    group: 卫视
+    aliases:
+      - 兵团卫视
+      - BTTV
+      - BingtuanTV
+    sources:
+      - type: tvmao
+        id: BINGTUAN
   - id: PhoenixChinese
     name: 凤凰中文台
     group: 卫星
@@ -904,11 +914,12 @@ channels:
       - type: tvmao
         id: BTV2
   - id: BTV3
-    name: 北京新闻
+    name: 北京体育休闲
     group: 地方台
     aliases:
-      - 北京新闻
-      - BTV新闻
+      - 北京体育休闲
+      - BTV体育休闲
+      - BTV体育
       - BTV3
     sources:
       - type: tvmao
@@ -924,12 +935,13 @@ channels:
       - type: tvmao
         id: BTV4
   - id: BTV5
-    name: 北京体育休闲
+    name: 北京财经
     group: 地方台
     aliases:
-      - 北京体育休闲
-      - BTV体育
+      - 北京财经
+      - BTV财经
       - BTV5
+      - 财富天下
     sources:
       - type: tvmao
         id: BTV5
@@ -944,13 +956,12 @@ channels:
       - type: tvmao
         id: BTV7
   - id: BTV9
-    name: 北京财经
+    name: 北京新闻
     group: 地方台
     aliases:
-      - 北京财经
-      - BTV财经
+      - 北京新闻
+      - BTV新闻
       - BTV9
-      - 财富天下
     sources:
       - type: tvmao
         id: BTV9
@@ -964,14 +975,17 @@ channels:
     sources:
       - type: tvmao
         id: BTV10
-  - id: BTVDoc
+  - id: BTV12
     name: 北京纪实科教
     group: 地方台
     aliases:
       - 北京纪实科教
       - 北京纪实
       - BTV纪实
-    sources: []
+      - BTV12
+    sources:
+      - type: tvmao
+        id: BTV12
   - id: BTVTaoEntertain
     name: 北京淘娱乐
     group: 地方台
