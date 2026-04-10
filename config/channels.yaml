@@ -1,1349 +1,1106 @@
-# EPG 频道配置文件
-# 每个频道定义一个 id（唯一标识），多个别名，和多个数据源
-# 数据源按优先级顺序排列，第一个可用的数据源会被使用
-#
-# 格式说明：
-#   id: 频道唯一标识（英文，会作为 XMLTV channel id）
-#   name: 频道显示名称
-#   logo: 频道台标 URL（可选）
-#   group: 分组（央视/卫视/港澳台/地方台/数字付费）
-#   aliases: 别名列表（支持模糊匹配，忽略大小写/空格/全半角）
-#   sources: 数据源列表（按优先级）
-#     - type: 数据源类型（xmltv_url/cctv/tvmao/tvsou/tvb/nowtv/icable/mod/...)
-#       id: 该数据源中的频道 ID
-#
-# 数据源类型说明：
-#   xmltv_url - 从 sources.yaml 中定义的 XMLTV URL 提取（按 channel display-name 匹配）
-#   cctv      - 央视官方 API (api.cntv.cn)
-#   tvmao     - 电视猫 (tvmao.com)
-#   tvsou     - 搜视 (tvsou.com)
-#   tvb       - 香港无线电视
-#   nowtv     - 香港 NOW TV
-#   icable    - 香港有线电视
-#   mod       - 台湾中华电信 MOD
-#   tbc       - 台湾宽频
-
 channels:
-  # ========== 央视频道 ==========
-  - id: "CCTV1"
-    name: "CCTV-1 综合"
-    logo: "https://epg.pw/logos/CCTV1.png"
-    group: "央视"
-    aliases:
-      - "CCTV1"
-      - "CCTV-1"
-      - "CCTV 1"
-      - "中央一套"
-      - "央视一套"
-      - "央视综合"
-      - "CCTV1综合"
-      - "CCTV-1综合"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV1"
-
-  - id: "CCTV2"
-    name: "CCTV-2 财经"
-    group: "央视"
-    aliases:
-      - "CCTV2"
-      - "CCTV-2"
-      - "CCTV 2"
-      - "中央二套"
-      - "央视财经"
-      - "CCTV2财经"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV2"
-
-  - id: "CCTV3"
-    name: "CCTV-3 综艺"
-    group: "央视"
-    aliases:
-      - "CCTV3"
-      - "CCTV-3"
-      - "CCTV 3"
-      - "中央三套"
-      - "央视综艺"
-      - "CCTV3综艺"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV3"
-
-  - id: "CCTV4"
-    name: "CCTV-4 中文国际"
-    group: "央视"
-    aliases:
-      - "CCTV4"
-      - "CCTV-4"
-      - "CCTV 4"
-      - "中央四套"
-      - "央视中文国际"
-      - "CCTV4中文国际"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV4"
-
-  - id: "CCTV5"
-    name: "CCTV-5 体育"
-    group: "央视"
-    aliases:
-      - "CCTV5"
-      - "CCTV-5"
-      - "CCTV 5"
-      - "中央五套"
-      - "央视体育"
-      - "CCTV5体育"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV5"
-
-  - id: "CCTV5+"
-    name: "CCTV-5+ 体育赛事"
-    group: "央视"
-    aliases:
-      - "CCTV5+"
-      - "CCTV-5+"
-      - "CCTV 5+"
-      - "CCTV5PLUS"
-      - "中央五套+"
-      - "央视体育赛事"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV5+"
-
-  - id: "CCTV6"
-    name: "CCTV-6 电影"
-    group: "央视"
-    aliases:
-      - "CCTV6"
-      - "CCTV-6"
-      - "CCTV 6"
-      - "中央六套"
-      - "央视电影"
-      - "CCTV6电影"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV6"
-
-  - id: "CCTV7"
-    name: "CCTV-7 国防军事"
-    group: "央视"
-    aliases:
-      - "CCTV7"
-      - "CCTV-7"
-      - "CCTV 7"
-      - "中央七套"
-      - "央视军事"
-      - "CCTV7军事"
-      - "CCTV7农业"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV7"
-
-  - id: "CCTV8"
-    name: "CCTV-8 电视剧"
-    group: "央视"
-    aliases:
-      - "CCTV8"
-      - "CCTV-8"
-      - "CCTV 8"
-      - "中央八套"
-      - "央视电视剧"
-      - "CCTV8电视剧"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV8"
-
-  - id: "CCTV9"
-    name: "CCTV-9 纪录"
-    group: "央视"
-    aliases:
-      - "CCTV9"
-      - "CCTV-9"
-      - "CCTV 9"
-      - "中央九套"
-      - "央视纪录"
-      - "CCTV9纪录"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV9"
-
-  - id: "CCTV10"
-    name: "CCTV-10 科教"
-    group: "央视"
-    aliases:
-      - "CCTV10"
-      - "CCTV-10"
-      - "CCTV 10"
-      - "中央十套"
-      - "央视科教"
-      - "CCTV10科教"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV10"
-
-  - id: "CCTV11"
-    name: "CCTV-11 戏曲"
-    group: "央视"
-    aliases:
-      - "CCTV11"
-      - "CCTV-11"
-      - "CCTV 11"
-      - "中央十一套"
-      - "央视戏曲"
-      - "CCTV11戏曲"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV11"
-
-  - id: "CCTV12"
-    name: "CCTV-12 社会与法"
-    group: "央视"
-    aliases:
-      - "CCTV12"
-      - "CCTV-12"
-      - "CCTV 12"
-      - "中央十二套"
-      - "央视社会法制"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV12"
-
-  - id: "CCTV13"
-    name: "CCTV-13 新闻"
-    group: "央视"
-    aliases:
-      - "CCTV13"
-      - "CCTV-13"
-      - "CCTV 13"
-      - "中央十三套"
-      - "央视新闻"
-      - "CCTV13新闻"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV13"
-
-  - id: "CCTV14"
-    name: "CCTV-14 少儿"
-    group: "央视"
-    aliases:
-      - "CCTV14"
-      - "CCTV-14"
-      - "CCTV 14"
-      - "中央十四套"
-      - "央视少儿"
-      - "CCTV14少儿"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV14"
-
-  - id: "CCTV15"
-    name: "CCTV-15 音乐"
-    group: "央视"
-    aliases:
-      - "CCTV15"
-      - "CCTV-15"
-      - "CCTV 15"
-      - "中央十五套"
-      - "央视音乐"
-      - "CCTV15音乐"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV15"
-
-  - id: "CCTV16"
-    name: "CCTV-16 奥林匹克"
-    group: "央视"
-    aliases:
-      - "CCTV16"
-      - "CCTV-16"
-      - "CCTV 16"
-      - "央视奥林匹克"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV16"
-
-  - id: "CCTV17"
-    name: "CCTV-17 农业农村"
-    group: "央视"
-    aliases:
-      - "CCTV17"
-      - "CCTV-17"
-      - "CCTV 17"
-      - "央视农业农村"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV17"
-
-  # ========== 卫视频道 ==========
-
-  - id: "HunanTV"
-    name: "湖南卫视"
-    group: "卫视"
-    aliases:
-      - "湖南卫视"
-      - "湖南卫视4K"
-      - "湖南卫视 4K"
-      - "芒果TV"
-      - "湖南台"
-      - "HunanTV"
-      - "HNTV"
-    sources:
-      - type: "xmltv_url"
-        name: "湖南卫视"
-      - type: "tvmao"
-        id: "HNTV-HNTV1"
-
-  - id: "ZhejiangTV"
-    name: "浙江卫视"
-    group: "卫视"
-    aliases:
-      - "浙江卫视"
-      - "浙江卫视4K"
-      - "浙江台"
-      - "ZhejiangTV"
-      - "ZJTV"
-      - "浙江"
-    sources:
-      - type: "xmltv_url"
-        name: "浙江卫视"
-      - type: "tvmao"
-        id: "ZJTV-ZJTV1"
-
-  - id: "JiangsuTV"
-    name: "江苏卫视"
-    group: "卫视"
-    aliases:
-      - "江苏卫视"
-      - "江苏卫视4K"
-      - "江苏卫视 4K"
-      - "江苏台"
-      - "JiangsuTV"
-      - "JSTV"
-      - "荔枝TV"
-    sources:
-      - type: "xmltv_url"
-        name: "江苏卫视"
-      - type: "tvmao"
-        id: "JSTV-JSTV1"
-
-  - id: "DragonTV"
-    name: "东方卫视"
-    group: "卫视"
-    aliases:
-      - "东方卫视"
-      - "东方卫视4K"
-      - "东方卫视 4K"
-      - "东方台"
-      - "DragonTV"
-      - "上海卫视"
-      - "SMG"
-    sources:
-      - type: "xmltv_url"
-        name: "东方卫视"
-      - type: "tvmao"
-        id: "DFTV-DFTV1"
-
-  - id: "AnhuiTV"
-    name: "安徽卫视"
-    group: "卫视"
-    aliases:
-      - "安徽卫视"
-      - "安徽台"
-      - "AnhuiTV"
-      - "AHTV"
-    sources:
-      - type: "xmltv_url"
-        name: "安徽卫视"
-      - type: "tvmao"
-        id: "AHTV-AHTV1"
-
-  - id: "ShandongTV"
-    name: "山东卫视"
-    group: "卫视"
-    aliases:
-      - "山东卫视"
-      - "山东卫视4K"
-      - "山东卫视 4K"
-      - "山东台"
-      - "ShandongTV"
-      - "SDTV"
-    sources:
-      - type: "xmltv_url"
-        name: "山东卫视"
-      - type: "tvmao"
-        id: "SDTV-SDTV1"
-
-  - id: "SichuanTV"
-    name: "四川卫视"
-    group: "卫视"
-    aliases:
-      - "四川卫视"
-      - "四川卫视4K"
-      - "四川卫视 4K"
-      - "四川台"
-      - "SichuanTV"
-      - "SCTV"
-    sources:
-      - type: "xmltv_url"
-        name: "四川卫视"
-      - type: "tvmao"
-        id: "SCTV-SCTV1"
-
-  - id: "HenanTV"
-    name: "河南卫视"
-    group: "卫视"
-    aliases:
-      - "河南卫视"
-      - "河南台"
-      - "HenanTV"
-      - "HNTV河南"
-    sources:
-      - type: "xmltv_url"
-        name: "河南卫视"
-      - type: "tvmao"
-        id: "HNTV-HNVS"
-
-  - id: "GuangdongTV"
-    name: "广东卫视"
-    group: "卫视"
-    aliases:
-      - "广东卫视"
-      - "广东卫视4K"
-      - "广东卫视 4K"
-      - "广东台"
-      - "GuangdongTV"
-      - "GDTV"
-    sources:
-      - type: "xmltv_url"
-        name: "广东卫视"
-      - type: "tvmao"
-        id: "GDTV-GDTV1"
-
-  - id: "ChongqingTV"
-    name: "重庆卫视"
-    group: "卫视"
-    aliases:
-      - "重庆卫视"
-      - "重庆台"
-      - "ChongqingTV"
-    sources:
-      - type: "xmltv_url"
-        name: "重庆卫视"
-
-  - id: "LiaoningTV"
-    name: "辽宁卫视"
-    group: "卫视"
-    aliases:
-      - "辽宁卫视"
-      - "辽宁台"
-      - "LiaoningTV"
-      - "LNTV"
-    sources:
-      - type: "xmltv_url"
-        name: "辽宁卫视"
-      - type: "tvmao"
-        id: "LNTV-LNTV1"
-
-  - id: "HubeiTV"
-    name: "湖北卫视"
-    group: "卫视"
-    aliases:
-      - "湖北卫视"
-      - "湖北台"
-      - "HubeiTV"
-      - "HBTV"
-    sources:
-      - type: "xmltv_url"
-        name: "湖北卫视"
-
-  - id: "JiangxiTV"
-    name: "江西卫视"
-    group: "卫视"
-    aliases:
-      - "江西卫视"
-      - "江西台"
-      - "JiangxiTV"
-      - "JXTV"
-    sources:
-      - type: "xmltv_url"
-        name: "江西卫视"
-
-  - id: "ShanxiTV"
-    name: "山西卫视"
-    group: "卫视"
-    aliases:
-      - "山西卫视"
-      - "山西台"
-      - "ShanxiTV"
-    sources:
-      - type: "xmltv_url"
-        name: "山西卫视"
-
-  - id: "ShaanxiTV"
-    name: "陕西卫视"
-    group: "卫视"
-    aliases:
-      - "陕西卫视"
-      - "陕西台"
-      - "ShaanxiTV"
-    sources:
-      - type: "xmltv_url"
-        name: "陕西卫视"
-
-  - id: "YunnanTV"
-    name: "云南卫视"
-    group: "卫视"
-    aliases:
-      - "云南卫视"
-      - "云南台"
-      - "YunnanTV"
-    sources:
-      - type: "xmltv_url"
-        name: "云南卫视"
-
-  - id: "GuizhouTV"
-    name: "贵州卫视"
-    group: "卫视"
-    aliases:
-      - "贵州卫视"
-      - "贵州台"
-      - "GuizhouTV"
-    sources:
-      - type: "xmltv_url"
-        name: "贵州卫视"
-
-  - id: "GansuTV"
-    name: "甘肃卫视"
-    group: "卫视"
-    aliases:
-      - "甘肃卫视"
-      - "甘肃台"
-      - "GansuTV"
-    sources:
-      - type: "xmltv_url"
-        name: "甘肃卫视"
-
-  - id: "FujianTV"
-    name: "福建卫视"
-    group: "卫视"
-    aliases:
-      - "福建卫视"
-      - "福建台"
-      - "FujianTV"
-      - "FJTV"
-    sources:
-      - type: "xmltv_url"
-        name: "海峡卫视"
-      - type: "tvmao"
-        id: "FJTV1"
-
-  - id: "HeilongjiangTV"
-    name: "黑龙江卫视"
-    group: "卫视"
-    aliases:
-      - "黑龙江卫视"
-      - "黑龙江台"
-      - "HeilongjiangTV"
-    sources:
-      - type: "xmltv_url"
-        name: "黑龙江卫视"
-
-  - id: "JilinTV"
-    name: "吉林卫视"
-    group: "卫视"
-    aliases:
-      - "吉林卫视"
-      - "吉林台"
-      - "JilinTV"
-    sources:
-      - type: "xmltv_url"
-        name: "吉林卫视"
-
-  - id: "TianjinTV"
-    name: "天津卫视"
-    group: "卫视"
-    aliases:
-      - "天津卫视"
-      - "天津台"
-      - "TianjinTV"
-      - "TJTV"
-    sources:
-      - type: "xmltv_url"
-        name: "天津卫视"
-
-  - id: "HainanTV"
-    name: "海南卫视"
-    group: "卫视"
-    aliases:
-      - "海南卫视"
-      - "旅游卫视"
-      - "海南台"
-      - "HainanTV"
-    sources:
-      - type: "tvmao"
-        id: "HNTV2"
-      - type: "xmltv_url"
-        name: "海南卫视"
-
-  - id: "InnerMongoliaTV"
-    name: "内蒙古卫视"
-    group: "卫视"
-    aliases:
-      - "内蒙古卫视"
-      - "内蒙古台"
-      - "InnerMongoliaTV"
-      - "NMGTV"
-    sources:
-      - type: "xmltv_url"
-        name: "内蒙古卫视"
-      - type: "tvmao"
-        id: "NMGTV1"
-
-  - id: "XinjiangTV"
-    name: "新疆卫视"
-    group: "卫视"
-    aliases:
-      - "新疆卫视"
-      - "新疆台"
-      - "XinjiangTV"
-    sources:
-      - type: "xmltv_url"
-        name: "新疆卫视"
-
-  - id: "XizangTV"
-    name: "西藏卫视"
-    group: "卫视"
-    aliases:
-      - "西藏卫视"
-      - "西藏台"
-      - "XizangTV"
-    sources:
-      - type: "xmltv_url"
-        name: "西藏卫视"
-
-  - id: "NingxiaTV"
-    name: "宁夏卫视"
-    group: "卫视"
-    aliases:
-      - "宁夏卫视"
-      - "宁夏台"
-      - "NingxiaTV"
-    sources:
-      - type: "xmltv_url"
-        name: "宁夏卫视"
-
-  - id: "QinghaiTV"
-    name: "青海卫视"
-    group: "卫视"
-    aliases:
-      - "青海卫视"
-      - "青海台"
-      - "QinghaiTV"
-    sources:
-      - type: "xmltv_url"
-        name: "青海卫视"
-
-  # ========== 凤凰/卫星 ==========
-  - id: "PhoenixChinese"
-    name: "凤凰中文台"
-    group: "卫星"
-    aliases:
-      - "凤凰中文台"
-      - "凤凰中文"
-      - "PhoenixChinese"
-      - "凤凰中文频道"
-      - "凤凰卫视中文"
-    sources:
-      - type: "xmltv_url"
-        name: "鳳凰衛視中文台"
-      - type: "xmltv_url"
-        name: "凤凰中文台"
-
-  - id: "PhoenixInfonews"
-    name: "凤凰资讯台"
-    group: "卫星"
-    aliases:
-      - "凤凰资讯台"
-      - "凤凰资讯"
-      - "PhoenixInfonews"
-    sources:
-      - type: "xmltv_url"
-        name: "凤凰资讯台"
-
-  - id: "PhoenixHK"
-    name: "凤凰香港台"
-    group: "卫星"
-    aliases:
-      - "凤凰香港台"
-      - "凤凰香港"
-      - "PhoenixHK"
-    sources:
-      - type: "xmltv_url"
-        name: "凤凰香港台"
-
-  # ========== 香港频道 ==========
-  - id: "TVBJade"
-    name: "TVB 翡翠台"
-    group: "港澳台"
-    aliases:
-      - "TVB翡翠台"
-      - "翡翠台"
-      - "TVBJade"
-      - "TVB Jade"
-      - "TVB1"
-    sources:
-      - type: "xmltv_url"
-        name: "TVB 翡翠台"
-      - type: "xmltv_url"
-        name: "翡翠台"
-
-  - id: "TVBPearl"
-    name: "TVB 明珠台"
-    group: "港澳台"
-    aliases:
-      - "TVB明珠台"
-      - "明珠台"
-      - "TVBPearl"
-      - "TVB Pearl"
-      - "TVB2"
-    sources:
-      - type: "xmltv_url"
-        name: "TVB Pearl"
-      - type: "xmltv_url"
-        name: "明珠台"
-
-  - id: "ViuTV"
-    name: "ViuTV"
-    group: "港澳台"
-    aliases:
-      - "ViuTV"
-      - "Viu TV"
-      - "香港ViuTV"
-    sources:
-      - type: "xmltv_url"
-        name: "ViuTV"
-
-  - id: "NowNews"
-    name: "Now 新闻台"
-    group: "港澳台"
-    aliases:
-      - "Now新闻台"
-      - "NowNews"
-      - "Now News"
-    sources:
-      - type: "xmltv_url"
-        name: "Now 新聞台"
-      - type: "xmltv_url"
-        name: "Now新闻台"
-
-  - id: "CableNews"
-    name: "有线新闻台"
-    group: "港澳台"
-    aliases:
-      - "有线新闻台"
-      - "CableNews"
-      - "i-Cable News"
-    sources:
-      - type: "xmltv_url"
-        name: "有線新聞台"
-      - type: "xmltv_url"
-        name: "有线新闻台"
-
-  - id: "RTHK31"
-    name: "香港电台 第31频道"
-    group: "港澳台"
-    aliases:
-      - "RTHK31"
-      - "香港电台31"
-      - "港台31"
-    sources:
-      - type: "xmltv_url"
-        name: "港台电视31"
-
-  - id: "RTHK32"
-    name: "香港电台 第32频道"
-    group: "港澳台"
-    aliases:
-      - "RTHK32"
-      - "香港电台32"
-      - "港台32"
-    sources:
-      - type: "xmltv_url"
-        name: "港台电视32"
-
-  # ========== 台湾频道 ==========
-  - id: "TaiwanTVS"
-    name: "台视"
-    group: "港澳台"
-    aliases:
-      - "台视"
-      - "TTV"
-      - "台湾台视"
-    sources:
-      - type: "xmltv_url"
-        name: "台視"
-      - type: "xmltv_url"
-        name: "台視HD"
-
-  - id: "TaiwanCTI"
-    name: "中视"
-    group: "港澳台"
-    aliases:
-      - "中视"
-      - "CTV"
-      - "台湾中视"
-    sources:
-      - type: "xmltv_url"
-        name: "中視新聞HD"
-
-  - id: "TaiwanCTS"
-    name: "华视"
-    group: "港澳台"
-    aliases:
-      - "华视"
-      - "CTS"
-      - "台湾华视"
-    sources:
-      - type: "xmltv_url"
-        name: "華視教育體育文化台"
-      - type: "xmltv_url"
-        name: "华视"
-
-  - id: "TaiwanPTS"
-    name: "公视"
-    group: "港澳台"
-    aliases:
-      - "公视"
-      - "PTS"
-      - "台湾公视"
-    sources:
-      - type: "xmltv_url"
-        name: "公視(HD)"
-      - type: "xmltv_url"
-        name: "公视"
-
-  - id: "TaiwanFTV"
-    name: "民视"
-    group: "港澳台"
-    aliases:
-      - "民视"
-      - "FTV"
-      - "台湾民视"
-    sources:
-      - type: "xmltv_url"
-        name: "民視"
-      - type: "xmltv_url"
-        name: "民視HD"
-
-  - id: "TVBS"
-    name: "TVBS"
-    group: "港澳台"
-    aliases:
-      - "TVBS"
-      - "台湾TVBS"
-    sources:
-      - type: "xmltv_url"
-        name: "TVBS"
-      - type: "xmltv_url"
-        name: "TVBS精采台HD"
-
-  # ========== 数字付费 ==========
-  - id: "CHCHd"
-    name: "CHC 高清电影"
-    group: "数字付费"
-    aliases:
-      - "CHC高清电影"
-      - "CHC高清"
-      - "CHCHd"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC高清电影"
-
-  - id: "CHCAction"
-    name: "CHC 动作电影"
-    group: "数字付费"
-    aliases:
-      - "CHC动作电影"
-      - "CHC动作"
-      - "CHCAction"
-      - "动作影院"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC动作电影"
-
-  - id: "CHCFamily"
-    name: "CHC 家庭电影"
-    group: "数字付费"
-    aliases:
-      - "CHC家庭电影"
-      - "CHC家庭影院"
-      - "CHC家庭"
-      - "CHCFamily"
-      - "家庭影院"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC家庭电影"
-
-  - id: "CHCHits"
-    name: "CHC 影迷电影"
-    group: "数字付费"
-    aliases:
-      - "CHC影迷电影"
-      - "CHC精品电影"
-      - "CHC精品"
-      - "CHCHits"
-      - "经典电影"
-    sources:
-      - type: "xmltv_url"
-        name: "CHC影迷电影"
-
-  - id: "CGTN"
-    name: "CGTN"
-    group: "卫星"
-    aliases:
-      - "CGTN"
-      - "中国国际电视台"
-      - "CGTNEnglish"
-      - "CGTN英语"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN (中國環球電視網)英語頻道"
-      - type: "xmltv_url"
-        name: "CGTN"
-
-  - id: "CGTNDoc"
-    name: "CGTN 纪录"
-    group: "卫星"
-    aliases:
-      - "CGTN记录"
-      - "CGTN纪录"
-      - "CGTNDoc"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN纪录"
-
-  - id: "CGTNSpanish"
-    name: "CGTN 西语"
-    group: "卫星"
-    aliases:
-      - "CGTN西语"
-      - "CGTNSpanish"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN西语"
-
-  - id: "CGTNFrench"
-    name: "CGTN 法语"
-    group: "卫星"
-    aliases:
-      - "CGTN法语"
-      - "CGTNFrench"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN法语"
-
-  - id: "CGTNArabic"
-    name: "CGTN 阿语"
-    group: "卫星"
-    aliases:
-      - "CGTN阿语"
-      - "CGTNArabic"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN阿语"
-
-  - id: "CGTNRussian"
-    name: "CGTN 俄语"
-    group: "卫星"
-    aliases:
-      - "CGTN俄语"
-      - "CGTNRussian"
-    sources:
-      - type: "xmltv_url"
-        name: "CGTN俄语"
-
-  # ========== CCTV 4K / 国际频道（epg.pw CN 已有，补充别名） ==========
-  - id: "CCTV4K"
-    name: "CCTV-4K 超高清"
-    group: "央视"
-    aliases:
-      - "CCTV4K"
-      - "CCTV-4K"
-      - "CCTV 4K"
-      - "央视4K"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV4K"
-
-  - id: "AiShang4K"
-    name: "爱上4K"
-    group: "数字付费"
-    aliases:
-      - "爱上4K"
-      - "AiShang4K"
-    sources:
-      - type: "xmltv_url"
-        name: "爱上4K"
-
-  - id: "CCTV4Euro"
-    name: "CCTV-4 欧洲"
-    group: "央视"
-    aliases:
-      - "CCTV4欧洲"
-      - "CCTV-4欧洲"
-      - "CCTV4EUO"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV4EUO"
-
-  - id: "CCTV4America"
-    name: "CCTV-4 美洲"
-    group: "央视"
-    aliases:
-      - "CCTV4美洲"
-      - "CCTV-4美洲"
-      - "CCTV4AME"
-    sources:
-      - type: "xmltv_url"
-        name: "CCTV4AME"
-
-  # ========== 教育 / 其他央视关联频道 ==========
-  - id: "ChinaEdu1"
-    name: "中国教育电视台一频道"
-    group: "央视"
-    aliases:
-      - "中国教育1台"
-      - "中国教育一台"
-      - "CETV1"
-      - "教育1台"
-    sources:
-      - type: "xmltv_url"
-        name: "中国教育1台"
-
-  - id: "ChinaEdu2"
-    name: "中国教育电视台二频道"
-    group: "央视"
-    aliases:
-      - "中国教育2台"
-      - "中国教育二台"
-      - "CETV2"
-      - "教育2台"
-    sources:
-      - type: "xmltv_url"
-        name: "中国教育2台"
-
-  - id: "ChinaEdu4"
-    name: "中国教育电视台四频道"
-    group: "央视"
-    aliases:
-      - "中国教育4台"
-      - "中国教育四台"
-      - "CETV4"
-      - "教育4台"
-    sources:
-      - type: "xmltv_url"
-        name: "中国教育4台"
-
-  - id: "ChaCha"
-    name: "茶频道"
-    group: "数字付费"
-    aliases:
-      - "茶"
-      - "茶频道"
-      - "茶TV"
-    sources:
-      - type: "xmltv_url"
-        name: "茶频道"
-
-  # CGTN纪录：epg.pw 无单独源，暂合并到 CGTN 主频道别名中（见上方 CGTN 条目）
-
-  # ========== 北京各子频道（tvmao BTV1-10） ==========
-  - id: "BTV1"
-    name: "北京卫视"
-    group: "卫视"
-    aliases:
-      - "北京卫视"
-      - "北京卫视4K"
-      - "BTV1"
-      - "BTV卫视"
-      - "北京台"
-    sources:
-      - type: "epgpw_api"
-        id: "495008"
-      - type: "tvmao"
-        id: "BTV1"
-      - type: "xmltv_url"
-        name: "北京卫视"
-
-  - id: "BTV2"
-    name: "北京文艺"
-    group: "地方台"
-    aliases:
-      - "北京文艺"
-      - "BTV文艺"
-      - "BTV2"
-    sources:
-      - type: "tvmao"
-        id: "BTV2"
-
-  - id: "BTV3"
-    name: "北京新闻"
-    group: "地方台"
-    aliases:
-      - "北京新闻"
-      - "BTV新闻"
-      - "BTV3"
-    sources:
-      - type: "tvmao"
-        id: "BTV3"
-
-  - id: "BTV4"
-    name: "北京影视"
-    group: "地方台"
-    aliases:
-      - "北京影视"
-      - "BTV影视"
-      - "BTV4"
-    sources:
-      - type: "tvmao"
-        id: "BTV4"
-
-  - id: "BTV5"
-    name: "北京体育休闲"
-    group: "地方台"
-    aliases:
-      - "北京体育休闲"
-      - "BTV体育"
-      - "BTV5"
-    sources:
-      - type: "tvmao"
-        id: "BTV5"
-
-  - id: "BTV7"
-    name: "北京生活"
-    group: "地方台"
-    aliases:
-      - "北京生活"
-      - "BTV生活"
-      - "BTV7"
-    sources:
-      - type: "tvmao"
-        id: "BTV7"
-
-  - id: "BTV9"
-    name: "北京财经"
-    group: "地方台"
-    aliases:
-      - "北京财经"
-      - "BTV财经"
-      - "BTV9"
-      - "财富天下"
-    sources:
-      - type: "tvmao"
-        id: "BTV9"
-
-  - id: "BTV10"
-    name: "卡酷少儿"
-    group: "地方台"
-    aliases:
-      - "卡酷少儿"
-      - "BTV10"
-      - "北京卡酷"
-    sources:
-      - type: "tvmao"
-        id: "BTV10"
-
-  - id: "BTVDoc"
-    name: "北京纪实科教"
-    group: "地方台"
-    aliases:
-      - "北京纪实科教"
-      - "北京纪实"
-      - "BTV纪实"
-    sources:
-      - type: "xmltv_url"
-        name: "北京纪实科教"
-
-  # ========== 北京淘系列（北京 IPTV 专属，无公开 EPG 源） ==========
-  - id: "BTVTaoEntertain"
-    name: "北京淘娱乐"
-    group: "地方台"
-    aliases:
-      - "北京淘娱乐"
-      - "淘娱乐"
-    sources:
-      - type: "xmltv_url"
-        name: "北京淘娱乐"
-
-  - id: "BTVTaoDrama"
-    name: "北京淘剧场"
-    group: "地方台"
-    aliases:
-      - "北京淘剧场"
-      - "淘剧场"
-    sources:
-      - type: "xmltv_url"
-        name: "北京淘剧场"
-
-  - id: "BTVTaoMovie"
-    name: "北京淘电影"
-    group: "地方台"
-    aliases:
-      - "北京淘电影"
-      - "淘电影"
-    sources:
-      - type: "xmltv_url"
-        name: "北京淘电影"
-
-  # ========== 深圳卫视（tvmao SZTV1） ==========
-  - id: "ShenzhenTV"
-    name: "深圳卫视"
-    group: "卫视"
-    aliases:
-      - "深圳卫视"
-      - "深圳卫视4K"
-      - "SZTV"
-    sources:
-      - type: "tvmao"
-        id: "SZTV1"
-      - type: "xmltv_url"
-        name: "深圳卫视"
-
-  # ========== 东南卫视（tvmao FJTV2） ==========
-  - id: "SoutheastTV"
-    name: "东南卫视"
-    group: "卫视"
-    aliases:
-      - "东南卫视"
-      - "SETV"
-      - "福建东南卫视"
-    sources:
-      - type: "tvmao"
-        id: "FJTV2"
-      - type: "xmltv_url"
-        name: "东南卫视"
-
-  # ========== 厦门卫视（tvmao XMTV3） ==========
-  - id: "XiamenTV"
-    name: "厦门卫视"
-    group: "卫视"
-    aliases:
-      - "厦门卫视"
-      - "XMTV"
-    sources:
-      - type: "tvmao"
-        id: "XMTV3"
-      - type: "xmltv_url"
-        name: "厦门卫视"
-
-  # ========== 三沙卫视（tvmao SANSHATV） ==========
-  - id: "SanshaTV"
-    name: "三沙卫视"
-    group: "卫视"
-    aliases:
-      - "三沙卫视"
-      - "SSTV"
-    sources:
-      - type: "tvmao"
-        id: "SANSHATV"
-      - type: "xmltv_url"
-        name: "三沙卫视"
-
-  # ========== 河北卫视（补充 tvmao 备用源） ==========
-  - id: "HebeiTV"
-    name: "河北卫视"
-    group: "卫视"
-    aliases:
-      - "河北卫视"
-      - "河北台"
-      - "HebeiTV"
-    sources:
-      - type: "xmltv_url"
-        name: "河北卫视"
-      - type: "tvmao"
-        id: "HEBTV1"
-
-  # ========== TVB 其他频道（epg.pw HK） ==========
-  - id: "TVBNews"
-    name: "TVB 互动新闻台"
-    group: "港澳台"
-    aliases:
-      - "无线新闻"
-      - "TVB新闻台"
-      - "TVBNews"
-      - "TVB互动新闻台"
-    sources:
-      - type: "xmltv_url"
-        name: "TVB 互動新聞台"
-
-  - id: "TVBPlus"
-    name: "TVB Plus"
-    group: "港澳台"
-    aliases:
-      - "TVB PLUS"
-      - "TVBPlus"
-      - "TVB Plus"
-    sources:
-      - type: "xmltv_url"
-        name: "TVB Plus"
-
-  - id: "TVBJ2"
-    name: "TVB J2"
-    group: "港澳台"
-    aliases:
-      - "TVB J2"
-      - "J2"
-    sources:
-      - type: "xmltv_url"
-        name: "TVB J2"
-
-  # ========== 大湾区卫视（epg.pw HK） ==========
-  - id: "GreaterBayTV"
-    name: "大湾区卫视"
-    group: "卫星"
-    aliases:
-      - "大湾区卫视"
-      - "GreaterBayTV"
-      - "GBA TV"
-    sources:
-      - type: "xmltv_url"
-        name: "廣東廣播電視台大灣區衛視頻道"
-
-  # ========== 澳门频道（epg.pw HK） ==========
-  - id: "TDM1"
-    name: "澳视澳门"
-    group: "港澳台"
-    aliases:
-      - "澳视澳门"
-      - "TDM澳门"
-      - "澳门电视"
-    sources:
-      - type: "xmltv_url"
-        name: "澳视澳门"
-
-  - id: "TDMSport"
-    name: "澳视体育"
-    group: "港澳台"
-    aliases:
-      - "澳视体育"
-      - "澳门体育"
-      - "TDM体育"
-    sources:
-      - type: "xmltv_url"
-        name: "澳视体育"
-
-  - id: "TDMSat"
-    name: "澳视卫星"
-    group: "港澳台"
-    aliases:
-      - "澳视卫星"
-      - "TDM卫星"
-    sources:
-      - type: "xmltv_url"
-        name: "澳视卫星"
-
-  # ========== 内蒙古卫视（补充 tvmao 备用源） ==========
-  # 注意：InnerMongoliaTV 已在上方定义，此处仅补充 tvmao 源
-  # 已合并进上方 InnerMongoliaTV 条目
+  - id: CCTV1
+    name: CCTV-1 综合
+    logo: https://epg.pw/logos/CCTV1.png
+    group: 央视
+    aliases:
+      - CCTV1
+      - CCTV-1
+      - CCTV 1
+      - 中央一套
+      - 央视一套
+      - 央视综合
+      - CCTV1综合
+      - CCTV-1综合
+    sources:
+      - type: epgpw_api
+        id: '494985'
+  - id: CCTV2
+    name: CCTV-2 财经
+    group: 央视
+    aliases:
+      - CCTV2
+      - CCTV-2
+      - CCTV 2
+      - 中央二套
+      - 央视财经
+      - CCTV2财经
+    sources:
+      - type: epgpw_api
+        id: '494986'
+  - id: CCTV3
+    name: CCTV-3 综艺
+    group: 央视
+    aliases:
+      - CCTV3
+      - CCTV-3
+      - CCTV 3
+      - 中央三套
+      - 央视综艺
+      - CCTV3综艺
+    sources:
+      - type: epgpw_api
+        id: '494987'
+  - id: CCTV4
+    name: CCTV-4 中文国际
+    group: 央视
+    aliases:
+      - CCTV4
+      - CCTV-4
+      - CCTV 4
+      - 中央四套
+      - 央视中文国际
+      - CCTV4中文国际
+    sources:
+      - type: epgpw_api
+        id: '494988'
+  - id: CCTV5
+    name: CCTV-5 体育
+    group: 央视
+    aliases:
+      - CCTV5
+      - CCTV-5
+      - CCTV 5
+      - 中央五套
+      - 央视体育
+      - CCTV5体育
+    sources:
+      - type: epgpw_api
+        id: '494989'
+  - id: CCTV5+
+    name: CCTV-5+ 体育赛事
+    group: 央视
+    aliases:
+      - CCTV5+
+      - CCTV-5+
+      - CCTV 5+
+      - CCTV5PLUS
+      - 中央五套+
+      - 央视体育赛事
+    sources:
+      - type: epgpw_api
+        id: '494990'
+  - id: CCTV6
+    name: CCTV-6 电影
+    group: 央视
+    aliases:
+      - CCTV6
+      - CCTV-6
+      - CCTV 6
+      - 中央六套
+      - 央视电影
+      - CCTV6电影
+    sources:
+      - type: epgpw_api
+        id: '494991'
+  - id: CCTV7
+    name: CCTV-7 国防军事
+    group: 央视
+    aliases:
+      - CCTV7
+      - CCTV-7
+      - CCTV 7
+      - 中央七套
+      - 央视军事
+      - CCTV7军事
+      - CCTV7农业
+    sources:
+      - type: epgpw_api
+        id: '494992'
+  - id: CCTV8
+    name: CCTV-8 电视剧
+    group: 央视
+    aliases:
+      - CCTV8
+      - CCTV-8
+      - CCTV 8
+      - 中央八套
+      - 央视电视剧
+      - CCTV8电视剧
+    sources:
+      - type: epgpw_api
+        id: '494993'
+  - id: CCTV9
+    name: CCTV-9 纪录
+    group: 央视
+    aliases:
+      - CCTV9
+      - CCTV-9
+      - CCTV 9
+      - 中央九套
+      - 央视纪录
+      - CCTV9纪录
+    sources:
+      - type: epgpw_api
+        id: '494994'
+  - id: CCTV10
+    name: CCTV-10 科教
+    group: 央视
+    aliases:
+      - CCTV10
+      - CCTV-10
+      - CCTV 10
+      - 中央十套
+      - 央视科教
+      - CCTV10科教
+    sources:
+      - type: epgpw_api
+        id: '494995'
+  - id: CCTV11
+    name: CCTV-11 戏曲
+    group: 央视
+    aliases:
+      - CCTV11
+      - CCTV-11
+      - CCTV 11
+      - 中央十一套
+      - 央视戏曲
+      - CCTV11戏曲
+    sources:
+      - type: epgpw_api
+        id: '494996'
+  - id: CCTV12
+    name: CCTV-12 社会与法
+    group: 央视
+    aliases:
+      - CCTV12
+      - CCTV-12
+      - CCTV 12
+      - 中央十二套
+      - 央视社会法制
+    sources:
+      - type: epgpw_api
+        id: '494997'
+  - id: CCTV13
+    name: CCTV-13 新闻
+    group: 央视
+    aliases:
+      - CCTV13
+      - CCTV-13
+      - CCTV 13
+      - 中央十三套
+      - 央视新闻
+      - CCTV13新闻
+    sources:
+      - type: epgpw_api
+        id: '494998'
+  - id: CCTV14
+    name: CCTV-14 少儿
+    group: 央视
+    aliases:
+      - CCTV14
+      - CCTV-14
+      - CCTV 14
+      - 中央十四套
+      - 央视少儿
+      - CCTV14少儿
+    sources:
+      - type: epgpw_api
+        id: '494999'
+  - id: CCTV15
+    name: CCTV-15 音乐
+    group: 央视
+    aliases:
+      - CCTV15
+      - CCTV-15
+      - CCTV 15
+      - 中央十五套
+      - 央视音乐
+      - CCTV15音乐
+    sources:
+      - type: epgpw_api
+        id: '495000'
+  - id: CCTV16
+    name: CCTV-16 奥林匹克
+    group: 央视
+    aliases:
+      - CCTV16
+      - CCTV-16
+      - CCTV 16
+      - 央视奥林匹克
+    sources:
+      - type: epgpw_api
+        id: '495083'
+  - id: CCTV17
+    name: CCTV-17 农业农村
+    group: 央视
+    aliases:
+      - CCTV17
+      - CCTV-17
+      - CCTV 17
+      - 央视农业农村
+    sources:
+      - type: epgpw_api
+        id: '495001'
+  - id: HunanTV
+    name: 湖南卫视
+    group: 卫视
+    aliases:
+      - 湖南卫视
+      - 湖南卫视4K
+      - 湖南卫视 4K
+      - 芒果TV
+      - 湖南台
+      - HunanTV
+      - HNTV
+    sources:
+      - type: epgpw_api
+        id: '495005'
+  - id: ZhejiangTV
+    name: 浙江卫视
+    group: 卫视
+    aliases:
+      - 浙江卫视
+      - 浙江卫视4K
+      - 浙江台
+      - ZhejiangTV
+      - ZJTV
+      - 浙江
+    sources:
+      - type: epgpw_api
+        id: '495006'
+  - id: JiangsuTV
+    name: 江苏卫视
+    group: 卫视
+    aliases:
+      - 江苏卫视
+      - 江苏卫视4K
+      - 江苏卫视 4K
+      - 江苏台
+      - JiangsuTV
+      - JSTV
+      - 荔枝TV
+    sources:
+      - type: epgpw_api
+        id: '495007'
+  - id: DragonTV
+    name: 东方卫视
+    group: 卫视
+    aliases:
+      - 东方卫视
+      - 东方卫视4K
+      - 东方卫视 4K
+      - 东方台
+      - DragonTV
+      - 上海卫视
+      - SMG
+    sources:
+      - type: epgpw_api
+        id: '495009'
+  - id: AnhuiTV
+    name: 安徽卫视
+    group: 卫视
+    aliases:
+      - 安徽卫视
+      - 安徽台
+      - AnhuiTV
+      - AHTV
+    sources:
+      - type: epgpw_api
+        id: '495010'
+  - id: ShandongTV
+    name: 山东卫视
+    group: 卫视
+    aliases:
+      - 山东卫视
+      - 山东卫视4K
+      - 山东卫视 4K
+      - 山东台
+      - ShandongTV
+      - SDTV
+    sources:
+      - type: epgpw_api
+        id: '495015'
+  - id: SichuanTV
+    name: 四川卫视
+    group: 卫视
+    aliases:
+      - 四川卫视
+      - 四川卫视4K
+      - 四川卫视 4K
+      - 四川台
+      - SichuanTV
+      - SCTV
+    sources:
+      - type: epgpw_api
+        id: '495032'
+  - id: HenanTV
+    name: 河南卫视
+    group: 卫视
+    aliases:
+      - 河南卫视
+      - 河南台
+      - HenanTV
+      - HNTV河南
+    sources:
+      - type: epgpw_api
+        id: '495024'
+  - id: GuangdongTV
+    name: 广东卫视
+    group: 卫视
+    aliases:
+      - 广东卫视
+      - 广东卫视4K
+      - 广东卫视 4K
+      - 广东台
+      - GuangdongTV
+      - GDTV
+    sources:
+      - type: epgpw_api
+        id: '495011'
+  - id: ChongqingTV
+    name: 重庆卫视
+    group: 卫视
+    aliases:
+      - 重庆卫视
+      - 重庆台
+      - ChongqingTV
+    sources:
+      - type: epgpw_api
+        id: '495017'
+  - id: LiaoningTV
+    name: 辽宁卫视
+    group: 卫视
+    aliases:
+      - 辽宁卫视
+      - 辽宁台
+      - LiaoningTV
+      - LNTV
+    sources:
+      - type: epgpw_api
+        id: '495013'
+  - id: HubeiTV
+    name: 湖北卫视
+    group: 卫视
+    aliases:
+      - 湖北卫视
+      - 湖北台
+      - HubeiTV
+      - HBTV
+    sources:
+      - type: epgpw_api
+        id: '495025'
+  - id: JiangxiTV
+    name: 江西卫视
+    group: 卫视
+    aliases:
+      - 江西卫视
+      - 江西台
+      - JiangxiTV
+      - JXTV
+    sources:
+      - type: epgpw_api
+        id: '495026'
+  - id: ShanxiTV
+    name: 山西卫视
+    group: 卫视
+    aliases:
+      - 山西卫视
+      - 山西台
+      - ShanxiTV
+    sources:
+      - type: epgpw_api
+        id: '495030'
+  - id: ShaanxiTV
+    name: 陕西卫视
+    group: 卫视
+    aliases:
+      - 陕西卫视
+      - 陕西台
+      - ShaanxiTV
+    sources:
+      - type: epgpw_api
+        id: '495031'
+  - id: YunnanTV
+    name: 云南卫视
+    group: 卫视
+    aliases:
+      - 云南卫视
+      - 云南台
+      - YunnanTV
+    sources:
+      - type: epgpw_api
+        id: '495034'
+  - id: GuizhouTV
+    name: 贵州卫视
+    group: 卫视
+    aliases:
+      - 贵州卫视
+      - 贵州台
+      - GuizhouTV
+    sources:
+      - type: epgpw_api
+        id: '495021'
+  - id: GansuTV
+    name: 甘肃卫视
+    group: 卫视
+    aliases:
+      - 甘肃卫视
+      - 甘肃台
+      - GansuTV
+    sources:
+      - type: epgpw_api
+        id: '495019'
+  - id: FujianTV
+    name: 福建卫视
+    group: 卫视
+    aliases:
+      - 福建卫视
+      - 福建台
+      - FujianTV
+      - FJTV
+    sources:
+      - type: epgpw_api
+        id: '495002'
+  - id: HeilongjiangTV
+    name: 黑龙江卫视
+    group: 卫视
+    aliases:
+      - 黑龙江卫视
+      - 黑龙江台
+      - HeilongjiangTV
+    sources:
+      - type: epgpw_api
+        id: '495023'
+  - id: JilinTV
+    name: 吉林卫视
+    group: 卫视
+    aliases:
+      - 吉林卫视
+      - 吉林台
+      - JilinTV
+    sources:
+      - type: epgpw_api
+        id: '495027'
+  - id: TianjinTV
+    name: 天津卫视
+    group: 卫视
+    aliases:
+      - 天津卫视
+      - 天津台
+      - TianjinTV
+      - TJTV
+    sources:
+      - type: epgpw_api
+        id: '495016'
+  - id: HainanTV
+    name: 海南卫视
+    group: 卫视
+    aliases:
+      - 海南卫视
+      - 旅游卫视
+      - 海南台
+      - HainanTV
+    sources:
+      - type: epgpw_api
+        id: '495014'
+  - id: InnerMongoliaTV
+    name: 内蒙古卫视
+    group: 卫视
+    aliases:
+      - 内蒙古卫视
+      - 内蒙古台
+      - InnerMongoliaTV
+      - NMGTV
+    sources:
+      - type: epgpw_api
+        id: '495028'
+  - id: XinjiangTV
+    name: 新疆卫视
+    group: 卫视
+    aliases:
+      - 新疆卫视
+      - 新疆台
+      - XinjiangTV
+    sources:
+      - type: epgpw_api
+        id: '495033'
+  - id: XizangTV
+    name: 西藏卫视
+    group: 卫视
+    aliases:
+      - 西藏卫视
+      - 西藏台
+      - XizangTV
+    sources:
+      - type: epgpw_api
+        id: '495043'
+  - id: NingxiaTV
+    name: 宁夏卫视
+    group: 卫视
+    aliases:
+      - 宁夏卫视
+      - 宁夏台
+      - NingxiaTV
+    sources:
+      - type: epgpw_api
+        id: '495029'
+  - id: QinghaiTV
+    name: 青海卫视
+    group: 卫视
+    aliases:
+      - 青海卫视
+      - 青海台
+      - QinghaiTV
+    sources:
+      - type: epgpw_api
+        id: '495035'
+  - id: PhoenixChinese
+    name: 凤凰中文台
+    group: 卫星
+    aliases:
+      - 凤凰中文台
+      - 凤凰中文
+      - PhoenixChinese
+      - 凤凰中文频道
+      - 凤凰卫视中文
+    sources:
+      - type: epgpw_api
+        id: '495069'
+  - id: PhoenixInfonews
+    name: 凤凰资讯台
+    group: 卫星
+    aliases:
+      - 凤凰资讯台
+      - 凤凰资讯
+      - PhoenixInfonews
+    sources:
+      - type: epgpw_api
+        id: '495070'
+  - id: PhoenixHK
+    name: 凤凰香港台
+    group: 卫星
+    aliases:
+      - 凤凰香港台
+      - 凤凰香港
+      - PhoenixHK
+    sources:
+      - type: epgpw_api
+        id: '495071'
+  - id: TVBJade
+    name: TVB 翡翠台
+    group: 港澳台
+    aliases:
+      - TVB翡翠台
+      - 翡翠台
+      - TVBJade
+      - TVB Jade
+      - TVB1
+    sources:
+      - type: epgpw_api
+        id: '460917'
+  - id: TVBPearl
+    name: TVB 明珠台
+    group: 港澳台
+    aliases:
+      - TVB明珠台
+      - 明珠台
+      - TVBPearl
+      - TVB Pearl
+      - TVB2
+    sources:
+      - type: epgpw_api
+        id: '368369'
+  - id: ViuTV
+    name: ViuTV
+    group: 港澳台
+    aliases:
+      - ViuTV
+      - Viu TV
+      - 香港ViuTV
+    sources:
+      - type: epgpw_api
+        id: '410274'
+  - id: NowNews
+    name: Now 新闻台
+    group: 港澳台
+    aliases:
+      - Now新闻台
+      - NowNews
+      - Now News
+    sources:
+      - type: epgpw_api
+        id: '410344'
+  - id: CableNews
+    name: 有线新闻台
+    group: 港澳台
+    aliases:
+      - 有线新闻台
+      - CableNews
+      - i-Cable News
+    sources: []
+  - id: RTHK31
+    name: 香港电台 第31频道
+    group: 港澳台
+    aliases:
+      - RTHK31
+      - 香港电台31
+      - 港台31
+    sources:
+      - type: epgpw_api
+        id: '368550'
+  - id: RTHK32
+    name: 香港电台 第32频道
+    group: 港澳台
+    aliases:
+      - RTHK32
+      - 香港电台32
+      - 港台32
+    sources:
+      - type: epgpw_api
+        id: '368551'
+  - id: TaiwanTVS
+    name: 台视
+    group: 港澳台
+    aliases:
+      - 台视
+      - TTV
+      - 台湾台视
+    sources:
+      - type: epgpw_api
+        id: '456505'
+  - id: TaiwanCTI
+    name: 中视
+    group: 港澳台
+    aliases:
+      - 中视
+      - CTV
+      - 台湾中视
+    sources:
+      - type: epgpw_api
+        id: '457333'
+  - id: TaiwanCTS
+    name: 华视
+    group: 港澳台
+    aliases:
+      - 华视
+      - CTS
+      - 台湾华视
+    sources:
+      - type: epgpw_api
+        id: '456625'
+  - id: TaiwanPTS
+    name: 公视
+    group: 港澳台
+    aliases:
+      - 公视
+      - PTS
+      - 台湾公视
+    sources:
+      - type: epgpw_api
+        id: '457215'
+  - id: TaiwanFTV
+    name: 民视
+    group: 港澳台
+    aliases:
+      - 民视
+      - FTV
+      - 台湾民视
+    sources:
+      - type: epgpw_api
+        id: '370139'
+  - id: TVBS
+    name: TVBS
+    group: 港澳台
+    aliases:
+      - TVBS
+      - 台湾TVBS
+    sources:
+      - type: epgpw_api
+        id: '456557'
+  - id: CHCHd
+    name: CHC 高清电影
+    group: 数字付费
+    aliases:
+      - CHC高清电影
+      - CHC高清
+      - CHCHd
+    sources:
+      - type: epgpw_api
+        id: '495047'
+  - id: CHCAction
+    name: CHC 动作电影
+    group: 数字付费
+    aliases:
+      - CHC动作电影
+      - CHC动作
+      - CHCAction
+      - 动作影院
+    sources:
+      - type: epgpw_api
+        id: '495049'
+  - id: CHCFamily
+    name: CHC 家庭电影
+    group: 数字付费
+    aliases:
+      - CHC家庭电影
+      - CHC家庭影院
+      - CHC家庭
+      - CHCFamily
+      - 家庭影院
+    sources:
+      - type: epgpw_api
+        id: '495050'
+  - id: CHCHits
+    name: CHC 影迷电影
+    group: 数字付费
+    aliases:
+      - CHC影迷电影
+      - CHC精品电影
+      - CHC精品
+      - CHCHits
+      - 经典电影
+    sources:
+      - type: epgpw_api
+        id: '495088'
+  - id: CGTN
+    name: CGTN
+    group: 卫星
+    aliases:
+      - CGTN
+      - 中国国际电视台
+      - CGTNEnglish
+      - CGTN英语
+    sources:
+      - type: epgpw_api
+        id: '368346'
+  - id: CGTNDoc
+    name: CGTN 纪录
+    group: 卫星
+    aliases:
+      - CGTN记录
+      - CGTN纪录
+      - CGTNDoc
+    sources: []
+  - id: CGTNSpanish
+    name: CGTN 西语
+    group: 卫星
+    aliases:
+      - CGTN西语
+      - CGTNSpanish
+    sources: []
+  - id: CGTNFrench
+    name: CGTN 法语
+    group: 卫星
+    aliases:
+      - CGTN法语
+      - CGTNFrench
+    sources: []
+  - id: CGTNArabic
+    name: CGTN 阿语
+    group: 卫星
+    aliases:
+      - CGTN阿语
+      - CGTNArabic
+    sources: []
+  - id: CGTNRussian
+    name: CGTN 俄语
+    group: 卫星
+    aliases:
+      - CGTN俄语
+      - CGTNRussian
+    sources: []
+  - id: CCTV4K
+    name: CCTV-4K 超高清
+    group: 央视
+    aliases:
+      - CCTV4K
+      - CCTV-4K
+      - CCTV 4K
+      - 央视4K
+    sources:
+      - type: epgpw_api
+        id: '495048'
+  - id: AiShang4K
+    name: 爱上4K
+    group: 数字付费
+    aliases:
+      - 爱上4K
+      - AiShang4K
+    sources: []
+  - id: CCTV4Euro
+    name: CCTV-4 欧洲
+    group: 央视
+    aliases:
+      - CCTV4欧洲
+      - CCTV-4欧洲
+      - CCTV4EUO
+    sources:
+      - type: epgpw_api
+        id: '495003'
+  - id: CCTV4America
+    name: CCTV-4 美洲
+    group: 央视
+    aliases:
+      - CCTV4美洲
+      - CCTV-4美洲
+      - CCTV4AME
+    sources:
+      - type: epgpw_api
+        id: '495004'
+  - id: ChinaEdu1
+    name: 中国教育电视台一频道
+    group: 央视
+    aliases:
+      - 中国教育1台
+      - 中国教育一台
+      - CETV1
+      - 教育1台
+    sources:
+      - type: epgpw_api
+        id: '495045'
+  - id: ChinaEdu2
+    name: 中国教育电视台二频道
+    group: 央视
+    aliases:
+      - 中国教育2台
+      - 中国教育二台
+      - CETV2
+      - 教育2台
+    sources:
+      - type: epgpw_api
+        id: '495046'
+  - id: ChinaEdu4
+    name: 中国教育电视台四频道
+    group: 央视
+    aliases:
+      - 中国教育4台
+      - 中国教育四台
+      - CETV4
+      - 教育4台
+    sources:
+      - type: epgpw_api
+        id: '495082'
+  - id: ChaCha
+    name: 茶频道
+    group: 数字付费
+    aliases:
+      - 茶
+      - 茶频道
+      - 茶TV
+    sources:
+      - type: epgpw_api
+        id: '495067'
+  - id: BTV1
+    name: 北京卫视
+    group: 卫视
+    aliases:
+      - 北京卫视
+      - 北京卫视4K
+      - BTV1
+      - BTV卫视
+      - 北京台
+    sources:
+      - type: epgpw_api
+        id: '495008'
+  - id: BTV2
+    name: 北京文艺
+    group: 地方台
+    aliases:
+      - 北京文艺
+      - BTV文艺
+      - BTV2
+    sources:
+      - type: tvmao
+        id: BTV2
+  - id: BTV3
+    name: 北京新闻
+    group: 地方台
+    aliases:
+      - 北京新闻
+      - BTV新闻
+      - BTV3
+    sources:
+      - type: tvmao
+        id: BTV3
+  - id: BTV4
+    name: 北京影视
+    group: 地方台
+    aliases:
+      - 北京影视
+      - BTV影视
+      - BTV4
+    sources:
+      - type: tvmao
+        id: BTV4
+  - id: BTV5
+    name: 北京体育休闲
+    group: 地方台
+    aliases:
+      - 北京体育休闲
+      - BTV体育
+      - BTV5
+    sources:
+      - type: tvmao
+        id: BTV5
+  - id: BTV7
+    name: 北京生活
+    group: 地方台
+    aliases:
+      - 北京生活
+      - BTV生活
+      - BTV7
+    sources:
+      - type: tvmao
+        id: BTV7
+  - id: BTV9
+    name: 北京财经
+    group: 地方台
+    aliases:
+      - 北京财经
+      - BTV财经
+      - BTV9
+      - 财富天下
+    sources:
+      - type: tvmao
+        id: BTV9
+  - id: BTV10
+    name: 卡酷少儿
+    group: 地方台
+    aliases:
+      - 卡酷少儿
+      - BTV10
+      - 北京卡酷
+    sources:
+      - type: tvmao
+        id: BTV10
+  - id: BTVDoc
+    name: 北京纪实科教
+    group: 地方台
+    aliases:
+      - 北京纪实科教
+      - 北京纪实
+      - BTV纪实
+    sources: []
+  - id: BTVTaoEntertain
+    name: 北京淘娱乐
+    group: 地方台
+    aliases:
+      - 北京淘娱乐
+      - 淘娱乐
+    sources: []
+  - id: BTVTaoDrama
+    name: 北京淘剧场
+    group: 地方台
+    aliases:
+      - 北京淘剧场
+      - 淘剧场
+    sources: []
+  - id: BTVTaoMovie
+    name: 北京淘电影
+    group: 地方台
+    aliases:
+      - 北京淘电影
+      - 淘电影
+    sources: []
+  - id: ShenzhenTV
+    name: 深圳卫视
+    group: 卫视
+    aliases:
+      - 深圳卫视
+      - 深圳卫视4K
+      - SZTV
+    sources:
+      - type: epgpw_api
+        id: '495012'
+  - id: SoutheastTV
+    name: 东南卫视
+    group: 卫视
+    aliases:
+      - 东南卫视
+      - SETV
+      - 福建东南卫视
+    sources:
+      - type: epgpw_api
+        id: '495018'
+  - id: XiamenTV
+    name: 厦门卫视
+    group: 卫视
+    aliases:
+      - 厦门卫视
+      - XMTV
+    sources:
+      - type: epgpw_api
+        id: '495040'
+  - id: SanshaTV
+    name: 三沙卫视
+    group: 卫视
+    aliases:
+      - 三沙卫视
+      - SSTV
+    sources:
+      - type: epgpw_api
+        id: '495044'
+  - id: HebeiTV
+    name: 河北卫视
+    group: 卫视
+    aliases:
+      - 河北卫视
+      - 河北台
+      - HebeiTV
+    sources:
+      - type: epgpw_api
+        id: '495022'
+  - id: TVBNews
+    name: TVB 互动新闻台
+    group: 港澳台
+    aliases:
+      - 无线新闻
+      - TVB新闻台
+      - TVBNews
+      - TVB互动新闻台
+    sources:
+      - type: epgpw_api
+        id: '460810'
+  - id: TVBPlus
+    name: TVB Plus
+    group: 港澳台
+    aliases:
+      - TVB PLUS
+      - TVBPlus
+      - TVB Plus
+    sources:
+      - type: epgpw_api
+        id: '368361'
+  - id: TVBJ2
+    name: TVB J2
+    group: 港澳台
+    aliases:
+      - TVB J2
+      - J2
+    sources:
+      - type: epgpw_api
+        id: '460924'
+  - id: GreaterBayTV
+    name: 大湾区卫视
+    group: 卫星
+    aliases:
+      - 大湾区卫视
+      - GreaterBayTV
+      - GBA TV
+    sources:
+      - type: epgpw_api
+        id: '425926'
+  - id: TDM1
+    name: 澳视澳门
+    group: 港澳台
+    aliases:
+      - 澳视澳门
+      - TDM澳门
+      - 澳门电视
+    sources: []
+  - id: TDMSport
+    name: 澳视体育
+    group: 港澳台
+    aliases:
+      - 澳视体育
+      - 澳门体育
+      - TDM体育
+    sources: []
+  - id: TDMSat
+    name: 澳视卫星
+    group: 港澳台
+    aliases:
+      - 澳视卫星
+      - TDM卫星
+    sources: []

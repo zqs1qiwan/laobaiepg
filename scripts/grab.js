@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * EPG 抓取主程序
- * 学习 supzhang/epg 的多源抓取 + 换源重试模式
  *
  * 用法:
  *   node scripts/grab.js                    # 抓取所有频道
@@ -16,155 +15,89 @@ import { fileURLToPath } from 'url';
 import { gzipSync } from 'zlib';
 import yaml from 'js-yaml';
 
-import { logger, buildAliasIndex, sleep } from './utils.js';
-import { fetchEpg, resetCaches } from './sites/index.js';
-import { generateXmltv, generateSummary, mergeEpgData } from './xmltv.js';
+import { logger, sleep } from './utils.js';
+import { fetchEpg } from './sites/index.js';
+import { generateXmltv, generateSummary } from './xmltv.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = join(__dirname, '..');
 
 // ============================================================
-// 解析命令行参数
+// 命令行参数
 // ============================================================
 const args = process.argv.slice(2);
 const getArg = (flag) => {
   const idx = args.indexOf(flag);
   return idx !== -1 && args[idx + 1] && !args[idx + 1].startsWith('--')
-    ? args[idx + 1]
-    : null;
+    ? args[idx + 1] : null;
 };
-const hasFlag = (flag) => args.includes(flag);
-
-const TEST_MODE = hasFlag('--test');
+const TEST_MODE     = args.includes('--test');
 const SINGLE_CHANNEL = getArg('--channel');
-const DAYS_OVERRIDE = getArg('--days') ? parseInt(getArg('--days')) : null;
+const DAYS_OVERRIDE  = getArg('--days') ? parseInt(getArg('--days')) : null;
 
 // ============================================================
 // 加载配置
 // ============================================================
 function loadConfig() {
-  const channelsPath = join(ROOT_DIR, 'config/channels.yaml');
-  const sourcesPath = join(ROOT_DIR, 'config/sources.yaml');
-
-  const channels = yaml.load(readFileSync(channelsPath, 'utf-8')).channels;
-  const sourcesConfig = yaml.load(readFileSync(sourcesPath, 'utf-8'));
-
-  // 构建 xmltv_url 数据源 Map
-  const xmltvSources = new Map();
-  for (const src of (sourcesConfig.xmltv_sources || [])) {
-    if (src.enabled && src.url) {
-      xmltvSources.set(src.id, src);
-    }
-  }
-
-  const crawlConfig = sourcesConfig.crawl || {};
-  const outputConfig = sourcesConfig.output || {};
-
-  return { channels, xmltvSources, crawlConfig, outputConfig, sourcesConfig };
+  const channels     = yaml.load(readFileSync(join(ROOT_DIR, 'config/channels.yaml'), 'utf-8')).channels;
+  const sourcesConfig = yaml.load(readFileSync(join(ROOT_DIR, 'config/sources.yaml'), 'utf-8'));
+  return {
+    channels,
+    crawlConfig:  sourcesConfig.crawl  || {},
+    outputConfig: sourcesConfig.output || {},
+  };
 }
 
 // ============================================================
-// 生成需要抓取的日期列表
-// 返回以北京时间 midnight（UTC 16:00 前一天）为基准的 Date 数组
-// 各爬虫用这个基准日期 + 北京时间 HH:MM 换算 UTC
+// 生成日期列表（以北京时间 midnight 为基准）
 // ============================================================
 function getDateRange(days) {
-  const dates = [];
-  // 获取当前北京时间的日期（UTC+8）
-  const nowUTC = Date.now();
-  const beijingNow = new Date(nowUTC + 8 * 3600000); // 当前北京时间
-  // 北京时间当天 midnight = UTC 前一天 16:00
+  const beijingNow       = new Date(Date.now() + 8 * 3600000);
   const beijingMidnightUTC = Date.UTC(
-    beijingNow.getUTCFullYear(),
-    beijingNow.getUTCMonth(),
-    beijingNow.getUTCDate(),
-    -8, 0, 0, 0  // UTC: 北京 00:00 = UTC -8:00 = 前一天 16:00
+    beijingNow.getUTCFullYear(), beijingNow.getUTCMonth(), beijingNow.getUTCDate(),
+    -8, 0, 0, 0
   );
-  for (let i = 0; i < days; i++) {
-    dates.push(new Date(beijingMidnightUTC + i * 86400000));
-  }
-  return dates;
+  return Array.from({ length: days }, (_, i) => new Date(beijingMidnightUTC + i * 86400000));
 }
 
 // ============================================================
-// 为单个频道抓取 EPG（带换源重试，参考 supzhang/epg get_epg）
+// 为单个频道抓取 EPG（多源 + 换源重试）
 // ============================================================
-async function fetchChannelEpg(channel, dates, xmltvSources, crawlConfig) {
-  const sources = channel.sources || [];
+async function fetchChannelEpg(channel, dates, crawlConfig) {
+  const sources   = channel.sources || [];
+  if (sources.length === 0) return [];
 
-  if (sources.length === 0) {
-    logger.warn(`频道 ${channel.name} 没有配置数据源`);
-    return [];
-  }
-
-  const maxRetry = crawlConfig.retry || 2;
+  const maxRetry    = crawlConfig.retry || 2;
   const changeSource = crawlConfig.change_source !== false;
 
   for (let srcIdx = 0; srcIdx < sources.length; srcIdx++) {
-    const source = sources[srcIdx];
-    const sourceType = source.type;
-    const sourceId = source.id || source.name || '';
+    if (srcIdx > 0 && !changeSource) break;
 
-    if (srcIdx > 0 && !changeSource) break; // 不允许换源时跳出
-
-    // 准备数据源配置（xmltv_url 需要）
-    let sourceConfig = null;
-    if (sourceType === 'xmltv_url') {
-      // 找到启用的 xmltv 数据源（按顺序尝试所有启用的 xmltv 源）
-      const xmltvSourcesList = [...xmltvSources.values()];
-      if (xmltvSourcesList.length === 0) {
-        logger.warn(`${channel.name}: xmltv_url 类型但没有启用的 XMLTV 数据源`);
-        continue;
-      }
-
-      // 尝试每个 XMLTV 源
-      let found = [];
-      for (const xs of xmltvSourcesList) {
-        try {
-          const epgs = await fetchEpg(channel, 'xmltv_url', sourceId, dates, xs);
-          if (epgs.length > 0) {
-            found = epgs;
-            logger.info(`✓ ${channel.name}: 从 ${xs.name} 获取 ${epgs.length} 条节目`);
-            break;
-          }
-        } catch (err) {
-          logger.warn(`${channel.name}: ${xs.name} 失败: ${err.message}`);
-        }
-      }
-      if (found.length > 0) return found;
-      continue; // 所有 xmltv 源都失败，尝试下一个数据源类型
-    }
-
-    // 爬虫数据源（cctv/tvmao/tvb 等）
-    let epgs = [];
+    const { type: sourceType, id: sourceId = '' } = sources[srcIdx];
+    let epgs    = [];
     let success = false;
 
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
-        epgs = await fetchEpg(channel, sourceType, sourceId, dates, sourceConfig);
-        if (epgs.length > 0) {
-          success = true;
-          logger.info(`✓ ${channel.name}: [${sourceType}] 获取 ${epgs.length} 条节目`);
-          break;
-        }
+        epgs = await fetchEpg(channel, sourceType, sourceId, dates);
+        if (epgs.length > 0) { success = true; break; }
       } catch (err) {
         logger.warn(`${channel.name}: [${sourceType}] 第${retry + 1}次失败: ${err.message}`);
       }
-
-      if (retry < maxRetry) {
-        await sleep(1000 * (retry + 1));
-      }
+      if (retry < maxRetry) await sleep(1000 * (retry + 1));
     }
 
-    if (success) return epgs;
+    if (success) {
+      logger.info(`✓ ${channel.name}: [${sourceType}] 获取 ${epgs.length} 条节目`);
+      return epgs;
+    }
 
     if (srcIdx < sources.length - 1) {
-      logger.warn(`${channel.name}: [${sourceType}] 全部重试失败，尝试换源...`);
+      logger.warn(`${channel.name}: [${sourceType}] 失败，换源...`);
     } else {
       logger.error(`✗ ${channel.name}: 所有数据源均失败`);
     }
   }
-
   return [];
 }
 
@@ -175,49 +108,29 @@ function writeOutput(channels, epgData, outputConfig) {
   const outputDir = join(ROOT_DIR, outputConfig.local_dir || 'output');
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
 
-  const files = outputConfig.files || [
-    { id: 'all', filename: 'guide.xml', groups: [] },
-  ];
+  const files = outputConfig.files || [{ filename: 'guide.xml', groups: [] }];
 
   for (const fileConfig of files) {
-    const filterGroups = fileConfig.groups || [];
-    const xmlContent = generateXmltv(channels, epgData, filterGroups);
-    const outputPath = join(outputDir, fileConfig.filename);
-
-    writeFileSync(outputPath, xmlContent, 'utf-8');
-    const sizeKB = (xmlContent.length / 1024).toFixed(0);
-    logger.info(`写入 ${fileConfig.filename} (${sizeKB} KB)`);
-
-    // 同时写入 .gz 版本
-    const gzPath = outputPath + '.gz';
-    const gzContent = gzipSync(Buffer.from(xmlContent, 'utf-8'));
-    writeFileSync(gzPath, gzContent);
-    logger.info(`写入 ${fileConfig.filename}.gz (${(gzContent.length / 1024).toFixed(0)} KB)`);
+    const xml = generateXmltv(channels, epgData, fileConfig.groups || []);
+    const outPath = join(outputDir, fileConfig.filename);
+    writeFileSync(outPath, xml, 'utf-8');
+    logger.info(`写入 ${fileConfig.filename} (${(xml.length / 1024).toFixed(0)} KB)`);
+    const gz = gzipSync(Buffer.from(xml, 'utf-8'));
+    writeFileSync(outPath + '.gz', gz);
+    logger.info(`写入 ${fileConfig.filename}.gz (${(gz.length / 1024).toFixed(0)} KB)`);
   }
 }
 
-// ============================================================
-// 写入频道索引（供 Worker 使用）
-// ============================================================
 function writeChannelIndex(channels, epgData) {
   const outputDir = join(ROOT_DIR, 'output');
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
-
   const index = channels.map(ch => ({
-    id: ch.id,
-    name: ch.name,
-    group: ch.group,
-    logo: ch.logo || '',
+    id: ch.id, name: ch.name, group: ch.group, logo: ch.logo || '',
     aliases: ch.aliases || [],
     hasEpg: (epgData.get(ch.id) || []).length > 0,
     programmeCount: (epgData.get(ch.id) || []).length,
   }));
-
-  writeFileSync(
-    join(outputDir, 'channels.json'),
-    JSON.stringify(index, null, 2),
-    'utf-8'
-  );
+  writeFileSync(join(outputDir, 'channels.json'), JSON.stringify(index, null, 2), 'utf-8');
   logger.info(`写入 channels.json (${index.length} 个频道)`);
 }
 
@@ -226,22 +139,14 @@ function writeChannelIndex(channels, epgData) {
 // ============================================================
 async function main() {
   logger.info('='.repeat(60));
-  logger.info('LaobaiEPG 抓取程序启动');
-  logger.info(`模式: ${TEST_MODE ? '测试' : '正常'} | 单频道: ${SINGLE_CHANNEL || '全部'}`);
+  logger.info(`LaobaiEPG | 模式: ${TEST_MODE ? '测试' : '正常'} | 频道: ${SINGLE_CHANNEL || '全部'}`);
   logger.info('='.repeat(60));
 
-  // 加载配置
-  const { channels, xmltvSources, crawlConfig, outputConfig } = loadConfig();
-
-  // 重置缓存
-  resetCaches();
-
-  // 确定抓取天数和日期
-  const days = DAYS_OVERRIDE || crawlConfig.days || 7;
+  const { channels, crawlConfig, outputConfig } = loadConfig();
+  const days  = DAYS_OVERRIDE || crawlConfig.days || 7;
   const dates = getDateRange(days);
-  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[dates.length - 1].toISOString().slice(0, 10)} (${days} 天)`);
+  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天)`);
 
-  // 筛选频道
   let targetChannels = channels;
   if (SINGLE_CHANNEL) {
     targetChannels = channels.filter(ch =>
@@ -249,27 +154,19 @@ async function main() {
       ch.name.includes(SINGLE_CHANNEL) ||
       (ch.aliases || []).some(a => a.includes(SINGLE_CHANNEL))
     );
-    if (targetChannels.length === 0) {
-      logger.error(`未找到频道: ${SINGLE_CHANNEL}`);
-      process.exit(1);
-    }
+    if (!targetChannels.length) { logger.error(`未找到频道: ${SINGLE_CHANNEL}`); process.exit(1); }
     logger.info(`测试频道: ${targetChannels.map(c => c.name).join(', ')}`);
   }
+  logger.info(`共 ${targetChannels.length} 个频道`);
 
-  logger.info(`共有 ${targetChannels.length} 个频道需要抓取`);
-
-  // 抓取数据
   const epgData = new Map();
-  let successCount = 0;
-  let failCount = 0;
+  let successCount = 0, failCount = 0;
 
   for (let i = 0; i < targetChannels.length; i++) {
     const channel = targetChannels[i];
-    const progress = `[${i + 1}/${targetChannels.length}]`;
-    logger.info(`${progress} 抓取: ${channel.name}`);
+    logger.info(`[${i + 1}/${targetChannels.length}] ${channel.name}`);
 
-    const epgs = await fetchChannelEpg(channel, dates, xmltvSources, crawlConfig);
-
+    const epgs = await fetchChannelEpg(channel, dates, crawlConfig);
     if (epgs.length > 0) {
       epgData.set(channel.id, epgs);
       successCount++;
@@ -277,52 +174,41 @@ async function main() {
       failCount++;
     }
 
-    // 请求间隔
     if (i < targetChannels.length - 1 && !TEST_MODE) {
-      const delay = crawlConfig.delay || 200;
-      await sleep(delay);
+      await sleep(crawlConfig.delay || 200);
     }
   }
 
-  // 统计
   const { totalChannels, totalProgrammes } = generateSummary(targetChannels, epgData);
   logger.info('='.repeat(60));
-  logger.info(`抓取完成: 成功 ${successCount} 个频道，失败 ${failCount} 个`);
-  logger.info(`有效频道: ${totalChannels}，总节目数: ${totalProgrammes}`);
+  logger.info(`完成: 成功 ${successCount}，失败 ${failCount}，节目 ${totalProgrammes} 条`);
 
-  // 测试模式：只打印，不写文件
   if (TEST_MODE) {
     logger.info('[测试模式] 不写入文件');
     if (SINGLE_CHANNEL && epgData.size > 0) {
       const [ch] = targetChannels;
       const progs = epgData.get(ch.id) || [];
-      logger.info(`\n${ch.name} 节目单 (前10条):`);
+      logger.info(`\n${ch.name} 前10条:`);
       for (const p of progs.slice(0, 10)) {
-        const startStr = p.start.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-        logger.info(`  ${startStr}  ${p.title}`);
+        logger.info(`  ${p.start.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}  ${p.title}`);
       }
     }
     return;
   }
 
-  // 写入输出文件
   writeOutput(channels, epgData, outputConfig);
   writeChannelIndex(channels, epgData);
+  logger.info('完成！');
 
-  logger.info('='.repeat(60));
-  logger.info('所有文件写入完成！');
-
-  // 失败频道汇总
   if (failCount > 0) {
-    const failedChannels = targetChannels
-      .filter(ch => !epgData.has(ch.id) || (epgData.get(ch.id) || []).length === 0)
+    const failed = targetChannels
+      .filter(ch => !epgData.has(ch.id) || !(epgData.get(ch.id) || []).length)
       .map(ch => ch.name);
-    logger.warn(`失败频道: ${failedChannels.join(', ')}`);
+    logger.warn(`失败频道: ${failed.join(', ')}`);
   }
 }
 
 main().catch(err => {
-  logger.error(`致命错误: ${err.message}`);
-  logger.error(err.stack);
+  logger.error(`致命错误: ${err.message}\n${err.stack}`);
   process.exit(1);
 });
