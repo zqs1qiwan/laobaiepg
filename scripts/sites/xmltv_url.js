@@ -125,7 +125,11 @@ async function downloadXmltv(source) {
   logger.info(`[xmltv_url] 下载 ${source.name}: ${url}`);
 
   const res = await fetchWithRetry(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; LaobaiEPG/1.0)' },
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; LaobaiEPG/1.0)',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+    },
   }, 2, 30000);
 
   if (!res.ok) {
