@@ -63,6 +63,12 @@ export async function fetchEpg(channel, sourceType, sourceId, dates, sourceConfi
     // XMLTV URL 源：一次性获取所有日期，无需按日循环
     const epgs = await getEpgFromXmltvUrl(channel, sourceId, sourceConfig);
     allEpgs.push(...epgs);
+  } else if (sourceType === 'epgpw_api') {
+    // epg.pw JSON API：API 每次返回该频道所有日期的节目单，只需调用一次
+    // 传入第一个日期即可（API 会返回未来 7 天的数据）
+    const scraper = scraperRegistry['epgpw_api'];
+    const epgs = await scraper.getEpg(channel, sourceId, dates[0]);
+    allEpgs.push(...epgs);
   } else {
     // 爬虫数据源：按日期分别获取
     const scraper = scraperRegistry[sourceType];
