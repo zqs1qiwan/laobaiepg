@@ -759,7 +759,6 @@ channels:
       - CHC精品电影
       - CHC精品
       - CHCHits
-      - 经典电影
     sources:
       - type: epgpw_api
         id: '495088'
@@ -772,8 +771,8 @@ channels:
       - CGTNEnglish
       - CGTN英语
     sources:
-      - type: epgpw_api
-        id: '368346'
+      - type: tvmao
+        id: CCTV19
   - id: CGTNDoc
     name: CGTN 纪录
     group: 卫星
@@ -781,35 +780,47 @@ channels:
       - CGTN记录
       - CGTN纪录
       - CGTNDoc
-    sources: []
+    sources:
+      - type: tvmao
+        id: CCTV18
+      - type: epgpw_api
+        id: '368347'
   - id: CGTNSpanish
     name: CGTN 西语
     group: 卫星
     aliases:
       - CGTN西语
       - CGTNSpanish
-    sources: []
+    sources:
+      - type: tvmao
+        id: CCTV17
   - id: CGTNFrench
     name: CGTN 法语
     group: 卫星
     aliases:
       - CGTN法语
       - CGTNFrench
-    sources: []
+    sources:
+      - type: tvmao
+        id: CCTVF
   - id: CGTNArabic
     name: CGTN 阿语
     group: 卫星
     aliases:
       - CGTN阿语
       - CGTNArabic
-    sources: []
+    sources:
+      - type: tvmao
+        id: CCTVA
   - id: CGTNRussian
     name: CGTN 俄语
     group: 卫星
     aliases:
       - CGTN俄语
       - CGTNRussian
-    sources: []
+    sources:
+      - type: tvmao
+        id: CCTVR
   - id: CCTV4K
     name: CCTV-4K 超高清
     group: 央视
@@ -891,6 +902,156 @@ channels:
     sources:
       - type: epgpw_api
         id: '495067'
+
+  # ========== 新增：epg.pw 已有频道 ==========
+  - id: GuangxiTV
+    name: 广西卫视
+    group: 卫视
+    aliases:
+      - 广西卫视
+      - 广西台
+      - GuangxiTV
+    sources:
+      - type: epgpw_api
+        id: '495020'
+
+  - id: JinyingCartoon
+    name: 金鹰卡通
+    group: 少儿
+    aliases:
+      - 金鹰卡通
+      - JinyingCartoon
+    sources:
+      - type: epgpw_api
+        id: '495041'
+      - type: tvmao
+        id: HUNANTV2
+
+  - id: LiYuanTV
+    name: 梨园
+    group: 数字付费
+    aliases:
+      - 梨园
+      - LiYuanTV
+    sources:
+      - type: epgpw_api
+        id: '495051'
+
+  - id: HappyFishing
+    name: 快乐垂钓
+    group: 数字付费
+    aliases:
+      - 快乐垂钓
+      - HappyFishing
+    sources:
+      - type: epgpw_api
+        id: '495074'
+      - type: tvmao
+        id: KUAILECHUIDIAO
+
+  - id: FourSeaFishing
+    name: 四海钓鱼
+    group: 数字付费
+    aliases:
+      - 四海钓鱼
+      - FourSeaFishing
+    sources:
+      - type: epgpw_api
+        id: '495077'
+      - type: tvmao
+        id: BAMC4
+
+  - id: GuoxueTV
+    name: 国学
+    group: 数字付费
+    aliases:
+      - 国学
+      - GuoxueTV
+    sources:
+      - type: epgpw_api
+        id: '495086'
+
+  # ========== 新增：tvmao 专属频道 ==========
+  - id: JiajiaCartoon
+    name: 嘉佳卡通
+    group: 少儿
+    aliases:
+      - 嘉佳卡通
+      - JiajiaCartoon
+    sources:
+      - type: tvmao
+        id: GDTV7
+
+  - id: JinyingDoc
+    name: 金鹰纪实
+    group: 数字付费
+    aliases:
+      - 金鹰纪实
+      - JinyingDoc
+    sources:
+      - type: tvmao
+        id: HNETV3
+
+  - id: FiveStarSports
+    name: 五星体育
+    group: 数字付费
+    aliases:
+      - 五星体育
+      - FiveStarSports
+    sources:
+      - type: tvmao
+        id: SHHAI5
+
+  - id: ShandongEdu
+    name: 山东教育
+    group: 地方台
+    aliases:
+      - 山东教育
+      - ShandongEdu
+    sources:
+      - type: tvmao
+        id: SDETV1
+
+  - id: IPTVKids
+    name: IPTV少儿动画
+    group: 数字付费
+    aliases:
+      - IPTV少儿动画
+      - IPTVKids
+    sources:
+      - type: tvmao
+        id: IPTVSEDH
+
+  - id: IPTVFashion
+    name: IPTV魅力时尚
+    group: 数字付费
+    aliases:
+      - IPTV魅力时尚
+      - IPTVFashion
+    sources:
+      - type: tvmao
+        id: IPTVMLSS
+
+  - id: IPTVDrama
+    name: IPTV热播剧场
+    group: 数字付费
+    aliases:
+      - IPTV热播剧场
+      - IPTVDrama
+    sources:
+      - type: tvmao
+        id: IPTVRBJC
+
+  - id: GuZhuangJC
+    name: 古装剧场
+    group: 数字付费
+    aliases:
+      - 古装剧场
+      - GuZhuangJC
+    sources:
+      - type: tvmao
+        id: GZJC
+
   - id: BTV1
     name: 北京卫视
     group: 卫视
