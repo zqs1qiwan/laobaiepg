@@ -1070,6 +1070,8 @@ channels:
       - "BTV卫视"
       - "北京台"
     sources:
+      - type: "epgpw_api"
+        id: "495008"
       - type: "tvmao"
         id: "BTV1"
       - type: "xmltv_url"

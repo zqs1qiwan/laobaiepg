@@ -12,6 +12,7 @@ import { getEpgTvmao, getChannelsTvmao } from './tvmao.js';
 import { getEpgTvb, getChannelsTvb } from './tvb.js';
 import { getEpgNowtv, getChannelsNowtv } from './nowtv.js';
 import { getEpgTbc, getChannelsTbc } from './tbc.js';
+import { getEpgEpgpwApi, getChannelsEpgpwApi } from './epgpw_api.js';
 import { getEpgFromXmltvUrl, clearXmltvCache } from './xmltv_url.js';
 
 /**
@@ -22,6 +23,10 @@ export const scraperRegistry = {
   cctv: {
     getEpg: getEpgCctv,
     getChannels: getChannelsCctv,
+  },
+  epgpw_api: {
+    getEpg: getEpgEpgpwApi,
+    getChannels: getChannelsEpgpwApi,
   },
   tvmao: {
     getEpg: getEpgTvmao,
