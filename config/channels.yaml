@@ -1266,7 +1266,50 @@ channels:
       - TDM澳门
       - 澳门电视
       - TDM1
-    sources: []
+    sources:
+      - type: tdm
+        id: '1'
+  - id: aoshiputai
+    name: 澳视葡文台
+    group: 港澳台
+    aliases:
+      - 澳视葡文台
+      - TDM葡文
+      - TDM2
+    sources:
+      - type: tdm
+        id: '2'
+  - id: aomenzixun
+    name: 澳门资讯
+    group: 港澳台
+    aliases:
+      - 澳门资讯
+      - TDM资讯
+      - TDM3
+    sources:
+      - type: tdm
+        id: '3'
+  - id: aomenpuwenzixun
+    name: 澳门葡文资讯
+    group: 港澳台
+    aliases:
+      - 澳门葡文资讯
+      - TDM葡文资讯
+      - TDM4
+    sources:
+      - type: tdm
+        id: '4'
+  - id: aoshiweixing
+    name: 澳视卫星
+    group: 港澳台
+    aliases:
+      - 澳视卫星
+      - TDM卫星
+      - TDMSat
+      - TDM5
+    sources:
+      - type: tdm
+        id: '5'
   - id: aoshitiyu
     name: 澳视体育
     group: 港澳台
@@ -1275,12 +1318,7 @@ channels:
       - 澳门体育
       - TDM体育
       - TDMSport
-    sources: []
-  - id: aoshiweixing
-    name: 澳视卫星
-    group: 港澳台
-    aliases:
-      - 澳视卫星
-      - TDM卫星
-      - TDMSat
-    sources: []
+      - TDM6
+    sources:
+      - type: tdm
+        id: '6'

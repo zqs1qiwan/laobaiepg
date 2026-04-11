@@ -11,6 +11,7 @@ import { getEpgTvb, getChannelsTvb } from './tvb.js';
 import { getEpgNowtv, getChannelsNowtv } from './nowtv.js';
 import { getEpgTbc, getChannelsTbc } from './tbc.js';
 import { getEpgEpgpwApi, getChannelsEpgpwApi } from './epgpw_api.js';
+import { getEpgTdm, getChannelsTdm } from './tdm.js';
 
 /**
  * 数据源注册表
@@ -19,6 +20,10 @@ export const scraperRegistry = {
   epgpw_api: {
     getEpg: getEpgEpgpwApi,
     getChannels: getChannelsEpgpwApi,
+  },
+  tdm: {
+    getEpg: getEpgTdm,
+    getChannels: getChannelsTdm,
   },
   tvmao: {
     getEpg: getEpgTvmao,
