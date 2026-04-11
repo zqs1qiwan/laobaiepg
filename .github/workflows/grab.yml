@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: '抓取天数（默认7天）'
+        description: '抓取天数（留空=使用 sources.yaml 配置的天数）'
         required: false
-        default: '7'
+        default: ''
       channel:
         description: '单频道测试（留空=全部）'
         required: false
@@ -45,8 +45,11 @@ jobs:
           DEBUG: ${{ runner.debug }}
         run: |
           ARGS=""
-          DAYS="${{ github.event.inputs.days || '7' }}"
-          ARGS="$ARGS --days $DAYS"
+          # 手动触发时可指定天数，定时触发时不传（使用 sources.yaml 里的 days: 3）
+          DAYS="${{ github.event.inputs.days }}"
+          if [ -n "$DAYS" ]; then
+            ARGS="$ARGS --days $DAYS"
+          fi
           CHANNEL="${{ github.event.inputs.channel }}"
           if [ -n "$CHANNEL" ]; then
             ARGS="$ARGS --channel $CHANNEL"
