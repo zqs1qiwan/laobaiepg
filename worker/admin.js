@@ -460,9 +460,15 @@ function renderChannels(channels) {
   function appendBatch() {
     if (myKey !== renderAbortKey) return;
     const frag = document.createDocumentFragment();
+    const wraps = []; // 收集这批卡片的 logoWrap，插入 DOM 后再 observe
     const end = Math.min(i + 30, channels.length);
-    for (; i < end; i++) frag.appendChild(makeCard(channels[i]));
-    grid.appendChild(frag);
+    for (; i < end; i++) {
+      const card = makeCard(channels[i]);
+      wraps.push(card.querySelector('.ch-logo-wrap'));
+      frag.appendChild(card);
+    }
+    grid.appendChild(frag); // 先插入 DOM，元素才有真实位置
+    wraps.forEach(w => w && logoObserver.observe(w)); // 再 observe，确保 IntersectionObserver 能测量
     if (i < channels.length) requestAnimationFrame(appendBatch);
   }
   requestAnimationFrame(appendBatch);
@@ -482,7 +488,7 @@ function makeCard(ch) {
   fallback.style.background = color;
   fallback.textContent = ch.name;
   logoWrap.appendChild(fallback);
-  logoObserver.observe(logoWrap);
+  // observe 由 appendBatch 在元素进入 DOM 后统一调用，此处不调用
 
   const titleDiv = document.createElement('div');
   titleDiv.className = 'ch-title';
