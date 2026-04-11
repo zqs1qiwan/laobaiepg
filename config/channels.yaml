@@ -1,4 +1,216 @@
 channels:
+  - id: bingtuanweishi
+    name: 兵团卫视
+    group: 卫视
+    aliases:
+      - 兵团卫视
+      - BTTV
+      - BingtuanTV
+    sources:
+      - type: tvmao
+        id: BINGTUAN
+  - id: cgtnyingyupindao
+    name: CGTN
+    group: 卫星
+    aliases:
+      - CGTN
+      - 中国国际电视台
+      - CGTNEnglish
+      - CGTN英语
+    sources:
+      - type: tvmao
+        id: CCTV19
+  - id: cgtnxiyupindao
+    name: CGTN 西语
+    group: 卫星
+    aliases:
+      - CGTN西语
+      - CGTNSpanish
+    sources:
+      - type: tvmao
+        id: CCTV17
+  - id: cgtnfayupindao
+    name: CGTN 法语
+    group: 卫星
+    aliases:
+      - CGTN法语
+      - CGTNFrench
+    sources:
+      - type: tvmao
+        id: CCTVF
+  - id: cgtnalapindao
+    name: CGTN 阿语
+    group: 卫星
+    aliases:
+      - CGTN阿语
+      - CGTNArabic
+    sources:
+      - type: tvmao
+        id: CCTVA
+  - id: cgtneyupindao
+    name: CGTN 俄语
+    group: 卫星
+    aliases:
+      - CGTN俄语
+      - CGTNRussian
+    sources:
+      - type: tvmao
+        id: CCTVR
+  - id: jiajiakatong
+    name: 嘉佳卡通
+    group: 少儿
+    aliases:
+      - 嘉佳卡通
+      - JiajiaCartoon
+    sources:
+      - type: tvmao
+        id: GDTV7
+  - id: jinyingjishi
+    name: 金鹰纪实
+    group: 数字付费
+    aliases:
+      - 金鹰纪实
+      - JinyingDoc
+    sources:
+      - type: tvmao
+        id: HNETV3
+  - id: wuxingtiyu
+    name: 五星体育
+    group: 数字付费
+    aliases:
+      - 五星体育
+      - FiveStarSports
+    sources:
+      - type: tvmao
+        id: SHHAI5
+  - id: shandongjiaoyu
+    name: 山东教育
+    group: 地方台
+    aliases:
+      - 山东教育
+      - ShandongEdu
+    sources:
+      - type: tvmao
+        id: SDETV1
+  - id: iptvshaoerdonghua
+    name: IPTV少儿动画
+    group: 数字付费
+    aliases:
+      - IPTV少儿动画
+      - IPTVKids
+    sources:
+      - type: tvmao
+        id: IPTVSEDH
+  - id: iptvmeilishishang
+    name: IPTV魅力时尚
+    group: 数字付费
+    aliases:
+      - IPTV魅力时尚
+      - IPTVFashion
+    sources:
+      - type: tvmao
+        id: IPTVMLSS
+  - id: iptvrebojuchang
+    name: IPTV热播剧场
+    group: 数字付费
+    aliases:
+      - IPTV热播剧场
+      - IPTVDrama
+    sources:
+      - type: tvmao
+        id: IPTVRBJC
+  - id: guzhuangjuchang
+    name: 古装剧场
+    group: 数字付费
+    aliases:
+      - 古装剧场
+      - GuZhuangJC
+    sources:
+      - type: tvmao
+        id: GZJC
+  - id: beijingwenyi
+    name: 北京文艺
+    group: 地方台
+    aliases:
+      - 北京文艺
+      - BTV文艺
+      - BTV2
+    sources:
+      - type: tvmao
+        id: BTV2
+  - id: beijingtiyuxiuxian
+    name: 北京体育休闲
+    group: 地方台
+    aliases:
+      - 北京体育休闲
+      - BTV体育休闲
+      - BTV体育
+      - BTV3
+    sources:
+      - type: tvmao
+        id: BTV3
+  - id: beijingyingshi
+    name: 北京影视
+    group: 地方台
+    aliases:
+      - 北京影视
+      - BTV影视
+      - BTV4
+    sources:
+      - type: tvmao
+        id: BTV4
+  - id: beijingcaijing
+    name: 北京财经
+    group: 地方台
+    aliases:
+      - 北京财经
+      - BTV财经
+      - BTV5
+      - 财富天下
+    sources:
+      - type: tvmao
+        id: BTV5
+  - id: beijingshenghuo
+    name: 北京生活
+    group: 地方台
+    aliases:
+      - 北京生活
+      - BTV生活
+      - BTV7
+    sources:
+      - type: tvmao
+        id: BTV7
+  - id: beijingxinwen
+    name: 北京新闻
+    group: 地方台
+    aliases:
+      - 北京新闻
+      - BTV新闻
+      - BTV9
+    sources:
+      - type: tvmao
+        id: BTV9
+  - id: kakushaoer
+    name: 卡酷少儿
+    group: 地方台
+    aliases:
+      - 卡酷少儿
+      - BTV10
+      - 北京卡酷
+    sources:
+      - type: tvmao
+        id: BTV10
+  - id: beijingjishikejiao
+    name: 北京纪实科教
+    group: 地方台
+    aliases:
+      - 北京纪实科教
+      - 北京纪实
+      - BTV纪实
+      - BTV12
+    sources:
+      - type: tvmao
+        id: BTV12
   - id: CCTV1
     name: CCTV-1 综合
     logo: https://epg.pw/logos/CCTV1.png
@@ -545,16 +757,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495035'
-  - id: bingtuanweishi
-    name: 兵团卫视
-    group: 卫视
-    aliases:
-      - 兵团卫视
-      - BTTV
-      - BingtuanTV
-    sources:
-      - type: tvmao
-        id: BINGTUAN
   - id: fenghuangzhongwentai
     name: 凤凰中文台
     group: 卫星
@@ -767,17 +969,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495088'
-  - id: cgtnyingyupindao
-    name: CGTN
-    group: 卫星
-    aliases:
-      - CGTN
-      - 中国国际电视台
-      - CGTNEnglish
-      - CGTN英语
-    sources:
-      - type: tvmao
-        id: CCTV19
   - id: cgtnjilupin
     name: CGTN 纪录
     group: 卫星
@@ -790,42 +981,6 @@ channels:
         id: CCTV18
       - type: epgpw_api
         id: '368347'
-  - id: cgtnxiyupindao
-    name: CGTN 西语
-    group: 卫星
-    aliases:
-      - CGTN西语
-      - CGTNSpanish
-    sources:
-      - type: tvmao
-        id: CCTV17
-  - id: cgtnfayupindao
-    name: CGTN 法语
-    group: 卫星
-    aliases:
-      - CGTN法语
-      - CGTNFrench
-    sources:
-      - type: tvmao
-        id: CCTVF
-  - id: cgtnalapindao
-    name: CGTN 阿语
-    group: 卫星
-    aliases:
-      - CGTN阿语
-      - CGTNArabic
-    sources:
-      - type: tvmao
-        id: CCTVA
-  - id: cgtneyupindao
-    name: CGTN 俄语
-    group: 卫星
-    aliases:
-      - CGTN俄语
-      - CGTNRussian
-    sources:
-      - type: tvmao
-        id: CCTVR
   - id: CCTV4K
     name: CCTV-4K 超高清
     group: 央视
@@ -974,78 +1129,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495086'
-  - id: jiajiakatong
-    name: 嘉佳卡通
-    group: 少儿
-    aliases:
-      - 嘉佳卡通
-      - JiajiaCartoon
-    sources:
-      - type: tvmao
-        id: GDTV7
-  - id: jinyingjishi
-    name: 金鹰纪实
-    group: 数字付费
-    aliases:
-      - 金鹰纪实
-      - JinyingDoc
-    sources:
-      - type: tvmao
-        id: HNETV3
-  - id: wuxingtiyu
-    name: 五星体育
-    group: 数字付费
-    aliases:
-      - 五星体育
-      - FiveStarSports
-    sources:
-      - type: tvmao
-        id: SHHAI5
-  - id: shandongjiaoyu
-    name: 山东教育
-    group: 地方台
-    aliases:
-      - 山东教育
-      - ShandongEdu
-    sources:
-      - type: tvmao
-        id: SDETV1
-  - id: iptvshaoerdonghua
-    name: IPTV少儿动画
-    group: 数字付费
-    aliases:
-      - IPTV少儿动画
-      - IPTVKids
-    sources:
-      - type: tvmao
-        id: IPTVSEDH
-  - id: iptvmeilishishang
-    name: IPTV魅力时尚
-    group: 数字付费
-    aliases:
-      - IPTV魅力时尚
-      - IPTVFashion
-    sources:
-      - type: tvmao
-        id: IPTVMLSS
-  - id: iptvrebojuchang
-    name: IPTV热播剧场
-    group: 数字付费
-    aliases:
-      - IPTV热播剧场
-      - IPTVDrama
-    sources:
-      - type: tvmao
-        id: IPTVRBJC
-  - id: guzhuangjuchang
-    name: 古装剧场
-    group: 数字付费
-    aliases:
-      - 古装剧场
-      - GuZhuangJC
-    sources:
-      - type: tvmao
-        id: GZJC
   - id: beijingweishi
     name: 北京卫视
     group: 卫视
@@ -1058,89 +1141,6 @@ channels:
     sources:
       - type: epgpw_api
         id: '495008'
-  - id: beijingwenyi
-    name: 北京文艺
-    group: 地方台
-    aliases:
-      - 北京文艺
-      - BTV文艺
-      - BTV2
-    sources:
-      - type: tvmao
-        id: BTV2
-  - id: beijingtiyuxiuxian
-    name: 北京体育休闲
-    group: 地方台
-    aliases:
-      - 北京体育休闲
-      - BTV体育休闲
-      - BTV体育
-      - BTV3
-    sources:
-      - type: tvmao
-        id: BTV3
-  - id: beijingyingshi
-    name: 北京影视
-    group: 地方台
-    aliases:
-      - 北京影视
-      - BTV影视
-      - BTV4
-    sources:
-      - type: tvmao
-        id: BTV4
-  - id: beijingcaijing
-    name: 北京财经
-    group: 地方台
-    aliases:
-      - 北京财经
-      - BTV财经
-      - BTV5
-      - 财富天下
-    sources:
-      - type: tvmao
-        id: BTV5
-  - id: beijingshenghuo
-    name: 北京生活
-    group: 地方台
-    aliases:
-      - 北京生活
-      - BTV生活
-      - BTV7
-    sources:
-      - type: tvmao
-        id: BTV7
-  - id: beijingxinwen
-    name: 北京新闻
-    group: 地方台
-    aliases:
-      - 北京新闻
-      - BTV新闻
-      - BTV9
-    sources:
-      - type: tvmao
-        id: BTV9
-  - id: kakushaoer
-    name: 卡酷少儿
-    group: 地方台
-    aliases:
-      - 卡酷少儿
-      - BTV10
-      - 北京卡酷
-    sources:
-      - type: tvmao
-        id: BTV10
-  - id: beijingjishikejiao
-    name: 北京纪实科教
-    group: 地方台
-    aliases:
-      - 北京纪实科教
-      - 北京纪实
-      - BTV纪实
-      - BTV12
-    sources:
-      - type: tvmao
-        id: BTV12
   - id: beijingtaoyule
     name: 北京淘娱乐
     group: 地方台
