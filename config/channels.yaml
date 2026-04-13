@@ -9,7 +9,7 @@ channels:
     sources:
       - type: tvmao
         id: BINGTUAN
-  - id: cgtnyingyupindao
+  - id: cgtnyingyu
     name: CGTN
     group: 卫星
     aliases:
@@ -17,42 +17,47 @@ channels:
       - 中国国际电视台
       - CGTNEnglish
       - CGTN英语
+      - cgtnyingyupindao
     sources:
       - type: tvmao
         id: CCTV19
-  - id: cgtnxiyupindao
+  - id: cgtnxiyu
     name: CGTN 西语
     group: 卫星
     aliases:
       - CGTN西语
       - CGTNSpanish
+      - cgtnxiyupindao
     sources:
       - type: tvmao
         id: CCTV17
-  - id: cgtnfayupindao
+  - id: cgtnfayu
     name: CGTN 法语
     group: 卫星
     aliases:
       - CGTN法语
       - CGTNFrench
+      - cgtnfayupindao
     sources:
       - type: tvmao
         id: CCTVF
-  - id: cgtnalapindao
+  - id: cgtnalayu
     name: CGTN 阿语
     group: 卫星
     aliases:
       - CGTN阿语
       - CGTNArabic
+      - cgtnalapindao
     sources:
       - type: tvmao
         id: CCTVA
-  - id: cgtneyupindao
+  - id: cgtneyu
     name: CGTN 俄语
     group: 卫星
     aliases:
       - CGTN俄语
       - CGTNRussian
+      - cgtneyupindao
     sources:
       - type: tvmao
         id: CCTVR
@@ -757,7 +762,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495035'
-  - id: fenghuangzhongwentai
+  - id: fenghuangzhongwen
     name: 凤凰中文台
     group: 卫星
     aliases:
@@ -766,30 +771,33 @@ channels:
       - PhoenixChinese
       - 凤凰中文频道
       - 凤凰卫视中文
+      - fenghuangzhongwentai
     sources:
       - type: epgpw_api
         id: '495069'
-  - id: fenghuangzixuntai
+  - id: fenghuangzixun
     name: 凤凰资讯台
     group: 卫星
     aliases:
       - 凤凰资讯台
       - 凤凰资讯
       - PhoenixInfonews
+      - fenghuangzixuntai
     sources:
       - type: epgpw_api
         id: '495070'
-  - id: fenghuangxianggangta
+  - id: fenghuangxianggang
     name: 凤凰香港台
     group: 卫星
     aliases:
       - 凤凰香港台
       - 凤凰香港
       - PhoenixHK
+      - fenghuangxianggangta
     sources:
       - type: epgpw_api
         id: '495071'
-  - id: tvbfeicuitai
+  - id: tvbfeicui
     name: TVB 翡翠台
     group: 港澳台
     aliases:
@@ -798,10 +806,11 @@ channels:
       - TVBJade
       - TVB Jade
       - TVB1
+      - tvbfeicuitai
     sources:
       - type: epgpw_api
         id: '460917'
-  - id: tvbmingzhutai
+  - id: tvbmingzhu
     name: TVB 明珠台
     group: 港澳台
     aliases:
@@ -810,6 +819,7 @@ channels:
       - TVBPearl
       - TVB Pearl
       - TVB2
+      - tvbmingzhutai
     sources:
       - type: epgpw_api
         id: '368369'
@@ -823,23 +833,25 @@ channels:
     sources:
       - type: epgpw_api
         id: '410274'
-  - id: nowxinwentai
+  - id: nowxinwen
     name: Now 新闻台
     group: 港澳台
     aliases:
       - Now新闻台
       - NowNews
       - Now News
+      - nowxinwentai
     sources:
       - type: epgpw_api
         id: '410344'
-  - id: youxianxinwentai
+  - id: youxianxinwen
     name: 有线新闻台
     group: 港澳台
     aliases:
       - 有线新闻台
       - CableNews
       - i-Cable News
+      - youxianxinwentai
     sources: []
   - id: gangtaidianshi31
     name: 香港电台 第31频道
@@ -925,17 +937,18 @@ channels:
     sources:
       - type: epgpw_api
         id: '456557'
-  - id: chcgaoqingdianying
+  - id: chcgaoqing
     name: CHC 高清电影
     group: 数字付费
     aliases:
       - CHC高清电影
       - CHC高清
       - CHCHd
+      - chcgaoqingdianying
     sources:
       - type: epgpw_api
         id: '495047'
-  - id: chcdongzuodianying
+  - id: chcdongzuo
     name: CHC 动作电影
     group: 数字付费
     aliases:
@@ -943,10 +956,11 @@ channels:
       - CHC动作
       - CHCAction
       - 动作影院
+      - chcdongzuodianying
     sources:
       - type: epgpw_api
         id: '495049'
-  - id: chcjiatingdianying
+  - id: chcjiating
     name: CHC 家庭电影
     group: 数字付费
     aliases:
@@ -955,10 +969,11 @@ channels:
       - CHC家庭
       - CHCFamily
       - 家庭影院
+      - chcjiatingdianying
     sources:
       - type: epgpw_api
         id: '495050'
-  - id: chcyingmidianying
+  - id: chcyingmi
     name: CHC 影迷电影
     group: 数字付费
     aliases:
@@ -966,16 +981,18 @@ channels:
       - CHC精品电影
       - CHC精品
       - CHCHits
+      - chcyingmidianying
     sources:
       - type: epgpw_api
         id: '495088'
-  - id: cgtnjilupin
+  - id: cgtnjilu
     name: CGTN 纪录
     group: 卫星
     aliases:
       - CGTN记录
       - CGTN纪录
       - CGTNDoc
+      - cgtnjilupin
     sources:
       - type: tvmao
         id: CCTV18
@@ -999,7 +1016,7 @@ channels:
       - 爱上4K
       - AiShang4K
     sources: []
-  - id: cctv4ouzhouban
+  - id: cctv4ouzhou
     name: CCTV-4 欧洲
     group: 央视
     aliases:
@@ -1007,10 +1024,11 @@ channels:
       - CCTV-4欧洲
       - CCTV4EUO
       - CCTV4Euro
+      - cctv4ouzhouban
     sources:
       - type: epgpw_api
         id: '495003'
-  - id: cctv4meizhouban
+  - id: cctv4meizhou
     name: CCTV-4 美洲
     group: 央视
     aliases:
@@ -1018,10 +1036,11 @@ channels:
       - CCTV-4美洲
       - CCTV4AME
       - CCTV4America
+      - cctv4meizhouban
     sources:
       - type: epgpw_api
         id: '495004'
-  - id: zhongguojiaoyu1tai
+  - id: zhongguojiaoyu1
     name: 中国教育电视台一频道
     group: 央视
     aliases:
@@ -1030,10 +1049,11 @@ channels:
       - CETV1
       - 教育1台
       - ChinaEdu1
+      - zhongguojiaoyu1tai
     sources:
       - type: epgpw_api
         id: '495045'
-  - id: zhongguojiaoyu2tai
+  - id: zhongguojiaoyu2
     name: 中国教育电视台二频道
     group: 央视
     aliases:
@@ -1042,10 +1062,11 @@ channels:
       - CETV2
       - 教育2台
       - ChinaEdu2
+      - zhongguojiaoyu2tai
     sources:
       - type: epgpw_api
         id: '495046'
-  - id: zhongguojiaoyu4tai
+  - id: zhongguojiaoyu4
     name: 中国教育电视台四频道
     group: 央视
     aliases:
@@ -1054,10 +1075,11 @@ channels:
       - CETV4
       - 教育4台
       - ChinaEdu4
+      - zhongguojiaoyu4tai
     sources:
       - type: epgpw_api
         id: '495082'
-  - id: chapindao
+  - id: cha
     name: 茶频道
     group: 数字付费
     aliases:
@@ -1065,6 +1087,7 @@ channels:
       - 茶频道
       - 茶TV
       - ChaCha
+      - chapindao
     sources:
       - type: epgpw_api
         id: '495067'
@@ -1089,12 +1112,13 @@ channels:
         id: '495041'
       - type: tvmao
         id: HUNANTV2
-  - id: liyuanpindao
+  - id: liyuan
     name: 梨园
     group: 数字付费
     aliases:
       - 梨园
       - LiYuanTV
+      - liyuanpindao
     sources:
       - type: epgpw_api
         id: '495051'
@@ -1109,23 +1133,25 @@ channels:
         id: '495074'
       - type: tvmao
         id: KUAILECHUIDIAO
-  - id: sihaidiaoyupindao
+  - id: sihaidiaoyu
     name: 四海钓鱼
     group: 数字付费
     aliases:
       - 四海钓鱼
       - FourSeaFishing
+      - sihaidiaoyupindao
     sources:
       - type: epgpw_api
         id: '495077'
       - type: tvmao
         id: BAMC4
-  - id: guoxuepindao
+  - id: guoxue
     name: 国学
     group: 数字付费
     aliases:
       - 国学
       - GuoxueTV
+      - guoxuepindao
     sources:
       - type: epgpw_api
         id: '495086'
@@ -1217,7 +1243,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495022'
-  - id: tvbhudongxinwentai
+  - id: tvbhudongxinwen
     name: TVB 互动新闻台
     group: 港澳台
     aliases:
@@ -1225,6 +1251,7 @@ channels:
       - TVB新闻台
       - TVBNews
       - TVB互动新闻台
+      - tvbhudongxinwentai
     sources:
       - type: epgpw_api
         id: '460810'
@@ -1269,13 +1296,14 @@ channels:
     sources:
       - type: tdm
         id: '1'
-  - id: aoshiputai
+  - id: aoshipuwen
     name: 澳视葡文台
     group: 港澳台
     aliases:
       - 澳视葡文台
       - TDM葡文
       - TDM2
+      - aoshiputai
     sources:
       - type: tdm
         id: '2'
