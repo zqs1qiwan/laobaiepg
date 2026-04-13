@@ -797,7 +797,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495071'
-  - id: tvbfeicui
+  - id: tvbfeicuitai
     name: TVB 翡翠台
     group: 港澳台
     aliases:
@@ -810,7 +810,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '460917'
-  - id: tvbmingzhu
+  - id: tvbmingzhutai
     name: TVB 明珠台
     group: 港澳台
     aliases:
@@ -937,7 +937,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '456557'
-  - id: chcgaoqing
+  - id: chcgaoqingdianying
     name: CHC 高清电影
     group: 数字付费
     aliases:
@@ -948,7 +948,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495047'
-  - id: chcdongzuo
+  - id: chcdongzuodianying
     name: CHC 动作电影
     group: 数字付费
     aliases:
@@ -960,7 +960,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495049'
-  - id: chcjiating
+  - id: chcjiatingdianying
     name: CHC 家庭电影
     group: 数字付费
     aliases:
@@ -973,7 +973,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495050'
-  - id: chcyingmi
+  - id: chcyingmidianying
     name: CHC 影迷电影
     group: 数字付费
     aliases:
@@ -1040,7 +1040,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495004'
-  - id: zhongguojiaoyu1
+  - id: zhongguojiaoyu1tai
     name: 中国教育电视台一频道
     group: 央视
     aliases:
@@ -1053,7 +1053,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495045'
-  - id: zhongguojiaoyu2
+  - id: zhongguojiaoyu2tai
     name: 中国教育电视台二频道
     group: 央视
     aliases:
@@ -1066,7 +1066,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495046'
-  - id: zhongguojiaoyu4
+  - id: zhongguojiaoyu4tai
     name: 中国教育电视台四频道
     group: 央视
     aliases:
@@ -1243,7 +1243,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '495022'
-  - id: tvbhudongxinwen
+  - id: tvbhudongxinwentai
     name: TVB 互动新闻台
     group: 港澳台
     aliases:
