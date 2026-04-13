@@ -1,229 +1,255 @@
 # LaobaiEPG
 
-**A pure edge-based IPTV EPG management system built on Cloudflare Workers + R2 + GitHub Actions.**
-
-> 基于 Cloudflare Workers + R2 + GitHub Actions 的纯边缘化 IPTV EPG 管理系统
+**基于 Cloudflare Workers + R2 + GitHub Actions 的纯边缘化 IPTV EPG 管理系统**
 
 [![GitHub Actions](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml/badge.svg)](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
----
-
-## ✨ Features / 特性
-
-- **Pure edge deployment** — runs entirely on Cloudflare's global network, no server needed
-- **Multi-source EPG** — aggregates from epg.pw (CN/HK/TW), tvmao, and more
-- **Smart alias matching** — `浙江卫视4K` auto-matches to `浙江卫视`'s programme guide
-- **Auto-refresh** — GitHub Actions updates EPG data every 8 hours automatically
-- **Web admin panel** — built-in management UI at the root URL
-- **Zero config for users** — just paste the EPG URL into your IPTV player
+> [English Version](README_EN.md)
 
 ---
 
-## 📺 Public EPG Service / 公共服务
+## ✨ 特性
 
-> **No deployment needed.** Just use the URL below directly in your IPTV player.
-
-| Format | URL |
-|--------|-----|
-| Full (all channels) | `https://laobaiepg.laobaitv.net/guide.xml` |
-| **Compressed (recommended)** | `https://laobaiepg.laobaitv.net/guide.xml.gz` |
-| Mainland China channels | `https://laobaiepg.laobaitv.net/guide_mainland.xml` |
-| HK & Taiwan channels | `https://laobaiepg.laobaitv.net/guide_hktw.xml` |
-
-**Admin panel:** https://laobaiepg.laobaitv.net/
+- **纯边缘化** — 完全运行在 Cloudflare 全球网络，无需自建服务器
+- **多源聚合** — 支持 epg.pw、电视猫(tvmao)、澳门 TDM 等多个数据源，自动换源
+- **智能匹配** — CCTV 正则自动归一化 + 繁简自动转换 + 多别名匹配
+- **自动更新** — GitHub Actions 每天定时抓取，节目单始终保持最新
+- **Web 管理面板** — 内置可视化管理界面，频道状态一目了然
+- **开箱即用** — 直接使用公共服务地址，也可 Fork 部署自己的实例
 
 ---
 
-## 🚀 Deploy Your Own Instance / 自己部署
+## 📺 公共 EPG 服务
 
-Fork this project and deploy your own EPG service with full control over channel configuration.
+> **无需部署**，直接在 IPTV 播放器中填入以下地址即可使用。
 
-### Prerequisites / 前提
+| 格式 | 地址 |
+|------|------|
+| 完整节目单 | `https://laobaiepg.laobaitv.net/guide.xml` |
+| **压缩版（推荐）** | `https://laobaiepg.laobaitv.net/guide.xml.gz` |
+| 大陆频道 | `https://laobaiepg.laobaitv.net/guide_mainland.xml` |
+| 港澳台频道 | `https://laobaiepg.laobaitv.net/guide_hktw.xml` |
 
-- GitHub account
-- Cloudflare account (free tier is sufficient)
+**管理面板：** https://laobaiepg.laobaitv.net/
+
+**支持的播放器：** TiviMate、Kodi、Perfect Player、VLC、DIYP 等所有支持 XMLTV 格式的播放器
+
+---
+
+## 🧠 智能匹配系统
+
+无需手动对照频道名，系统自动处理以下匹配场景：
+
+| 你的播放列表写法 | 自动匹配到 | 匹配方式 |
+|---|---|---|
+| `CCTV-1` / `CCTV 1` / `cctv1综合` | CCTV1 | CCTV 正则 |
+| `CCTV5PLUS` / `cctv 5+` | CCTV5+ | CCTV 正则 |
+| `浙江卫视4K` / `浙江卫视 4K HD` | 浙江卫视 | 别名 + 后缀去除 |
+| `翡翠臺` | TVB 翡翠台 | 繁简自动转换 |
+| `鳳凰資訊` | 凤凰资讯台 | 繁简自动转换 |
+| `無線新聞` | TVB 互动新闻台 | 繁简自动转换 |
+
+在管理面板的「匹配测试」页面可以实时验证匹配效果。
+
+---
+
+## 📋 频道管理
+
+所有配置通过编辑 YAML 文件完成，提交后约 3-5 分钟自动生效。
+
+### 添加频道别名
+
+编辑 `config/channels.yaml`，在对应频道的 `aliases` 里添加你的写法：
+
+```yaml
+- id: zhejiangweishi
+  name: 浙江卫视
+  aliases:
+    - 浙江卫视
+    - 浙江卫视4K       # ← 添加你需要的别名
+    - 浙江卫视 4K HD
+    - ZJTV
+```
+
+### 添加新频道
+
+```yaml
+- id: wodeweishi            # 唯一 ID（拼音，全小写）
+  name: 我的频道              # 显示名称
+  group: 卫视                # 分组：央视/卫视/港澳台/地方台/数字付费/卫星
+  aliases:
+    - 我的频道
+    - 我的频道4K
+  sources:
+    - type: epgpw_api
+      id: "12345"           # epg.pw 频道 ID
+```
+
+频道 ID 可在 [epg.pw](https://epg.pw/check_guide.php) 搜索获取。
+
+### 数据源类型
+
+| 类型 | 说明 |
+|------|------|
+| `epgpw_api` | epg.pw JSON API（推荐，实时数据） |
+| `tvmao` | 电视猫（覆盖北京地方台等 epg.pw 没有的频道）|
+| `tdm` | 澳门广播电视 TDM（澳视系列 6 个频道）|
+
+---
+
+## 🚀 Fork 部署自己的实例
+
+### 前提条件
+
+- GitHub 账号
+- Cloudflare 账号（免费额度即可）
 - Node.js 18+
 
-### Step 1: Fork & Clone
+### 第一步：Fork 并 Clone
 
 ```bash
-# Fork this repository on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/laobaiepg.git
+# 在 GitHub 上 Fork 本仓库，然后 clone 你的 Fork
+git clone https://github.com/你的用户名/laobaiepg.git
 cd laobaiepg
 npm install
 ```
 
-### Step 2: Create Cloudflare Resources
+### 第二步：创建 Cloudflare 资源
 
 ```bash
-# Login to Cloudflare
+# 登录 Cloudflare
 npx wrangler login
 
-# Create R2 bucket for EPG files
+# 创建 R2 存储桶（存放 EPG 文件）
 npx wrangler r2 bucket create epg-data
 
-# Create KV namespace for channel index cache
+# 创建 KV 命名空间（缓存频道索引）
 npx wrangler kv namespace create EPG_KV
-# → Note the returned id and preview_id
+# → 记录返回的 id 和 preview_id
 ```
 
-### Step 3: Configure wrangler.jsonc
-
-Edit `wrangler.jsonc` and fill in the values from Step 2:
+### 第三步：修改 wrangler.jsonc
 
 ```jsonc
 {
   "kv_namespaces": [
     {
       "binding": "EPG_KV",
-      "id": "YOUR_KV_NAMESPACE_ID",        // ← from step 2
-      "preview_id": "YOUR_KV_PREVIEW_ID"   // ← from step 2
+      "id": "你的KV_ID",              // ← 第二步返回的 id
+      "preview_id": "你的PREVIEW_ID"   // ← 第二步返回的 preview_id
     }
   ],
   "vars": {
     "ENVIRONMENT": "production",
-    "GITHUB_REPO": "YOUR_USERNAME/laobaiepg"  // ← your fork
+    "GITHUB_REPO": "你的用户名/laobaiepg"  // ← 你的 Fork 仓库
   }
 }
 ```
 
-### Step 4: Configure GitHub Secrets
+### 第四步：配置 GitHub Secrets
 
-In your GitHub repository → **Settings → Secrets and variables → Actions**, add:
+在仓库 → **Settings → Secrets and variables → Actions** 中添加：
 
-| Secret | Where to get it |
-|--------|----------------|
-| `CLOUDFLARE_API_TOKEN` | [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) → Create Token → **Edit Cloudflare Workers** template, also add R2 Edit permission |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard → right sidebar |
-| `KV_NAMESPACE_ID` | The `id` returned from `wrangler kv namespace create` in Step 2 |
+| Secret | 获取方式 |
+|--------|---------|
+| `CLOUDFLARE_API_TOKEN` | [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) → Create Token → **Edit Cloudflare Workers** 模板，额外添加 R2 Edit 权限 |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard 右侧栏 |
+| `KV_NAMESPACE_ID` | 第二步 `wrangler kv namespace create` 返回的 id |
 
-### Step 5: Deploy Worker
+### 第五步：部署
 
 ```bash
 npx wrangler deploy
 ```
 
-### Step 6: Push & Auto-run
+### 第六步：推送代码
 
-Push your code to `main`. GitHub Actions will automatically deploy the Worker and run the first EPG grab (~3 minutes). Your service will be live at `https://laobaiepg.YOUR_SUBDOMAIN.workers.dev/`.
-
----
-
-## 📋 Channel Management / 频道管理
-
-All configuration is done by editing YAML files — changes take effect within 3-5 minutes after commit.
-
-### Adding a Channel Alias / 添加频道别名
-
-Edit `config/channels.yaml`:
-
-```yaml
-- id: "ZhejiangTV"
-  name: "浙江卫视"
-  aliases:
-    - "浙江卫视"
-    - "浙江卫视4K"       # ← add your variant here
-    - "浙江卫视 4K HD"
-    - "ZJTV"
-```
-
-### Adding a New Channel / 添加新频道
-
-```yaml
-- id: "MyChannel"            # unique ID (English)
-  name: "我的频道"             # display name
-  group: "卫视"               # 央视/卫视/港澳台/地方台/数字付费/卫星
-  aliases:
-    - "我的频道"
-    - "我的频道4K"
-  sources:
-    - type: "epgpw_api"
-      id: "12345"             # epg.pw channel ID
-```
-
-Find epg.pw channel IDs at [epg.pw/check_guide.php](https://epg.pw/check_guide.php).
+推送到 `main` 分支后，GitHub Actions 会自动部署 Worker 并执行首次抓取（约 3 分钟）。
 
 ---
 
-## 🏗️ Architecture / 架构
+## 🏗️ 架构
 
 ```
-GitHub Repository
+GitHub 仓库（配置 + 代码）
         │
-        ├── GitHub Actions (every 8 hours)
-        │   └── scripts/grab.js  ─→  Cloudflare R2 (guide.xml, channels.json)
+        ├── GitHub Actions（每天定时 2 次）
+        │   └── scripts/grab.js  ──→  Cloudflare R2（guide.xml, channels.json）
         │
-        └── Cloudflare Worker
-                ├── GET /            Web admin panel (browser) / JSON info (API)
-                ├── GET /guide.xml   XMLTV programme guide
-                ├── GET /channels.json  Channel list with EPG status
-                ├── GET /match?name= Alias matching test
-                └── GET /status      Service status
+        └── Cloudflare Worker（边缘服务）
+                ├── GET /              管理面板（浏览器）/ JSON 信息（API）
+                ├── GET /guide.xml     XMLTV 节目单
+                ├── GET /guide.xml.gz  压缩版（推荐）
+                ├── GET /channels.json 频道列表 + EPG 状态
+                ├── GET /match?name=   频道匹配测试
+                └── GET /status        服务状态
 ```
 
-**Cloudflare resources (all free tier):**
+**Cloudflare 资源用量（均在免费额度内）：**
 
-| Resource | Usage | Free Limit |
-|----------|-------|-----------|
-| Workers | EPG API | 100k req/day |
-| R2 | XMLTV files (~2 MB) | 10 GB |
-| KV | Channel index cache | 100k reads/day |
-
----
-
-## 📊 API Reference / API 接口
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /` | Admin panel (browser) or JSON service info (curl/API) |
-| `GET /guide.xml` | Full XMLTV programme guide |
-| `GET /guide.xml.gz` | Compressed version **(recommended)** |
-| `GET /guide_mainland.xml` | Mainland China channels only |
-| `GET /guide_hktw.xml` | Hong Kong & Taiwan channels only |
-| `GET /channels.json` | Channel list with aliases and EPG status |
-| `GET /match?name=浙江卫视4K` | Test channel alias matching |
-| `GET /status` | Service status and last update time |
+| 资源 | 用途 | 免费限制 |
+|------|------|---------|
+| Workers | EPG API 服务 | 10 万次/天 |
+| R2 | 存储 XMLTV 文件（~2MB）| 10 GB |
+| KV | 频道索引缓存 | 10 万次读/天 |
 
 ---
 
-## 🔄 Update Schedule / 更新计划
+## 📊 API 接口
 
-EPG refreshes **3 times daily** (Beijing Time / UTC):
-
-| BJT | UTC | Notes |
-|-----|-----|-------|
-| 09:00 | 01:00 | 1 hour after epg.pw daily data update |
-| 17:00 | 09:00 | Midday refresh |
-| 01:00 | 17:00 | Overnight refresh |
-
----
-
-## ⚙️ Key Configuration Files
-
-| File | Purpose |
-|------|---------|
-| `config/channels.yaml` | Channel definitions, aliases, data sources |
-| `config/sources.yaml` | Crawl settings (days, delay, retry) |
-| `wrangler.jsonc` | Cloudflare Worker config |
-| `.github/workflows/grab.yml` | EPG auto-update schedule |
+| 端点 | 说明 |
+|------|------|
+| `GET /` | 管理面板（浏览器）/ JSON 服务信息（curl/API）|
+| `GET /guide.xml` | 完整 XMLTV 节目单 |
+| `GET /guide.xml.gz` | 压缩版 **（推荐）** |
+| `GET /guide_mainland.xml` | 仅大陆频道 |
+| `GET /guide_hktw.xml` | 仅港澳台频道 |
+| `GET /channels.json` | 频道列表（含别名、EPG 状态、数据源）|
+| `GET /match?name=浙江卫视4K` | 频道匹配测试 |
+| `GET /status` | 服务状态和最后更新时间 |
 
 ---
 
-## 🙏 Acknowledgements / 致谢
+## 🔄 更新计划
 
-- [epg.pw](https://epg.pw) — Primary EPG data source
-- [supzhang/epg](https://github.com/supzhang/epg) — Multi-source scraping architecture reference
-- [iptv-org](https://github.com/iptv-org) — Community EPG resources
+节目单每天自动更新 **2 次**（北京时间）：
+
+| 北京时间 | UTC | 说明 |
+|---------|-----|------|
+| 09:00 | 01:00 | epg.pw 每日数据更新后 1 小时 |
+| 22:00 | 14:00 | 晚间刷新 |
+
+如需立即更新，在 [GitHub Actions](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml) 手动触发即可。
+
+---
+
+## ⚙️ 配置文件
+
+| 文件 | 用途 |
+|------|------|
+| `config/channels.yaml` | 频道定义、别名、数据源 |
+| `config/sources.yaml` | 抓取设置（天数、间隔、重试）|
+| `wrangler.jsonc` | Cloudflare Worker 配置 |
+| `.github/workflows/grab.yml` | 定时抓取计划 |
+
+---
+
+## 🙏 致谢
+
+- [epg.pw](https://epg.pw) — 主要 EPG 数据源
+- [supzhang/epg](https://github.com/supzhang/epg) — 多源抓取架构参考
+- [iptv-org](https://github.com/iptv-org) — 社区 EPG 资源
+- [taksssss/iptv-tool](https://github.com/taksssss/iptv-tool) — CCTV 正则匹配参考
 
 ---
 
 ## 📄 License
 
-MIT License — feel free to fork and deploy your own instance.
+MIT License — 可自由 Fork 部署。
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/zqs1qiwan">laobai</a> · <a href="https://laobaiepg.laobaitv.net/">Public EPG Service</a></sub>
+  <sub>Built with ❤️ by <a href="https://github.com/zqs1qiwan">laobai</a> · <a href="https://laobaiepg.laobaitv.net/">公共 EPG 服务</a></sub>
 </div>
