@@ -1702,7 +1702,7 @@ channels:
       - HBO HD
     sources:
       - type: epgpw_api
-        id: '464745'
+        id: '465249'
   - id: hbo2
     name: HBO 2
     group: 海外
