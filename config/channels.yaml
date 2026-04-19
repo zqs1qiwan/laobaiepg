@@ -1651,34 +1651,7 @@ channels:
     sources:
       - type: epgpw_api
         id: '222007'
-  - id: skybundesliga1
-    name: SKY BUNDESLIGA 1
-    group: 海外体育
-    aliases:
-      - SKY BUNDESLIGA 1
-      - Sky Bundesliga 1
-    sources: []
-  - id: skybundesliga2
-    name: SKY BUNDESLIGA 2
-    group: 海外体育
-    aliases:
-      - SKY BUNDESLIGA 2
-      - Sky Bundesliga 2
-    sources: []
-  - id: skybundesliga3
-    name: SKY BUNDESLIGA 3
-    group: 海外体育
-    aliases:
-      - SKY BUNDESLIGA 3
-      - Sky Bundesliga 3
-    sources: []
-  - id: skybundesliga4
-    name: SKY BUNDESLIGA 4
-    group: 海外体育
-    aliases:
-      - SKY BUNDESLIGA 4
-      - Sky Bundesliga 4
-    sources: []
+
   - id: premiersports1
     name: PREMIER SPORTS 1
     group: 海外体育
