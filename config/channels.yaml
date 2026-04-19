@@ -1357,3 +1357,398 @@ channels:
     sources:
       - type: tdm
         id: '8'
+
+  # ============================================================
+  # 海外频道 - 体育
+  # ============================================================
+  - id: espn
+    name: ESPN
+    group: 海外体育
+    aliases:
+      - ESPN
+      - ESPN HD
+    sources:
+      - type: epgpw_api
+        id: '465198'
+  - id: espn2
+    name: ESPN 2
+    group: 海外体育
+    aliases:
+      - ESPN2
+      - ESPN 2
+      - ESPN2 HD
+    sources:
+      - type: epgpw_api
+        id: '465373'
+  - id: espnnews
+    name: ESPN News
+    group: 海外体育
+    aliases:
+      - ESPN NEWS
+      - ESPN News
+      - ESPNNEWS
+      - ESPNNEWS HD
+    sources:
+      - type: epgpw_api
+        id: '465410'
+  - id: espnu
+    name: ESPN U
+    group: 海外体育
+    aliases:
+      - ESPN U
+      - ESPNU
+      - ESPNU HD
+    sources:
+      - type: epgpw_api
+        id: '465108'
+  - id: espndeportes
+    name: ESPN Deportes
+    group: 海外体育
+    aliases:
+      - ESPN DEPORTES
+      - ESPN Deportes
+      - ESPN Deportes HD
+    sources:
+      - type: epgpw_api
+        id: '464949'
+  - id: foxsports1
+    name: FOX SPORTS 1
+    group: 海外体育
+    aliases:
+      - FOX SPORTS 1
+      - Fox Sports 1
+      - FS1
+      - FS1 Fox Sports 1 HD
+    sources:
+      - type: epgpw_api
+        id: '465291'
+  - id: foxsports2
+    name: FOX SPORTS 2
+    group: 海外体育
+    aliases:
+      - FOX SPORTS 2
+      - Fox Sports 2
+      - FS2
+      - FS2 Fox Sports 2 HD
+    sources:
+      - type: epgpw_api
+        id: '465355'
+  - id: nfltv
+    name: NFL Network
+    group: 海外体育
+    aliases:
+      - NFL NETWORK
+      - NFL Network
+      - NFL Network HD
+    sources:
+      - type: epgpw_api
+        id: '465311'
+  - id: nbatv
+    name: NBA TV
+    group: 海外体育
+    aliases:
+      - NBA TV
+      - NBA TV HD
+    sources:
+      - type: epgpw_api
+        id: '464912'
+  - id: tntsports1
+    name: TNT SPORTS 1
+    group: 海外体育
+    aliases:
+      - TNT SPORTS 1
+      - TNT Sports 1
+      - TNT Sports 1 HD
+    sources:
+      - type: epgpw_api
+        id: '400477'
+  - id: tntsports2
+    name: TNT SPORTS 2
+    group: 海外体育
+    aliases:
+      - TNT SPORTS 2
+      - TNT Sports 2
+      - TNT Sports 2 HD
+    sources:
+      - type: epgpw_api
+        id: '400480'
+  - id: tntsports3
+    name: TNT SPORTS 3
+    group: 海外体育
+    aliases:
+      - TNT SPORTS 3
+      - TNT Sports 3
+      - TNT Sports 3 HD
+    sources:
+      - type: epgpw_api
+        id: '400479'
+  - id: tntsports4
+    name: TNT SPORTS 4
+    group: 海外体育
+    aliases:
+      - TNT SPORTS 4
+      - TNT Sports 4
+      - TNT Sports 4 HD
+    sources:
+      - type: epgpw_api
+        id: '400478'
+  - id: beinsports
+    name: BEIN SPORTS
+    group: 海外体育
+    aliases:
+      - BEIN SPORTS
+      - beIN Sports
+      - beIN Sports USA HD
+      - BEIN SPORTS MAX 1
+      - BEIN SPORTS MAX 2
+      - BEIN SPORTS MAX 3
+      - BEIN SPORTS MAX 4
+      - BEIN SPORTS MAX 5
+      - BEIN SPORTS MAX 6
+    sources:
+      - type: epgpw_api
+        id: '464754'
+  - id: eurosport1
+    name: EUROSPORT 1
+    group: 海外体育
+    aliases:
+      - EUROSPORT 1
+      - Eurosport 1
+      - EUROSPORT1
+      - Eurosport
+    sources:
+      - type: epgpw_api
+        id: '464123'
+  - id: eurosport2
+    name: EUROSPORT 2
+    group: 海外体育
+    aliases:
+      - EUROSPORT 2
+      - Eurosport 2
+      - EUROSPORT2
+    sources:
+      - type: epgpw_api
+        id: '464027'
+  - id: skysportsmainevent
+    name: SKY SPORTS MAIN EVENT
+    group: 海外体育
+    aliases:
+      - SKY SPORTS MAIN EVENT
+      - Sky Sports Main Event
+      - SkySpMainEvHD
+    sources:
+      - type: epgpw_api
+        id: '9415'
+  - id: skysportspremierleague
+    name: SKY SPORTS PREMIER LEAGUE
+    group: 海外体育
+    aliases:
+      - SKY SPORTS PREMIER LEAGUE
+      - Sky Sports Premier League
+      - SkySp PL HD
+    sources:
+      - type: epgpw_api
+        id: '9265'
+  - id: skysportsfootball
+    name: SKY SPORTS FOOTBALL
+    group: 海外体育
+    aliases:
+      - SKY SPORTS FOOTBALL
+      - Sky Sports Football
+      - Sky Sports Football HD
+      - SkySp Fball HD
+    sources:
+      - type: epgpw_api
+        id: '9169'
+  - id: skysportscricket
+    name: SKY SPORTS CRICKET
+    group: 海外体育
+    aliases:
+      - SKY SPORTS CRICKET
+      - Sky Sports Cricket
+      - SkySpCricket HD
+    sources:
+      - type: epgpw_api
+        id: '9181'
+  - id: skysportsgolf
+    name: SKY SPORTS GOLF
+    group: 海外体育
+    aliases:
+      - SKY SPORTS GOLF
+      - Sky Sports Golf
+      - SkySp Golf HD
+    sources:
+      - type: epgpw_api
+        id: '12022'
+  - id: skysportsf1
+    name: SKY SPORTS F1
+    group: 海外体育
+    aliases:
+      - SKY SPORTS F1
+      - Sky Sports F1
+      - SkySp F1 HD
+    sources:
+      - type: epgpw_api
+        id: '9409'
+  - id: skysportsarena
+    name: SKY SPORTS ARENA
+    group: 海外体育
+    aliases:
+      - SKY SPORTS ARENA
+      - Sky Sports Arena
+      - SkySp ArenaHD
+    sources:
+      - type: epgpw_api
+        id: '12358'
+  - id: skysportsmix
+    name: SKY SPORTS MIX
+    group: 海外体育
+    aliases:
+      - SKY SPORTS MIX
+      - Sky Sports Mix
+      - SkySp Mix HD
+    sources:
+      - type: epgpw_api
+        id: '9244'
+  - id: skysportsnews
+    name: SKY SPORTS NEWS
+    group: 海外体育
+    aliases:
+      - SKY SPORTS NEWS
+      - Sky Sports News
+      - SkySp News HD
+    sources:
+      - type: epgpw_api
+        id: '9612'
+  - id: skysportsaction
+    name: SKY SPORTS ACTION
+    group: 海外体育
+    aliases:
+      - SKY SPORTS ACTION
+      - Sky Sports Action
+      - SkySp ActionHD
+    sources:
+      - type: epgpw_api
+        id: '9259'
+  - id: skysportsracing
+    name: SKY SPORTS RACING
+    group: 海外体育
+    aliases:
+      - SKY SPORTS RACING
+      - Sky Sports Racing
+      - SkySp Racing HD
+    sources:
+      - type: epgpw_api
+        id: '12200'
+  - id: skysportstennis
+    name: SKY SPORTS Tennis
+    group: 海外体育
+    aliases:
+      - SKY SPORTS Tennis
+      - SKY SPORTS TENNIS
+      - Sky Sports Tennis
+      - SkySp Tennis HD
+    sources:
+      - type: epgpw_api
+        id: '222007'
+  - id: skybundesliga1
+    name: SKY BUNDESLIGA 1
+    group: 海外体育
+    aliases:
+      - SKY BUNDESLIGA 1
+      - Sky Bundesliga 1
+    sources: []
+  - id: skybundesliga2
+    name: SKY BUNDESLIGA 2
+    group: 海外体育
+    aliases:
+      - SKY BUNDESLIGA 2
+      - Sky Bundesliga 2
+    sources: []
+  - id: skybundesliga3
+    name: SKY BUNDESLIGA 3
+    group: 海外体育
+    aliases:
+      - SKY BUNDESLIGA 3
+      - Sky Bundesliga 3
+    sources: []
+  - id: skybundesliga4
+    name: SKY BUNDESLIGA 4
+    group: 海外体育
+    aliases:
+      - SKY BUNDESLIGA 4
+      - Sky Bundesliga 4
+    sources: []
+  - id: premiersports1
+    name: PREMIER SPORTS 1
+    group: 海外体育
+    aliases:
+      - PREMIER SPORTS 1
+      - Premier Sports 1
+      - Premier Sports 1 HD
+    sources:
+      - type: epgpw_api
+        id: '219100'
+
+  # ============================================================
+  # 海外频道 - 影视娱乐
+  # ============================================================
+  - id: hbo
+    name: HBO
+    group: 海外
+    aliases:
+      - HBO
+      - HBO East
+      - HBO HD
+    sources:
+      - type: epgpw_api
+        id: '464745'
+  - id: hbo2
+    name: HBO 2
+    group: 海外
+    aliases:
+      - HBO 2
+      - HBO2
+      - HBO2 HD
+    sources:
+      - type: epgpw_api
+        id: '465041'
+  - id: discoverychannel
+    name: Discovery Channel
+    group: 海外
+    aliases:
+      - Discovery Channel
+      - Discovery Channel HD
+      - The Discovery Channel HD
+    sources:
+      - type: epgpw_api
+        id: '465364'
+  - id: discoverylife
+    name: Discovery Life
+    group: 海外
+    aliases:
+      - Discovery Life
+      - Discovery Life Channel
+    sources:
+      - type: epgpw_api
+        id: '464838'
+  - id: cinemax
+    name: Cinemax West
+    group: 海外
+    aliases:
+      - Cinemax West
+      - Cinemax
+      - Cinemax HD
+    sources:
+      - type: epgpw_api
+        id: '464917'
+  - id: nhkworld
+    name: NHK World Japan
+    group: 海外
+    aliases:
+      - NHK World Japan
+      - NHK World TV
+      - NHK World
+    sources:
+      - type: epgpw_api
+        id: '465327'

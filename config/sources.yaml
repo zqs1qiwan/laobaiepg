@@ -39,6 +39,11 @@ output:
       groups: ["港澳台"]
       note: "香港台湾频道"
 
+    - id: "overseas"
+      filename: "guide_overseas.xml"
+      groups: ["海外体育", "海外"]
+      note: "海外频道（ESPN/Sky Sports/HBO等）"
+
   r2:
     bucket: "epg-data"
     prefix: "xmltv/"
