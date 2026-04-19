@@ -1665,8 +1665,9 @@ channels:
     group: 海外
     aliases:
       - HBO
-      - HBO East
-      - HBO HD
+      - HBO Pacific
+      - HBO (Pacific)
+      - HBO US
     sources:
       - type: epgpw_api
         id: '465249'
