@@ -1499,12 +1499,6 @@ channels:
       - BEIN SPORTS
       - beIN Sports
       - beIN Sports USA HD
-      - BEIN SPORTS MAX 1
-      - BEIN SPORTS MAX 2
-      - BEIN SPORTS MAX 3
-      - BEIN SPORTS MAX 4
-      - BEIN SPORTS MAX 5
-      - BEIN SPORTS MAX 6
     sources:
       - type: epgpw_api
         id: '464754'
