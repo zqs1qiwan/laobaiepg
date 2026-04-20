@@ -14,7 +14,7 @@
 - **纯边缘化** — 完全运行在 Cloudflare 全球网络，无需自建服务器
 - **多源聚合** — 支持 epg.pw、电视猫(tvmao)、澳门 TDM 等多个数据源，自动换源
 - **智能匹配** — CCTV 正则自动归一化 + 繁简自动转换 + 多别名匹配
-- **自动更新** — GitHub Actions 每天定时抓取，节目单始终保持最新
+- **自动更新** — GitHub Actions 每天定时抓取，epg.pw 数据源一次抓取 7 天覆盖，节目单始终保持充足
 - **Web 管理面板** — 内置可视化管理界面，频道状态一目了然
 - **开箱即用** — 直接使用公共服务地址，也可 Fork 部署自己的实例
 
@@ -220,6 +220,9 @@ GitHub 仓库（配置 + 代码）
 | 09:00 | 01:00 | epg.pw 每日数据更新后 1 小时 |
 | 22:00 | 14:00 | 晚间刷新 |
 
+> **注意**：GitHub Actions 的定时任务在高峰期可能延迟 1-4 小时触发，属于平台已知限制。
+> 为缓解此问题，epg.pw 数据源每次抓取 **7 天**节目单覆盖，tvmao 抓取 **3 天**，即使某次定时任务延迟也不会影响当天节目单显示。
+
 如需立即更新，在 [GitHub Actions](https://github.com/zqs1qiwan/laobaiepg/actions/workflows/grab.yml) 手动触发即可。
 
 ---
@@ -229,7 +232,7 @@ GitHub 仓库（配置 + 代码）
 | 文件 | 用途 |
 |------|------|
 | `config/channels.yaml` | 频道定义、别名、数据源 |
-| `config/sources.yaml` | 抓取设置（天数、间隔、重试）|
+| `config/sources.yaml` | 抓取设置（天数、间隔、重试；epg.pw 默认 7 天，tvmao 默认 3 天）|
 | `wrangler.jsonc` | Cloudflare Worker 配置 |
 | `.github/workflows/grab.yml` | 定时抓取计划 |
 
