@@ -146,20 +146,59 @@ function writeOutput(channels, epgData, outputConfig) {
     // 读取旧数据用于 fallback
     const oldEpg = loadExistingEpg(outputDir, fileConfig.filename);
 
-    // 合并：新数据为空的频道用旧数据兜底
-    const mergedEpg = new Map(epgData);
-    let fallbackCount = 0;
+    // 按日期维度合并：对每个频道每一天，有新数据用新的，没有则保留旧的
+    // 这样 7 天中某天抓取失败，不会丢失该天已有的节目数据
+    const mergedEpg = new Map();
+    let fallbackChannels = 0, fallbackProgs = 0;
+
+    // 把节目列表按「北京时间日期 YYYY-MM-DD」分桶
+    function bucketByDate(progs) {
+      const buckets = new Map();
+      for (const p of progs) {
+        const bj = new Date(p.start.getTime() + 8 * 3600000);
+        const key = `${bj.getUTCFullYear()}-${String(bj.getUTCMonth()+1).padStart(2,'0')}-${String(bj.getUTCDate()).padStart(2,'0')}`;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(p);
+      }
+      return buckets;
+    }
+
     for (const ch of channels) {
-      if (!mergedEpg.has(ch.id) || mergedEpg.get(ch.id).length === 0) {
-        const old = oldEpg.get(ch.id);
-        if (old && old.length > 0) {
-          mergedEpg.set(ch.id, old);
-          fallbackCount++;
-          logger.warn(`[fallback] ${ch.name}: 使用旧数据 (${old.length} 条)`);
+      const newProgs  = epgData.get(ch.id) || [];
+      const oldProgs  = oldEpg.get(ch.id)  || [];
+
+      if (oldProgs.length === 0) {
+        // 没有旧数据，直接用新数据（可能也是空）
+        if (newProgs.length > 0) mergedEpg.set(ch.id, newProgs);
+        continue;
+      }
+
+      const newBuckets = bucketByDate(newProgs);
+      const oldBuckets = bucketByDate(oldProgs);
+
+      // 合并：新有的日期用新的，新没有的日期补旧的
+      const allDates = new Set([...newBuckets.keys(), ...oldBuckets.keys()]);
+      const merged = [];
+      let addedFallback = 0;
+      for (const date of [...allDates].sort()) {
+        if (newBuckets.has(date)) {
+          merged.push(...newBuckets.get(date));
+        } else if (oldBuckets.has(date)) {
+          merged.push(...oldBuckets.get(date));
+          addedFallback += oldBuckets.get(date).length;
         }
       }
+
+      if (merged.length > 0) mergedEpg.set(ch.id, merged);
+
+      if (addedFallback > 0) {
+        fallbackChannels++;
+        fallbackProgs += addedFallback;
+        logger.warn(`[fallback] ${ch.name}: 补充 ${addedFallback} 条旧节目（新抓取缺失的日期）`);
+      }
     }
-    if (fallbackCount > 0) logger.info(`[fallback] 共 ${fallbackCount} 个频道使用旧数据兜底`);
+
+    if (fallbackChannels > 0) logger.info(`[fallback] 共 ${fallbackChannels} 个频道补充了 ${fallbackProgs} 条旧节目数据`);
 
     const xml = generateXmltv(channels, mergedEpg, fileConfig.groups || []);
     writeFileSync(outPath, xml, 'utf-8');
