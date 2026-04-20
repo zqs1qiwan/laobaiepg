@@ -12,6 +12,7 @@ import { getEpgNowtv, getChannelsNowtv } from './nowtv.js';
 import { getEpgTbc, getChannelsTbc } from './tbc.js';
 import { getEpgEpgpwApi, getChannelsEpgpwApi } from './epgpw_api.js';
 import { getEpgTdm, getChannelsTdm } from './tdm.js';
+import { getEpgBrtv, getChannelsBrtv } from './brtv.js';
 
 /**
  * 数据源注册表
@@ -44,6 +45,10 @@ export const scraperRegistry = {
   tbc: {
     getEpg: getEpgTbc,
     getChannels: getChannelsTbc,
+  },
+  brtv: {
+    getEpg: getEpgBrtv,
+    getChannels: getChannelsBrtv,
   },
 };
 

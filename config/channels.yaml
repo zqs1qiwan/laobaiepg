@@ -140,9 +140,10 @@ channels:
       - 北京文艺
       - BTV文艺
       - BTV2
+      - BRTV文艺
     sources:
-      - type: tvmao
-        id: BTV2
+      - type: brtv
+        id: '135'
   - id: beijingtiyuxiuxian
     name: 北京体育休闲
     group: 地方台
@@ -151,9 +152,10 @@ channels:
       - BTV体育休闲
       - BTV体育
       - BTV3
+      - BRTV体育休闲
     sources:
-      - type: tvmao
-        id: BTV3
+      - type: brtv
+        id: '138'
   - id: beijingyingshi
     name: 北京影视
     group: 地方台
@@ -161,9 +163,10 @@ channels:
       - 北京影视
       - BTV影视
       - BTV4
+      - BRTV影视
     sources:
-      - type: tvmao
-        id: BTV4
+      - type: brtv
+        id: '137'
   - id: beijingcaijing
     name: 北京财经
     group: 地方台
@@ -172,9 +175,10 @@ channels:
       - BTV财经
       - BTV5
       - 财富天下
+      - BRTV财经
     sources:
-      - type: tvmao
-        id: BTV5
+      - type: brtv
+        id: '133'
   - id: beijingshenghuo
     name: 北京生活
     group: 地方台
@@ -182,9 +186,10 @@ channels:
       - 北京生活
       - BTV生活
       - BTV7
+      - BRTV生活
     sources:
-      - type: tvmao
-        id: BTV7
+      - type: brtv
+        id: '139'
   - id: beijingxinwen
     name: 北京新闻
     group: 地方台
@@ -192,9 +197,10 @@ channels:
       - 北京新闻
       - BTV新闻
       - BTV9
+      - BRTV新闻
     sources:
-      - type: tvmao
-        id: BTV9
+      - type: brtv
+        id: '141'
   - id: kakushaoer
     name: 卡酷少儿
     group: 地方台
@@ -202,9 +208,10 @@ channels:
       - 卡酷少儿
       - BTV10
       - 北京卡酷
+      - BRTV卡酷少儿
     sources:
-      - type: tvmao
-        id: BTV10
+      - type: brtv
+        id: '142'
   - id: beijingjishikejiao
     name: 北京纪实科教
     group: 地方台
@@ -213,9 +220,10 @@ channels:
       - 北京纪实
       - BTV纪实
       - BTV12
+      - BRTV纪实科教
     sources:
-      - type: tvmao
-        id: BTV12
+      - type: brtv
+        id: '136'
   - id: CCTV1
     name: CCTV-1 综合
     logo: https://epg.pw/logos/CCTV1.png
@@ -1090,7 +1098,7 @@ channels:
       - chapindao
     sources:
       - type: epgpw_api
-        id: '495067'
+        id: '538722'
   - id: guangxiweishi
     name: 广西卫视
     group: 卫视
