@@ -26,6 +26,7 @@ channels:
     group: 卫星
     aliases:
       - CGTN西语
+      - CGTN西班牙语
       - CGTNSpanish
       - cgtnxiyupindao
     sources:
@@ -46,6 +47,7 @@ channels:
     group: 卫星
     aliases:
       - CGTN阿语
+      - CGTN阿拉伯语
       - CGTNArabic
       - cgtnalapindao
     sources:
@@ -999,6 +1001,7 @@ channels:
     aliases:
       - CGTN记录
       - CGTN纪录
+      - CGTN外语纪录
       - CGTNDoc
       - cgtnjilupin
     sources:
@@ -1125,6 +1128,7 @@ channels:
     group: 数字付费
     aliases:
       - 梨园
+      - 梨园频道
       - LiYuanTV
       - liyuanpindao
     sources:
@@ -1728,3 +1732,402 @@ channels:
     sources:
       - type: epgpw_api
         id: '465327'
+  - id: greatmovies
+    name: GREAT! movies
+    group: 海外
+    aliases:
+      - Great Movies
+      - GREAT! movies
+      - GREAT movies
+    sources:
+      - type: epgpw_api
+        id: '12143'
+
+  # ============================================================
+  # 数字付费频道 - 补充
+  # ============================================================
+  - id: haixiaweishi
+    name: 海峡卫视
+    group: 卫视
+    aliases:
+      - 海峡卫视
+      - HXWS
+      - HaixiaTV
+    sources:
+      - type: epgpw_api
+        id: '495002'
+  - id: wushushijie
+    name: 武术世界
+    group: 数字付费
+    aliases:
+      - 武术世界
+      - WushuWorld
+      - wushushijie
+    sources:
+      - type: epgpw_api
+        id: '495068'
+  - id: laogushi
+    name: 老故事
+    group: 数字付费
+    aliases:
+      - 老故事
+      - OldStory
+      - laogushi
+    sources:
+      - type: epgpw_api
+        id: '495073'
+  - id: huanqiulvyou
+    name: 环球旅游
+    group: 数字付费
+    aliases:
+      - 环球旅游
+      - GlobalTravel
+      - huanqiulvyou
+    sources:
+      - type: epgpw_api
+        id: '495078'
+  - id: faxianzhilv
+    name: 发现之旅
+    group: 数字付费
+    aliases:
+      - 发现之旅
+      - DiscoveryJourney
+      - faxianzhilv
+    sources:
+      - type: epgpw_api
+        id: '495084'
+
+  # ============================================================
+  # 地方台 - 无 EPG 源
+  # ============================================================
+  - id: shanghaixinwenzonghe
+    name: 上海新闻综合
+    group: 地方台
+    aliases:
+      - 上海新闻综合
+      - ShanghaiNews
+    sources: []
+  - id: shanghaidiyicaijing
+    name: 上海第一财经
+    group: 地方台
+    aliases:
+      - 上海第一财经
+      - 第一财经
+      - CBN
+    sources: []
+  - id: shangshidongfangyingshi
+    name: 上视东方影视
+    group: 地方台
+    aliases:
+      - 上视东方影视
+      - 东方影视
+    sources: []
+  - id: nanfangyingshi
+    name: 南方影视
+    group: 地方台
+    aliases:
+      - 南方影视
+      - SouthernMovie
+    sources: []
+  - id: jiangsuchengshi
+    name: 江苏城市频道
+    group: 地方台
+    aliases:
+      - 江苏城市频道
+      - 江苏城市
+      - JSTV城市
+    sources: []
+  - id: jiangsuyingshi
+    name: 江苏影视频道
+    group: 地方台
+    aliases:
+      - 江苏影视频道
+      - 江苏影视
+      - JSTV影视
+    sources: []
+  - id: jiangsujiaoyu
+    name: 江苏教育
+    group: 地方台
+    aliases:
+      - 江苏教育
+      - JiangsuEdu
+    sources: []
+  - id: jiangsuzongyi
+    name: 江苏综艺频道
+    group: 地方台
+    aliases:
+      - 江苏综艺频道
+      - 江苏综艺
+      - JSTV综艺
+    sources: []
+  - id: jiangsuguoji
+    name: 江苏国际
+    group: 地方台
+    aliases:
+      - 江苏国际
+      - JiangsuIntl
+    sources: []
+  - id: shaanxixinwen
+    name: 陕西新闻资讯频道
+    group: 地方台
+    aliases:
+      - 陕西新闻资讯频道
+      - 陕西新闻
+    sources: []
+  - id: shaanxitiyu
+    name: 陕西体育休闲频道
+    group: 地方台
+    aliases:
+      - 陕西体育休闲频道
+      - 陕西体育
+    sources: []
+  - id: shaanxiqinqiang
+    name: 陕西秦腔频道
+    group: 地方台
+    aliases:
+      - 陕西秦腔频道
+      - 陕西秦腔
+    sources: []
+  - id: shaanxidushi
+    name: 陕西都市青春频道
+    group: 地方台
+    aliases:
+      - 陕西都市青春频道
+      - 陕西都市
+    sources: []
+  - id: shaanxiyinling
+    name: 陕西银龄频道
+    group: 地方台
+    aliases:
+      - 陕西银龄频道
+      - 陕西银龄
+    sources: []
+  - id: nanjingxinwenzonghe
+    name: 南京新闻综合频道
+    group: 地方台
+    aliases:
+      - 南京新闻综合频道
+      - 南京新闻综合
+    sources: []
+  - id: nanjingshibapindao
+    name: 南京十八频道
+    group: 地方台
+    aliases:
+      - 南京十八频道
+      - 南京18频道
+    sources: []
+  - id: nanjingjiaoke
+    name: 南京教科频道
+    group: 地方台
+    aliases:
+      - 南京教科频道
+      - 南京教科
+    sources: []
+  - id: nantongxinwenzonghe
+    name: 南通新闻综合
+    group: 地方台
+    aliases:
+      - 南通新闻综合
+    sources: []
+  - id: xuzhouxinwenzonghe
+    name: 徐州新闻综合
+    group: 地方台
+    aliases:
+      - 徐州新闻综合
+    sources: []
+  - id: yanchengxinwenzonghe
+    name: 盐城新闻综合
+    group: 地方台
+    aliases:
+      - 盐城新闻综合
+    sources: []
+  - id: huaianxinwenzonghe
+    name: 淮安新闻综合
+    group: 地方台
+    aliases:
+      - 淮安新闻综合
+    sources: []
+  - id: taizhouxinwenzonghe
+    name: 泰州新闻综合
+    group: 地方台
+    aliases:
+      - 泰州新闻综合
+    sources: []
+  - id: lianyungangxinwenzonghe
+    name: 连云港新闻综合
+    group: 地方台
+    aliases:
+      - 连云港新闻综合
+    sources: []
+  - id: zhenjiangxinwenzonghe
+    name: 镇江新闻综合
+    group: 地方台
+    aliases:
+      - 镇江新闻综合
+    sources: []
+  - id: jiangyinxinwenzonghe
+    name: 江阴新闻综合
+    group: 地方台
+    aliases:
+      - 江阴新闻综合
+    sources: []
+  - id: yixingxinwenzonghe
+    name: 宜兴新闻综合
+    group: 地方台
+    aliases:
+      - 宜兴新闻综合
+    sources: []
+  - id: suqianxinwenzonghe
+    name: 宿迁新闻综合
+    group: 地方台
+    aliases:
+      - 宿迁新闻综合
+    sources: []
+  - id: lishuixinwenzonghe
+    name: 溧水新闻综合
+    group: 地方台
+    aliases:
+      - 溧水新闻综合
+    sources: []
+
+  # ============================================================
+  # 数字付费/专业频道 - 无 EPG 源
+  # ============================================================
+  - id: zhongguononglin
+    name: 中国农林卫视
+    group: 卫视
+    aliases:
+      - 中国农林卫视
+      - 农林卫视
+    sources: []
+  - id: zhongguotianqi
+    name: 中国天气
+    group: 数字付费
+    aliases:
+      - 中国天气
+      - ChinaWeather
+    sources: []
+  - id: zhongxuesheng
+    name: 中学生
+    group: 数字付费
+    aliases:
+      - 中学生
+    sources: []
+  - id: youmankatong
+    name: 优漫卡通频道
+    group: 少儿
+    aliases:
+      - 优漫卡通频道
+      - 优漫卡通
+    sources: []
+  - id: zhonghuatechan
+    name: 中华特产
+    group: 数字付费
+    aliases:
+      - 中华特产
+    sources: []
+  - id: gonggongxinwen
+    name: 公共新闻频道
+    group: 数字付费
+    aliases:
+      - 公共新闻频道
+    sources: []
+  - id: titanminglanghui
+    name: 体坛名栏汇
+    group: 数字付费
+    aliases:
+      - 体坛名栏汇
+    sources: []
+  - id: tiyuxiuxian
+    name: 体育休闲频道
+    group: 数字付费
+    aliases:
+      - 体育休闲频道
+    sources: []
+  - id: xindongman
+    name: 新动漫
+    group: 数字付费
+    aliases:
+      - 新动漫
+    sources: []
+  - id: xinpianfangyingting
+    name: 新片放映厅
+    group: 数字付费
+    aliases:
+      - 新片放映厅
+    sources: []
+  - id: kangzhanjingdianyingpian
+    name: 抗战经典影片
+    group: 数字付费
+    aliases:
+      - 抗战经典影片
+    sources: []
+  - id: jingdiandonghuadajihhe
+    name: 经典动画大集合
+    group: 数字付费
+    aliases:
+      - 经典动画大集合
+    sources: []
+  - id: jingdianxianggangdianying
+    name: 经典香港电影
+    group: 数字付费
+    aliases:
+      - 经典香港电影
+    sources: []
+  - id: zuiqiangzongyipa
+    name: 最强综艺趴
+    group: 数字付费
+    aliases:
+      - 最强综艺趴
+    sources: []
+  - id: saishizuijingdian
+    name: 赛事最经典
+    group: 数字付费
+    aliases:
+      - 赛事最经典
+    sources: []
+
+  # ============================================================
+  # 特殊/轮播频道 - 无 EPG 源
+  # ============================================================
+  - id: cloudflaretv
+    name: CloudflareTV
+    group: 海外
+    aliases:
+      - CloudflareTV
+      - Cloudflare TV
+    sources: []
+  - id: chengshiliansai24
+    name: 24小时城市联赛轮播台
+    group: 特殊
+    aliases:
+      - 24小时城市联赛轮播台
+    sources: []
+  - id: hemeixiangtu
+    name: 和美乡途轮播台
+    group: 特殊
+    aliases:
+      - 和美乡途轮播台
+    sources: []
+  - id: xindongliChuangyiliu
+    name: 新动力量创一流
+    group: 特殊
+    aliases:
+      - 新动力量创一流
+    sources: []
+  - id: xiongmaopindao01
+    name: 熊猫频道
+    group: 特殊
+    aliases:
+      - 熊猫频道1
+      - 熊猫频道2
+      - 熊猫频道3
+      - 熊猫频道4
+      - 熊猫频道5
+      - 熊猫频道6
+      - 熊猫频道7
+      - 熊猫频道8
+      - 熊猫频道9
+      - 熊猫频道10
+      - 熊猫频道01高清
+    sources: []
