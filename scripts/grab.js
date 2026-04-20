@@ -9,7 +9,7 @@
  *   node scripts/grab.js --test             # 测试模式（不写文件）
  */
 
-import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, mkdirSync, writeFileSync, existsSync, renameSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { gzipSync } from 'zlib';
@@ -106,6 +106,34 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
 // ============================================================
 // 写入输出文件
 // ============================================================
+/**
+ * 从已有 XML 文件中解析出旧 EPG 数据，用于在新抓取失败时兜底
+ * 返回 Map<channelId, programme[]>
+ */
+function loadExistingEpg(outputDir, filename) {
+  const outPath = join(outputDir, filename);
+  if (!existsSync(outPath)) return new Map();
+  try {
+    const xml = readFileSync(outPath, 'utf-8');
+    const old = new Map();
+    // 解析 <programme start="..." stop="..." channel="..."><title>...</title></programme>
+    const re = /<programme[^>]+start="([^"]+)"[^>]+stop="([^"]+)"[^>]+channel="([^"]+)"[^>]*>\s*<title[^>]*>([^<]*)<\/title>(?:[\s\S]*?<desc[^>]*>([^<]*)<\/desc>)?/g;
+    let m;
+    while ((m = re.exec(xml)) !== null) {
+      const [, startStr, stopStr, channelId, title, desc = ''] = m;
+      const start = new Date(startStr.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2}) ([+-]\d{4})/, '$1-$2-$3T$4:$5:$6$7'));
+      const stop  = new Date(stopStr.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2}) ([+-]\d{4})/, '$1-$2-$3T$4:$5:$6$7'));
+      if (!old.has(channelId)) old.set(channelId, []);
+      old.get(channelId).push({ start, stop, title, desc });
+    }
+    logger.info(`[fallback] 读取旧数据: ${old.size} 个频道`);
+    return old;
+  } catch (e) {
+    logger.warn(`[fallback] 读取旧 XML 失败: ${e.message}`);
+    return new Map();
+  }
+}
+
 function writeOutput(channels, epgData, outputConfig) {
   const outputDir = join(ROOT_DIR, outputConfig.local_dir || 'output');
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
@@ -113,8 +141,27 @@ function writeOutput(channels, epgData, outputConfig) {
   const files = outputConfig.files || [{ filename: 'guide.xml', groups: [] }];
 
   for (const fileConfig of files) {
-    const xml = generateXmltv(channels, epgData, fileConfig.groups || []);
     const outPath = join(outputDir, fileConfig.filename);
+
+    // 读取旧数据用于 fallback
+    const oldEpg = loadExistingEpg(outputDir, fileConfig.filename);
+
+    // 合并：新数据为空的频道用旧数据兜底
+    const mergedEpg = new Map(epgData);
+    let fallbackCount = 0;
+    for (const ch of channels) {
+      if (!mergedEpg.has(ch.id) || mergedEpg.get(ch.id).length === 0) {
+        const old = oldEpg.get(ch.id);
+        if (old && old.length > 0) {
+          mergedEpg.set(ch.id, old);
+          fallbackCount++;
+          logger.warn(`[fallback] ${ch.name}: 使用旧数据 (${old.length} 条)`);
+        }
+      }
+    }
+    if (fallbackCount > 0) logger.info(`[fallback] 共 ${fallbackCount} 个频道使用旧数据兜底`);
+
+    const xml = generateXmltv(channels, mergedEpg, fileConfig.groups || []);
     writeFileSync(outPath, xml, 'utf-8');
     logger.info(`写入 ${fileConfig.filename} (${(xml.length / 1024).toFixed(0)} KB)`);
     const gz = gzipSync(Buffer.from(xml, 'utf-8'));
