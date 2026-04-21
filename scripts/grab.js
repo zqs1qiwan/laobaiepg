@@ -342,8 +342,8 @@ async function main() {
   const days       = DAYS_OVERRIDE || crawlConfig.days || 7;
   const daysTvmao  = DAYS_OVERRIDE || crawlConfig.days_tvmao || days;
   const dates      = getDateRange(days);
-  const datesTvmao = getDateRange(daysTvmao);
-  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天)`);
+  const datesTvmao = getDateRange(daysTvmao).reverse(); // 倒序：先抓最远的天，今天的数据下次跑会补
+  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序)`);
 
   let targetChannels = channels;
   if (SINGLE_CHANNEL) {
@@ -381,6 +381,16 @@ async function main() {
   logger.info('='.repeat(60));
   logger.info(`完成: 成功 ${successCount}，失败 ${failCount}，节目 ${totalProgrammes} 条`);
 
+  // 记录失败频道信息（用于后续补抓）
+  const failedChannels = targetChannels
+    .filter(ch => !epgData.has(ch.id) || !(epgData.get(ch.id) || []).length)
+    .map(ch => ({
+      id: ch.id,
+      name: ch.name,
+      sources: (ch.sources || []).map(s => s.type),
+      failedAt: new Date().toISOString(),
+    }));
+
   if (TEST_MODE) {
     logger.info('[测试模式] 不写入文件');
     if (SINGLE_CHANNEL && epgData.size > 0) {
@@ -396,14 +406,27 @@ async function main() {
 
   writeOutput(channels, epgData, outputConfig);
   writeChannelIndex(channels, epgData);
-  logger.info('完成！');
 
-  if (failCount > 0) {
-    const failed = targetChannels
-      .filter(ch => !epgData.has(ch.id) || !(epgData.get(ch.id) || []).length)
-      .map(ch => ch.name);
-    logger.warn(`失败频道: ${failed.join(', ')}`);
+  // 写入失败频道记录（上传到 R2 供下次跑参考）
+  const outputDir = join(ROOT_DIR, outputConfig.local_dir || 'output');
+  if (failedChannels.length > 0) {
+    writeFileSync(
+      join(outputDir, 'failed_channels.json'),
+      JSON.stringify({ timestamp: new Date().toISOString(), channels: failedChannels }, null, 2),
+      'utf-8'
+    );
+    logger.warn(`失败频道 (${failedChannels.length}): ${failedChannels.map(c => c.name).join(', ')}`);
+    logger.info(`已写入 failed_channels.json（将随 output 上传到 R2）`);
+  } else {
+    // 全部成功，删除旧的失败记录
+    const failedPath = join(outputDir, 'failed_channels.json');
+    if (existsSync(failedPath)) {
+      writeFileSync(failedPath, JSON.stringify({ timestamp: new Date().toISOString(), channels: [] }, null, 2), 'utf-8');
+      logger.info('所有频道抓取成功，清除失败记录');
+    }
   }
+
+  logger.info('完成！');
 }
 
 main().catch(err => {

@@ -53,13 +53,46 @@ class Semaphore {
 /** 全局信号量：最多同时 2 个请求 */
 const semaphore = new Semaphore(2);
 
+// ---------- 全局限速状态 ----------
+
+/**
+ * 全局限速退避时间戳（毫秒）
+ * 收到 [0,""] 限速响应时，设置为 Date.now() + 5分钟
+ * 所有请求进入前检查：如果 Date.now() < rateLimitUntil，等到期后再继续
+ */
+let rateLimitUntil = 0;
+
+const RATE_LIMIT_WAIT_MS = 5 * 60 * 1000; // 5 分钟
+
+/**
+ * 检查并等待全局限速
+ * 如果当前处于限速等待期，阻塞直到等待期结束
+ */
+async function waitForRateLimit() {
+  const now = Date.now();
+  if (now < rateLimitUntil) {
+    const waitMs = rateLimitUntil - now;
+    logger.warn(`[tvmao] 全局限速中，等待 ${Math.ceil(waitMs / 1000)}s 后继续...`);
+    await sleep(waitMs);
+  }
+}
+
+/**
+ * 触发全局限速退避
+ * 所有挂起的请求都会被阻塞 5 分钟
+ */
+function triggerGlobalRateLimit() {
+  rateLimitUntil = Date.now() + RATE_LIMIT_WAIT_MS;
+  logger.warn(`[tvmao] 触发全局限速退避 ${RATE_LIMIT_WAIT_MS / 1000}s，所有请求暂停至 ${new Date(rateLimitUntil).toISOString()}`);
+}
+
 // ---------- 工具函数 ----------
 
 /** 等待指定毫秒 */
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** 随机抖动：800-1500ms */
-const jitter = () => Math.floor(800 + Math.random() * 700);
+/** 随机抖动：1000-2000ms */
+const jitter = () => Math.floor(1000 + Math.random() * 1000);
 
 /**
  * 计算 day 参数
@@ -93,10 +126,12 @@ function parseChannelId(fullId) {
 }
 
 /**
- * 带限速和重试的 lighttv API 请求
- * - 每次请求前随机等待 800-1500ms
- * - 最多重试 3 次，指数退避（1s → 2s → 4s）
- * - 返回 [0,""] 视为限速，额外等待 5s
+ * 带全局限速退避和重试的 lighttv API 请求
+ * - 每次请求前检查全局限速状态
+ * - 每次请求前随机等待 1000-2000ms
+ * - 最多重试 3 次
+ * - 返回 [0,""] 视为限速 → 触发全局退避 5 分钟，然后重试
+ * - 网络/HTTP 错误 → 指数退避重试（2s → 4s → 8s）
  *
  * @param {string} url - 请求 URL
  * @returns {Promise<any>} 解析后的 JSON
@@ -105,6 +140,9 @@ async function fetchLighttv(url) {
   const MAX_RETRIES = 3;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    // 每次请求前检查全局限速
+    await waitForRateLimit();
+
     // 每次请求前随机抖动
     await sleep(jitter());
 
@@ -119,16 +157,17 @@ async function fetchLighttv(url) {
 
       // 限速检测：返回 [0, ""] 表示被限速
       if (Array.isArray(json) && json[0] === 0 && json[1] === '' && json.length === 2) {
-        logger.warn(`[tvmao] 限速检测触发，等待 5s 后重试 (attempt ${attempt + 1}/${MAX_RETRIES})`);
-        await sleep(5000);
+        logger.warn(`[tvmao] 限速检测触发 (attempt ${attempt + 1}/${MAX_RETRIES})`);
+        triggerGlobalRateLimit();
         if (attempt < MAX_RETRIES) continue;
-        throw new Error('持续被限速');
+        throw new Error('持续被限速，已重试 ' + MAX_RETRIES + ' 次（每次全局等待5分钟）');
       }
 
       return json;
     } catch (err) {
+      if (err.message.startsWith('持续被限速')) throw err;
       if (attempt < MAX_RETRIES) {
-        const backoff = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+        const backoff = Math.pow(2, attempt + 1) * 1000; // 2s, 4s, 8s
         logger.warn(`[tvmao] 请求失败: ${err.message}，${backoff}ms 后重试 (attempt ${attempt + 1}/${MAX_RETRIES})`);
         await sleep(backoff);
       } else {
