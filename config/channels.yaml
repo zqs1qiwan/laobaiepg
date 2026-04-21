@@ -1179,6 +1179,8 @@ channels:
       - BTV卫视
       - 北京台
     sources:
+      - type: tvmao
+        id: BTV-BTV1
       - type: epgpw_api
         id: '495008'
   - id: beijingtaoyule
