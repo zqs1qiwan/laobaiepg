@@ -638,8 +638,8 @@ channels:
       - 陕西台
       - ShaanxiTV
     sources:
-      - type: epgpw_api
-        id: '495031'
+      - type: shaanxi
+        id: star
   - id: yunnanweishi
     name: 云南卫视
     group: 卫视
@@ -1879,41 +1879,60 @@ channels:
       - 江苏国际
       - JiangsuIntl
     sources: []
+  - id: shaanxinonglin
+    name: 陕西农林卫视
+    group: 地方台
+    aliases:
+      - 陕西农林卫视
+      - 陕西农林
+    sources:
+      - type: shaanxi
+        id: nl
   - id: shaanxixinwen
     name: 陕西新闻资讯频道
     group: 地方台
     aliases:
       - 陕西新闻资讯频道
       - 陕西新闻
-    sources: []
+    sources:
+      - type: shaanxi
+        id: '1'
   - id: shaanxitiyu
     name: 陕西体育休闲频道
     group: 地方台
     aliases:
       - 陕西体育休闲频道
       - 陕西体育
-    sources: []
+    sources:
+      - type: shaanxi
+        id: '7'
   - id: shaanxiqinqiang
     name: 陕西秦腔频道
     group: 地方台
     aliases:
       - 陕西秦腔频道
       - 陕西秦腔
-    sources: []
+    sources:
+      - type: shaanxi
+        id: '5'
   - id: shaanxidushi
     name: 陕西都市青春频道
     group: 地方台
     aliases:
       - 陕西都市青春频道
       - 陕西都市
-    sources: []
+    sources:
+      - type: shaanxi
+        id: '2'
   - id: shaanxiyinling
     name: 陕西银龄频道
     group: 地方台
     aliases:
       - 陕西银龄频道
       - 陕西银龄
-    sources: []
+    sources:
+      - type: shaanxi
+        id: '3'
   - id: nanjingxinwenzonghe
     name: 南京新闻综合频道
     group: 地方台

@@ -14,6 +14,7 @@ import { getEpgEpgpwApi, getChannelsEpgpwApi } from './epgpw_api.js';
 import { getEpgTdm, getChannelsTdm } from './tdm.js';
 import { getEpgBrtv, getChannelsBrtv } from './brtv.js';
 import { getEpgKankanews, getChannelsKankanews } from './kankanews.js';
+import { getEpgShaanxi, getChannelsShaanxi } from './shaanxi.js';
 
 /**
  * 数据源注册表
@@ -54,6 +55,10 @@ export const scraperRegistry = {
   kankanews: {
     getEpg: getEpgKankanews,
     getChannels: getChannelsKankanews,
+  },
+  shaanxi: {
+    getEpg: getEpgShaanxi,
+    getChannels: getChannelsShaanxi,
   },
 };
 
