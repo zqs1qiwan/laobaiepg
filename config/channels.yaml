@@ -1879,15 +1879,6 @@ channels:
       - 江苏国际
       - JiangsuIntl
     sources: []
-  - id: shaanxinonglin
-    name: 陕西农林卫视
-    group: 地方台
-    aliases:
-      - 陕西农林卫视
-      - 陕西农林
-    sources:
-      - type: shaanxi
-        id: nl
   - id: shaanxixinwen
     name: 陕西新闻资讯频道
     group: 地方台
@@ -2030,7 +2021,10 @@ channels:
     aliases:
       - 中国农林卫视
       - 农林卫视
-    sources: []
+      - 陕西农林卫视
+    sources:
+      - type: shaanxi
+        id: nl
   - id: zhongguotianqi
     name: 中国天气
     group: 数字付费
