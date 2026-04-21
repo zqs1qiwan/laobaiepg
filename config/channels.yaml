@@ -8,7 +8,7 @@ channels:
       - BingtuanTV
     sources:
       - type: tvmao
-        id: BINGTUAN
+        id: "BINGTUAN-BINGTUAN"
   - id: cgtnyingyu
     name: CGTN
     group: 卫星
@@ -20,7 +20,7 @@ channels:
       - cgtnyingyupindao
     sources:
       - type: tvmao
-        id: CCTV19
+        id: "CCTV-CCTV19"
   - id: cgtnxiyu
     name: CGTN 西语
     group: 卫星
@@ -31,7 +31,7 @@ channels:
       - cgtnxiyupindao
     sources:
       - type: tvmao
-        id: CCTV17
+        id: "CCTV-CCTV17"
   - id: cgtnfayu
     name: CGTN 法语
     group: 卫星
@@ -41,7 +41,7 @@ channels:
       - cgtnfayupindao
     sources:
       - type: tvmao
-        id: CCTVF
+        id: "CCTV-CCTVF"
   - id: cgtnalayu
     name: CGTN 阿语
     group: 卫星
@@ -52,7 +52,7 @@ channels:
       - cgtnalapindao
     sources:
       - type: tvmao
-        id: CCTVA
+        id: "CCTV-CCTVA"
   - id: cgtneyu
     name: CGTN 俄语
     group: 卫星
@@ -62,7 +62,7 @@ channels:
       - cgtneyupindao
     sources:
       - type: tvmao
-        id: CCTVR
+        id: "CCTV-CCTVR"
   - id: jiajiakatong
     name: 嘉佳卡通
     group: 少儿
@@ -71,7 +71,7 @@ channels:
       - JiajiaCartoon
     sources:
       - type: tvmao
-        id: GDTV7
+        id: "GDTV-GDTV7"
   - id: jinyingjishi
     name: 金鹰纪实
     group: 数字付费
@@ -80,7 +80,7 @@ channels:
       - JinyingDoc
     sources:
       - type: tvmao
-        id: HNETV3
+        id: "HNETV-HNETV3"
   - id: wuxingtiyu
     name: 五星体育
     group: 数字付费
@@ -89,7 +89,7 @@ channels:
       - FiveStarSports
     sources:
       - type: tvmao
-        id: SHHAI5
+        id: "SHHAI-SHHAI5"
   - id: shandongjiaoyu
     name: 山东教育
     group: 地方台
@@ -98,7 +98,7 @@ channels:
       - ShandongEdu
     sources:
       - type: tvmao
-        id: SDETV1
+        id: "SDETV-SDETV1"
   - id: iptvshaoerdonghua
     name: IPTV少儿动画
     group: 数字付费
@@ -107,7 +107,7 @@ channels:
       - IPTVKids
     sources:
       - type: tvmao
-        id: IPTVSEDH
+        id: "IPTV-IPTVSEDH"
   - id: iptvmeilishishang
     name: IPTV魅力时尚
     group: 数字付费
@@ -116,7 +116,7 @@ channels:
       - IPTVFashion
     sources:
       - type: tvmao
-        id: IPTVMLSS
+        id: "IPTV-IPTVMLSS"
   - id: iptvrebojuchang
     name: IPTV热播剧场
     group: 数字付费
@@ -125,7 +125,7 @@ channels:
       - IPTVDrama
     sources:
       - type: tvmao
-        id: IPTVRBJC
+        id: "IPTV-IPTVRBJC"
   - id: guzhuangjuchang
     name: 古装剧场
     group: 数字付费
@@ -134,7 +134,7 @@ channels:
       - GuZhuangJC
     sources:
       - type: tvmao
-        id: GZJC
+        id: "GZJC-GZJC"
   - id: beijingwenyi
     name: 北京文艺
     group: 地方台
@@ -1006,7 +1006,7 @@ channels:
       - cgtnjilupin
     sources:
       - type: tvmao
-        id: CCTV18
+        id: "CCTV-CCTV18"
       - type: epgpw_api
         id: '368347'
   - id: CCTV4K
@@ -1122,7 +1122,7 @@ channels:
       - type: epgpw_api
         id: '495041'
       - type: tvmao
-        id: HUNANTV2
+        id: "HUNANTV-HUNANTV2"
   - id: liyuan
     name: 梨园
     group: 数字付费
@@ -1144,7 +1144,7 @@ channels:
       - type: epgpw_api
         id: '495074'
       - type: tvmao
-        id: KUAILECHUIDIAO
+        id: "KUAILECHUIDIAO-KUAILECHUIDIAO"
   - id: sihaidiaoyu
     name: 四海钓鱼
     group: 数字付费
@@ -1156,7 +1156,7 @@ channels:
       - type: epgpw_api
         id: '495077'
       - type: tvmao
-        id: BAMC4
+        id: "BAMC-BAMC4"
   - id: guoxue
     name: 国学
     group: 数字付费
@@ -1806,7 +1806,9 @@ channels:
     aliases:
       - 上海新闻综合
       - ShanghaiNews
-    sources: []
+    sources:
+      - type: tvmao
+        id: "SHHAI-SHHAI1"
   - id: shanghaidiyicaijing
     name: 上海第一财经
     group: 地方台
@@ -1814,14 +1816,18 @@ channels:
       - 上海第一财经
       - 第一财经
       - CBN
-    sources: []
+    sources:
+      - type: tvmao
+        id: "SHHAI-SHHAI2"
   - id: shangshidongfangyingshi
     name: 上视东方影视
     group: 地方台
     aliases:
       - 上视东方影视
       - 东方影视
-    sources: []
+    sources:
+      - type: tvmao
+        id: "SHHAI-SHHAI4"
   - id: nanfangyingshi
     name: 南方影视
     group: 地方台
