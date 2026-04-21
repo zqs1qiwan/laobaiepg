@@ -6,6 +6,7 @@
  */
 
 import { getEpgCctv, getChannelsCctv } from './cctv.js';
+import { getEpgCntv, getChannelsCntv } from './cntv.js';
 import { getEpgTvmao, getChannelsTvmao } from './tvmao.js';
 import { getEpgTvb, getChannelsTvb } from './tvb.js';
 import { getEpgNowtv, getChannelsNowtv } from './nowtv.js';
@@ -35,6 +36,10 @@ export const scraperRegistry = {
   cctv: {
     getEpg: getEpgCctv,
     getChannels: getChannelsCctv,
+  },
+  cntv: {
+    getEpg: getEpgCntv,
+    getChannels: getChannelsCntv,
   },
   tvb: {
     getEpg: getEpgTvb,

@@ -242,6 +242,8 @@ channels:
       - CCTV1综合
       - CCTV-1综合
     sources:
+      - type: cntv
+        id: cctv1
       - type: epgpw_api
         id: '494985'
   - id: CCTV2
@@ -255,6 +257,8 @@ channels:
       - 央视财经
       - CCTV2财经
     sources:
+      - type: cntv
+        id: cctv2
       - type: epgpw_api
         id: '494986'
   - id: CCTV3
@@ -268,6 +272,8 @@ channels:
       - 央视综艺
       - CCTV3综艺
     sources:
+      - type: cntv
+        id: cctv3
       - type: epgpw_api
         id: '494987'
   - id: CCTV4
@@ -281,6 +287,8 @@ channels:
       - 央视中文国际
       - CCTV4中文国际
     sources:
+      - type: cntv
+        id: cctv4
       - type: epgpw_api
         id: '494988'
   - id: CCTV5
@@ -294,6 +302,8 @@ channels:
       - 央视体育
       - CCTV5体育
     sources:
+      - type: cntv
+        id: cctv5
       - type: epgpw_api
         id: '494989'
   - id: CCTV5+
@@ -307,6 +317,8 @@ channels:
       - 中央五套+
       - 央视体育赛事
     sources:
+      - type: cntv
+        id: cctv5plus
       - type: epgpw_api
         id: '494990'
   - id: CCTV6
@@ -320,6 +332,8 @@ channels:
       - 央视电影
       - CCTV6电影
     sources:
+      - type: cntv
+        id: cctv6
       - type: epgpw_api
         id: '494991'
   - id: CCTV7
@@ -334,6 +348,8 @@ channels:
       - CCTV7军事
       - CCTV7农业
     sources:
+      - type: cntv
+        id: cctv7
       - type: epgpw_api
         id: '494992'
   - id: CCTV8
@@ -347,6 +363,8 @@ channels:
       - 央视电视剧
       - CCTV8电视剧
     sources:
+      - type: cntv
+        id: cctv8
       - type: epgpw_api
         id: '494993'
   - id: CCTV9
@@ -360,6 +378,8 @@ channels:
       - 央视纪录
       - CCTV9纪录
     sources:
+      - type: cntv
+        id: cctvjilu
       - type: epgpw_api
         id: '494994'
   - id: CCTV10
@@ -373,6 +393,8 @@ channels:
       - 央视科教
       - CCTV10科教
     sources:
+      - type: cntv
+        id: cctv10
       - type: epgpw_api
         id: '494995'
   - id: CCTV11
@@ -386,6 +408,8 @@ channels:
       - 央视戏曲
       - CCTV11戏曲
     sources:
+      - type: cntv
+        id: cctv11
       - type: epgpw_api
         id: '494996'
   - id: CCTV12
@@ -398,6 +422,8 @@ channels:
       - 中央十二套
       - 央视社会法制
     sources:
+      - type: cntv
+        id: cctv12
       - type: epgpw_api
         id: '494997'
   - id: CCTV13
@@ -411,6 +437,8 @@ channels:
       - 央视新闻
       - CCTV13新闻
     sources:
+      - type: cntv
+        id: cctv13
       - type: epgpw_api
         id: '494998'
   - id: CCTV14
@@ -424,6 +452,8 @@ channels:
       - 央视少儿
       - CCTV14少儿
     sources:
+      - type: cntv
+        id: cctvchild
       - type: epgpw_api
         id: '494999'
   - id: CCTV15
@@ -437,6 +467,8 @@ channels:
       - 央视音乐
       - CCTV15音乐
     sources:
+      - type: cntv
+        id: cctv15
       - type: epgpw_api
         id: '495000'
   - id: CCTV16
@@ -448,6 +480,8 @@ channels:
       - CCTV 16
       - 央视奥林匹克
     sources:
+      - type: cntv
+        id: cctv16
       - type: epgpw_api
         id: '495083'
   - id: CCTV17
@@ -459,6 +493,8 @@ channels:
       - CCTV 17
       - 央视农业农村
     sources:
+      - type: cntv
+        id: cctv17
       - type: epgpw_api
         id: '495001'
   - id: hunanweishi
@@ -473,6 +509,8 @@ channels:
       - HunanTV
       - HNTV
     sources:
+      - type: cntv
+        id: hunan
       - type: epgpw_api
         id: '495005'
   - id: zhejiangweishi
@@ -486,6 +524,8 @@ channels:
       - ZJTV
       - 浙江
     sources:
+      - type: cntv
+        id: zhejiang
       - type: epgpw_api
         id: '495006'
   - id: jiangsuweishi
@@ -500,6 +540,8 @@ channels:
       - JSTV
       - 荔枝TV
     sources:
+      - type: cntv
+        id: jiangsu
       - type: epgpw_api
         id: '495007'
   - id: dongfangweishi
@@ -514,6 +556,8 @@ channels:
       - 上海卫视
       - SMG
     sources:
+      - type: cntv
+        id: dongfang
       - type: epgpw_api
         id: '495009'
   - id: anhuiweishi
@@ -525,6 +569,8 @@ channels:
       - AnhuiTV
       - AHTV
     sources:
+      - type: cntv
+        id: anhui
       - type: epgpw_api
         id: '495010'
   - id: shandongweishi
@@ -538,6 +584,8 @@ channels:
       - ShandongTV
       - SDTV
     sources:
+      - type: cntv
+        id: shandong
       - type: epgpw_api
         id: '495015'
   - id: sichuanweishi
@@ -551,6 +599,8 @@ channels:
       - SichuanTV
       - SCTV
     sources:
+      - type: cntv
+        id: sichuan
       - type: epgpw_api
         id: '495032'
   - id: henanweishi
@@ -562,6 +612,8 @@ channels:
       - HenanTV
       - HNTV河南
     sources:
+      - type: cntv
+        id: henan
       - type: epgpw_api
         id: '495024'
   - id: guangdongweishi
@@ -575,6 +627,8 @@ channels:
       - GuangdongTV
       - GDTV
     sources:
+      - type: cntv
+        id: guangdong
       - type: epgpw_api
         id: '495011'
   - id: chongqingweishi
@@ -585,6 +639,8 @@ channels:
       - 重庆台
       - ChongqingTV
     sources:
+      - type: cntv
+        id: chongqing
       - type: epgpw_api
         id: '495017'
   - id: liaoningweishi
@@ -596,6 +652,8 @@ channels:
       - LiaoningTV
       - LNTV
     sources:
+      - type: cntv
+        id: liaoning
       - type: epgpw_api
         id: '495013'
   - id: hubeiweishi
@@ -607,6 +665,8 @@ channels:
       - HubeiTV
       - HBTV
     sources:
+      - type: cntv
+        id: hubei
       - type: epgpw_api
         id: '495025'
   - id: jiangxiweishi
@@ -618,6 +678,8 @@ channels:
       - JiangxiTV
       - JXTV
     sources:
+      - type: cntv
+        id: jiangxi
       - type: epgpw_api
         id: '495026'
   - id: shanxiweishi
@@ -648,6 +710,8 @@ channels:
       - 云南台
       - YunnanTV
     sources:
+      - type: cntv
+        id: yunnan
       - type: epgpw_api
         id: '495034'
   - id: guizhouweishi
@@ -658,6 +722,8 @@ channels:
       - 贵州台
       - GuizhouTV
     sources:
+      - type: cntv
+        id: guizhou
       - type: epgpw_api
         id: '495021'
   - id: gansuweishi
@@ -668,6 +734,8 @@ channels:
       - 甘肃台
       - GansuTV
     sources:
+      - type: cntv
+        id: gansu
       - type: epgpw_api
         id: '495019'
   - id: fujianweishi
@@ -689,6 +757,8 @@ channels:
       - 黑龙江台
       - HeilongjiangTV
     sources:
+      - type: cntv
+        id: heilongjiang
       - type: epgpw_api
         id: '495023'
   - id: jilinweishi
@@ -699,6 +769,8 @@ channels:
       - 吉林台
       - JilinTV
     sources:
+      - type: cntv
+        id: jilin
       - type: epgpw_api
         id: '495027'
   - id: tianjinweishi
@@ -710,6 +782,8 @@ channels:
       - TianjinTV
       - TJTV
     sources:
+      - type: cntv
+        id: tianjin
       - type: epgpw_api
         id: '495016'
   - id: hainanweishi
@@ -732,6 +806,8 @@ channels:
       - InnerMongoliaTV
       - NMGTV
     sources:
+      - type: cntv
+        id: neimenggu
       - type: epgpw_api
         id: '495028'
   - id: xinjiangweishi
@@ -742,6 +818,8 @@ channels:
       - 新疆台
       - XinjiangTV
     sources:
+      - type: cntv
+        id: xinjiang
       - type: epgpw_api
         id: '495033'
   - id: xizangweishi
@@ -752,6 +830,8 @@ channels:
       - 西藏台
       - XizangTV
     sources:
+      - type: cntv
+        id: xizang
       - type: epgpw_api
         id: '495043'
   - id: ningxiaweishi
@@ -762,6 +842,8 @@ channels:
       - 宁夏台
       - NingxiaTV
     sources:
+      - type: cntv
+        id: ningxia
       - type: epgpw_api
         id: '495029'
   - id: qinghaiweishi
@@ -772,6 +854,8 @@ channels:
       - 青海台
       - QinghaiTV
     sources:
+      - type: cntv
+        id: qinghai
       - type: epgpw_api
         id: '495035'
   - id: fenghuangzhongwen
@@ -1020,6 +1104,8 @@ channels:
       - CCTV 4K
       - 央视4K
     sources:
+      - type: cntv
+        id: cctv1
       - type: epgpw_api
         id: '495048'
   - id: aishang4k
@@ -1039,6 +1125,8 @@ channels:
       - CCTV4Euro
       - cctv4ouzhouban
     sources:
+      - type: cntv
+        id: cctveurope
       - type: epgpw_api
         id: '495003'
   - id: cctv4meizhou
@@ -1051,6 +1139,8 @@ channels:
       - CCTV4America
       - cctv4meizhouban
     sources:
+      - type: cntv
+        id: cctvamerica
       - type: epgpw_api
         id: '495004'
   - id: zhongguojiaoyu1tai
@@ -1112,6 +1202,8 @@ channels:
       - 广西台
       - GuangxiTV
     sources:
+      - type: cntv
+        id: guangxi
       - type: epgpw_api
         id: '495020'
   - id: jinyingkatong
@@ -1179,6 +1271,8 @@ channels:
       - BTV卫视
       - 北京台
     sources:
+      - type: cntv
+        id: btv1
       - type: tvmao
         id: BTV-BTV1
       - type: epgpw_api
@@ -1216,6 +1310,8 @@ channels:
       - SZTV
       - ShenzhenTV
     sources:
+      - type: cntv
+        id: shenzhen
       - type: epgpw_api
         id: '495012'
   - id: dongnanweishi
@@ -1227,6 +1323,8 @@ channels:
       - 福建东南卫视
       - SoutheastTV
     sources:
+      - type: cntv
+        id: dongnan
       - type: epgpw_api
         id: '495018'
   - id: xiamenweishi
@@ -1237,6 +1335,8 @@ channels:
       - XMTV
       - XiamenTV
     sources:
+      - type: cntv
+        id: xiamen
       - type: epgpw_api
         id: '495040'
   - id: sanshaweishi
@@ -1257,6 +1357,8 @@ channels:
       - 河北台
       - HebeiTV
     sources:
+      - type: cntv
+        id: hebei
       - type: epgpw_api
         id: '495022'
   - id: tvbhudongxinwentai
