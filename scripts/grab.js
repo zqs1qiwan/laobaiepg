@@ -61,11 +61,118 @@ function getDateRange(days) {
 }
 
 // ============================================================
-// 为单个频道抓取 EPG（多源 + 换源重试）
+// 为单个频道抓取 EPG（多源 + 换源重试 + 双源合并）
 // ============================================================
+
+/**
+ * 按北京时间日期分组，返回 Map<"YYYY-MM-DD", programme[]>
+ */
+function groupByBeijingDate(progs) {
+  const groups = new Map();
+  for (const p of progs) {
+    const bj = new Date(p.start.getTime() + 8 * 3600000);
+    const key = `${bj.getUTCFullYear()}-${String(bj.getUTCMonth() + 1).padStart(2, '0')}-${String(bj.getUTCDate()).padStart(2, '0')}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(p);
+  }
+  return groups;
+}
+
+/**
+ * 检测频道是否配置了双源合并模式（kankanews + tvmao）
+ * 双源模式：sources 中同时存在 kankanews 和 tvmao 类型
+ * 合并策略：kankanews 的今天数据覆盖 tvmao 的今天数据；tvmao 的明天/后天数据直接追加
+ */
+function isDualSourceMerge(sources) {
+  const types = sources.map(s => s.type);
+  return types.includes('kankanews') && types.includes('tvmao');
+}
+
+/**
+ * 双源合并抓取：kankanews（今天优先）+ tvmao（补充明后天）
+ */
+async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
+  const sources = channel.sources || [];
+  const maxRetry = crawlConfig.retry || 2;
+
+  const kankanewsSrc = sources.find(s => s.type === 'kankanews');
+  const tvmaoSrc = sources.find(s => s.type === 'tvmao');
+
+  let kankanewsEpgs = [];
+  let tvmaoEpgs = [];
+
+  // 1. 抓 kankanews（仅当天）
+  if (kankanewsSrc) {
+    for (let retry = 0; retry <= maxRetry; retry++) {
+      try {
+        kankanewsEpgs = await fetchEpg(channel, 'kankanews', kankanewsSrc.id, dates);
+        if (kankanewsEpgs.length > 0) break;
+      } catch (err) {
+        logger.warn(`${channel.name}: [kankanews] 第${retry + 1}次失败: ${err.message}`);
+      }
+      if (retry < maxRetry) await sleep(1000 * (retry + 1));
+    }
+    if (kankanewsEpgs.length > 0) {
+      logger.info(`✓ ${channel.name}: [kankanews] 获取 ${kankanewsEpgs.length} 条节目`);
+    } else {
+      logger.warn(`${channel.name}: [kankanews] 无数据`);
+    }
+  }
+
+  // 2. 抓 tvmao（补充）
+  if (tvmaoSrc) {
+    const effectiveDates = datesTvmao || dates;
+    for (let retry = 0; retry <= maxRetry; retry++) {
+      try {
+        tvmaoEpgs = await fetchEpg(channel, 'tvmao', tvmaoSrc.id, effectiveDates);
+        if (tvmaoEpgs.length > 0) break;
+      } catch (err) {
+        logger.warn(`${channel.name}: [tvmao] 第${retry + 1}次失败: ${err.message}`);
+      }
+      if (retry < maxRetry) await sleep(1000 * (retry + 1));
+    }
+    if (tvmaoEpgs.length > 0) {
+      logger.info(`✓ ${channel.name}: [tvmao] 获取 ${tvmaoEpgs.length} 条节目（补充源）`);
+    } else {
+      logger.warn(`${channel.name}: [tvmao] 无数据`);
+    }
+  }
+
+  // 3. 合并：按日期分组，kankanews 覆盖同日 tvmao 数据
+  const kankanewsByDate = groupByBeijingDate(kankanewsEpgs);
+  const tvmaoByDate = groupByBeijingDate(tvmaoEpgs);
+  const allDates = new Set([...kankanewsByDate.keys(), ...tvmaoByDate.keys()]);
+
+  const merged = [];
+  for (const date of [...allDates].sort()) {
+    if (kankanewsByDate.has(date)) {
+      // kankanews 有数据的日期，优先使用 kankanews
+      merged.push(...kankanewsByDate.get(date));
+    } else if (tvmaoByDate.has(date)) {
+      // kankanews 没有的日期（明后天），用 tvmao 补充
+      merged.push(...tvmaoByDate.get(date));
+    }
+  }
+
+  if (merged.length > 0) {
+    const kkDays = kankanewsByDate.size;
+    const tvDays = [...allDates].filter(d => !kankanewsByDate.has(d) && tvmaoByDate.has(d)).length;
+    logger.info(`✓ ${channel.name}: [双源合并] 共 ${merged.length} 条（kankanews ${kkDays} 天, tvmao 补充 ${tvDays} 天）`);
+  } else {
+    logger.error(`✗ ${channel.name}: 双源均无数据`);
+  }
+
+  return merged;
+}
+
 async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
   const sources   = channel.sources || [];
   if (sources.length === 0) return [];
+
+  // 双源合并模式（kankanews + tvmao）
+  if (isDualSourceMerge(sources)) {
+    return fetchDualSource(channel, dates, crawlConfig, datesTvmao);
+  }
 
   const maxRetry    = crawlConfig.retry || 2;
   const changeSource = crawlConfig.change_source !== false;

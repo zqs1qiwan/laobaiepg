@@ -15,35 +15,96 @@
  *   142 → 卡酷少儿（BTV10）
  *
  * 节目时间格式：HH:MM（北京时间），无日期，需结合请求日期还原完整时间
+ *
+ * ⚠️ 阿里云 WAF (acw_tc) 防护说明：
+ *   - 首次请求返回 200 + 空 body + Set-Cookie: acw_tc=xxx
+ *   - 必须携带该 cookie 再次请求才返回真实数据
+ *   - 从数据中心 IP（GitHub Actions、CF Workers）请求直接返回 405，cookie 无法绕过
+ *   - 仅从住宅/ISP IP（如路由器）可以正常完成 cookie 挑战
  */
 
 import { fetchWithRetry, logger } from '../utils.js';
 
 const API_BASE = 'https://dynamic.rbc.cn/bvradio_app/service/LIVE';
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (compatible; LaobaiEPG/1.0)',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Referer': 'https://www.brtv.org.cn/',
-  'Accept': '*/*',
-  'Accept-Encoding': 'identity', // 服务器返回格式异常，禁止压缩
+  'Accept': 'application/json, text/javascript, */*; q=0.01',
+  'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+  'Accept-Encoding': 'identity',
 };
 const BEIJING_OFFSET_MS = 8 * 3600 * 1000;
 
 /**
- * 将 "HH:MM" 时间字符串 + 基准日期（北京时间）还原为 UTC Date
- * 如果时间小于 06:00，认为是次日（跨午夜节目）
+ * 阿里云 WAF acw_tc cookie 缓存
+ * key: hostname, value: cookie string
+ * 同一个 grab session 内复用 cookie，避免每个频道/日期都做两次请求
  */
-function parseTime(timeStr, baseDateBj, prevTimeBj = null) {
-  const [h, m] = timeStr.split(':').map(Number);
-  let date = new Date(baseDateBj);
-  date.setUTCHours(h, m, 0, 0);
+const cookieCache = new Map();
 
-  // 如果当前时间比前一条节目早，说明跨过了午夜，加一天
-  if (prevTimeBj !== null && date < prevTimeBj) {
-    date = new Date(date.getTime() + 24 * 3600 * 1000);
+/**
+ * 带阿里云 WAF cookie 挑战的 fetch
+ * 1. 先用缓存的 cookie 请求
+ * 2. 如果返回空或 405，重新获取 cookie 再试
+ */
+async function fetchWithWafCookie(url, options = {}) {
+  const parsed = new URL(url);
+  const host = parsed.hostname;
+
+  // 如果有缓存 cookie，先带着试
+  const cachedCookie = cookieCache.get(host);
+  if (cachedCookie) {
+    const headers = { ...options.headers, Cookie: cachedCookie };
+    const res = await fetchWithRetry(url, { ...options, headers }, 1, 10000);
+    if (res.status !== 405) {
+      const text = await res.text();
+      if (text.length > 10) {
+        return { ok: true, status: res.status, text };
+      }
+    }
+    // Cookie 过期了，清除缓存重新获取
+    cookieCache.delete(host);
   }
 
-  // 转为 UTC（baseDateBj 已是北京时间当天 00:00 UTC 表示）
-  return new Date(date.getTime() - BEIJING_OFFSET_MS);
+  // 步骤 1：首次请求，获取 acw_tc cookie
+  const res1 = await fetchWithRetry(url, options, 1, 10000);
+
+  if (res1.status === 405) {
+    // 数据中心 IP 被 WAF 直接封锁，cookie 挑战无法绕过
+    throw new Error('HTTP 405 (阿里云 WAF 封锁，需从住宅 IP 访问)');
+  }
+
+  const setCookie = res1.headers.get('set-cookie');
+  if (!setCookie) {
+    // 没有 Set-Cookie，可能直接返回了数据
+    const text = await res1.text();
+    if (text.length > 10) {
+      return { ok: res1.ok, status: res1.status, text };
+    }
+    throw new Error('空响应且无 Set-Cookie');
+  }
+
+  // 提取 cookie name=value
+  const cookie = setCookie.split(';')[0]; // "acw_tc=xxx"
+  if (!cookie || !cookie.includes('=')) {
+    throw new Error('无法解析 Set-Cookie');
+  }
+
+  // 缓存 cookie
+  cookieCache.set(host, cookie);
+
+  // 步骤 2：带 cookie 重新请求
+  const headers2 = { ...options.headers, Cookie: cookie };
+  const res2 = await fetchWithRetry(url, { ...options, headers: headers2 }, 1, 10000);
+  const text2 = await res2.text();
+
+  if (text2.length <= 10) {
+    // Cookie 没用，可能 IP 也被标记了
+    cookieCache.delete(host);
+    throw new Error('Cookie 挑战后仍为空响应');
+  }
+
+  return { ok: res2.ok, status: res2.status, text: text2 };
 }
 
 /**
@@ -69,18 +130,10 @@ export async function getEpgBrtv(channel, channelId, date) {
   const url = `${API_BASE}?functionName=getCurrentChannel&channelId=${channelId}&curdate=${dateStr}`;
 
   try {
-    // BRTV CDN 不稳定，同一 URL 有时返回空响应，重试最多 4 次
-    let text = '';
-    for (let attempt = 0; attempt < 4; attempt++) {
-      const res = await fetchWithRetry(url, { headers: HEADERS }, 1, 10000);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      text = await res.text();
-      if (text.length > 10) break;
-      logger.warn(`[brtv] ${channel.name} (${channelId}) ${dateStr} 空响应，重试 ${attempt + 1}/4`);
-      await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-    }
-    if (!text || text.length < 10) throw new Error('空响应（多次重试后仍为空）');
-    const data = JSON.parse(text);
+    const result = await fetchWithWafCookie(url, { headers: HEADERS });
+    if (!result.ok) throw new Error(`HTTP ${result.status}`);
+
+    const data = JSON.parse(result.text);
     const programs = data?.channel?.programes || [];
 
     if (programs.length === 0) {

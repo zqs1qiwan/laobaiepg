@@ -88,6 +88,8 @@ channels:
       - 五星体育
       - FiveStarSports
     sources:
+      - type: kankanews
+        id: "10"
       - type: tvmao
         id: "SHHAI-SHHAI5"
   - id: shandongjiaoyu
@@ -1807,6 +1809,8 @@ channels:
       - 上海新闻综合
       - ShanghaiNews
     sources:
+      - type: kankanews
+        id: "2"
       - type: tvmao
         id: "SHHAI-SHHAI1"
   - id: shanghaidiyicaijing
@@ -1817,6 +1821,8 @@ channels:
       - 第一财经
       - CBN
     sources:
+      - type: kankanews
+        id: "5"
       - type: tvmao
         id: "SHHAI-SHHAI2"
   - id: shangshidongfangyingshi

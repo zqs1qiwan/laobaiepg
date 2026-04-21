@@ -13,6 +13,7 @@ import { getEpgTbc, getChannelsTbc } from './tbc.js';
 import { getEpgEpgpwApi, getChannelsEpgpwApi } from './epgpw_api.js';
 import { getEpgTdm, getChannelsTdm } from './tdm.js';
 import { getEpgBrtv, getChannelsBrtv } from './brtv.js';
+import { getEpgKankanews, getChannelsKankanews } from './kankanews.js';
 
 /**
  * 数据源注册表
@@ -49,6 +50,10 @@ export const scraperRegistry = {
   brtv: {
     getEpg: getEpgBrtv,
     getChannels: getChannelsBrtv,
+  },
+  kankanews: {
+    getEpg: getEpgKankanews,
+    getChannels: getChannelsKankanews,
   },
 };
 
