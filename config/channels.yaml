@@ -1848,7 +1848,9 @@ channels:
       - 江苏城市频道
       - 江苏城市
       - JSTV城市
-    sources: []
+    sources:
+      - type: tvmao
+        id: JSTV-JSTV3
   - id: jiangsuyingshi
     name: 江苏影视频道
     group: 地方台
@@ -1871,7 +1873,9 @@ channels:
       - 江苏综艺频道
       - 江苏综艺
       - JSTV综艺
-    sources: []
+    sources:
+      - type: tvmao
+        id: JSTV-JSTV2
   - id: jiangsuguoji
     name: 江苏国际
     group: 地方台
@@ -1879,6 +1883,26 @@ channels:
       - 江苏国际
       - JiangsuIntl
     sources: []
+  - id: jiangsuxiuxiantiyu
+    name: 江苏休闲体育频道
+    group: 地方台
+    aliases:
+      - 江苏休闲体育频道
+      - 江苏体育
+      - JSTV体育
+    sources:
+      - type: tvmao
+        id: JSTV-JSTV6
+  - id: jiangsumanhua
+    name: 江苏优漫卡通频道
+    group: 地方台
+    aliases:
+      - 江苏优漫卡通频道
+      - 江苏卡通
+      - JSTV卡通
+    sources:
+      - type: tvmao
+        id: JSTV-JSTV7
   - id: shaanxixinwen
     name: 陕西新闻资讯频道
     group: 地方台
@@ -2016,11 +2040,11 @@ channels:
   # 数字付费/专业频道 - 无 EPG 源
   # ============================================================
   - id: zhongguononglin
-    name: 中国农林卫视
+    name: 农林卫视
     group: 卫视
     aliases:
-      - 中国农林卫视
       - 农林卫视
+      - 中国农林卫视
       - 陕西农林卫视
     sources:
       - type: shaanxi
