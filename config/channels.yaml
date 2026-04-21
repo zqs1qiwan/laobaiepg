@@ -524,10 +524,10 @@ channels:
       - ZJTV
       - 浙江
     sources:
-      - type: cntv
-        id: zhejiang
       - type: epgpw_api
         id: '495006'
+      - type: cntv
+        id: zhejiang
   - id: jiangsuweishi
     name: 江苏卫视
     group: 卫视
@@ -569,10 +569,10 @@ channels:
       - AnhuiTV
       - AHTV
     sources:
-      - type: cntv
-        id: anhui
       - type: epgpw_api
         id: '495010'
+      - type: cntv
+        id: anhui
   - id: shandongweishi
     name: 山东卫视
     group: 卫视
@@ -584,10 +584,10 @@ channels:
       - ShandongTV
       - SDTV
     sources:
-      - type: cntv
-        id: shandong
       - type: epgpw_api
         id: '495015'
+      - type: cntv
+        id: shandong
   - id: sichuanweishi
     name: 四川卫视
     group: 卫视
@@ -599,10 +599,10 @@ channels:
       - SichuanTV
       - SCTV
     sources:
-      - type: cntv
-        id: sichuan
       - type: epgpw_api
         id: '495032'
+      - type: cntv
+        id: sichuan
   - id: henanweishi
     name: 河南卫视
     group: 卫视
@@ -612,10 +612,10 @@ channels:
       - HenanTV
       - HNTV河南
     sources:
-      - type: cntv
-        id: henan
       - type: epgpw_api
         id: '495024'
+      - type: cntv
+        id: henan
   - id: guangdongweishi
     name: 广东卫视
     group: 卫视
@@ -627,10 +627,10 @@ channels:
       - GuangdongTV
       - GDTV
     sources:
-      - type: cntv
-        id: guangdong
       - type: epgpw_api
         id: '495011'
+      - type: cntv
+        id: guangdong
   - id: chongqingweishi
     name: 重庆卫视
     group: 卫视
@@ -639,10 +639,10 @@ channels:
       - 重庆台
       - ChongqingTV
     sources:
-      - type: cntv
-        id: chongqing
       - type: epgpw_api
         id: '495017'
+      - type: cntv
+        id: chongqing
   - id: liaoningweishi
     name: 辽宁卫视
     group: 卫视
@@ -652,10 +652,10 @@ channels:
       - LiaoningTV
       - LNTV
     sources:
-      - type: cntv
-        id: liaoning
       - type: epgpw_api
         id: '495013'
+      - type: cntv
+        id: liaoning
   - id: hubeiweishi
     name: 湖北卫视
     group: 卫视
@@ -665,10 +665,10 @@ channels:
       - HubeiTV
       - HBTV
     sources:
-      - type: cntv
-        id: hubei
       - type: epgpw_api
         id: '495025'
+      - type: cntv
+        id: hubei
   - id: jiangxiweishi
     name: 江西卫视
     group: 卫视
@@ -710,10 +710,10 @@ channels:
       - 云南台
       - YunnanTV
     sources:
-      - type: cntv
-        id: yunnan
       - type: epgpw_api
         id: '495034'
+      - type: cntv
+        id: yunnan
   - id: guizhouweishi
     name: 贵州卫视
     group: 卫视
@@ -722,10 +722,10 @@ channels:
       - 贵州台
       - GuizhouTV
     sources:
-      - type: cntv
-        id: guizhou
       - type: epgpw_api
         id: '495021'
+      - type: cntv
+        id: guizhou
   - id: gansuweishi
     name: 甘肃卫视
     group: 卫视
@@ -734,10 +734,10 @@ channels:
       - 甘肃台
       - GansuTV
     sources:
-      - type: cntv
-        id: gansu
       - type: epgpw_api
         id: '495019'
+      - type: cntv
+        id: gansu
   - id: fujianweishi
     name: 福建卫视
     group: 卫视
@@ -757,10 +757,10 @@ channels:
       - 黑龙江台
       - HeilongjiangTV
     sources:
-      - type: cntv
-        id: heilongjiang
       - type: epgpw_api
         id: '495023'
+      - type: cntv
+        id: heilongjiang
   - id: jilinweishi
     name: 吉林卫视
     group: 卫视
@@ -782,10 +782,10 @@ channels:
       - TianjinTV
       - TJTV
     sources:
-      - type: cntv
-        id: tianjin
       - type: epgpw_api
         id: '495016'
+      - type: cntv
+        id: tianjin
   - id: hainanweishi
     name: 海南卫视
     group: 卫视
@@ -806,10 +806,10 @@ channels:
       - InnerMongoliaTV
       - NMGTV
     sources:
-      - type: cntv
-        id: neimenggu
       - type: epgpw_api
         id: '495028'
+      - type: cntv
+        id: neimenggu
   - id: xinjiangweishi
     name: 新疆卫视
     group: 卫视
@@ -818,10 +818,10 @@ channels:
       - 新疆台
       - XinjiangTV
     sources:
-      - type: cntv
-        id: xinjiang
       - type: epgpw_api
         id: '495033'
+      - type: cntv
+        id: xinjiang
   - id: xizangweishi
     name: 西藏卫视
     group: 卫视
@@ -842,10 +842,10 @@ channels:
       - 宁夏台
       - NingxiaTV
     sources:
-      - type: cntv
-        id: ningxia
       - type: epgpw_api
         id: '495029'
+      - type: cntv
+        id: ningxia
   - id: qinghaiweishi
     name: 青海卫视
     group: 卫视
@@ -854,10 +854,10 @@ channels:
       - 青海台
       - QinghaiTV
     sources:
-      - type: cntv
-        id: qinghai
       - type: epgpw_api
         id: '495035'
+      - type: cntv
+        id: qinghai
   - id: fenghuangzhongwen
     name: 凤凰中文台
     group: 卫星
@@ -1202,10 +1202,10 @@ channels:
       - 广西台
       - GuangxiTV
     sources:
-      - type: cntv
-        id: guangxi
       - type: epgpw_api
         id: '495020'
+      - type: cntv
+        id: guangxi
   - id: jinyingkatong
     name: 金鹰卡通
     group: 少儿
@@ -1271,12 +1271,12 @@ channels:
       - BTV卫视
       - 北京台
     sources:
-      - type: cntv
-        id: btv1
       - type: tvmao
         id: BTV-BTV1
       - type: epgpw_api
         id: '495008'
+      - type: cntv
+        id: btv1
   - id: beijingtaoyule
     name: 北京淘娱乐
     group: 地方台
@@ -1310,10 +1310,10 @@ channels:
       - SZTV
       - ShenzhenTV
     sources:
-      - type: cntv
-        id: shenzhen
       - type: epgpw_api
         id: '495012'
+      - type: cntv
+        id: shenzhen
   - id: dongnanweishi
     name: 东南卫视
     group: 卫视
@@ -1323,10 +1323,10 @@ channels:
       - 福建东南卫视
       - SoutheastTV
     sources:
-      - type: cntv
-        id: dongnan
       - type: epgpw_api
         id: '495018'
+      - type: cntv
+        id: dongnan
   - id: xiamenweishi
     name: 厦门卫视
     group: 卫视
@@ -1357,10 +1357,10 @@ channels:
       - 河北台
       - HebeiTV
     sources:
-      - type: cntv
-        id: hebei
       - type: epgpw_api
         id: '495022'
+      - type: cntv
+        id: hebei
   - id: tvbhudongxinwentai
     name: TVB 互动新闻台
     group: 港澳台
