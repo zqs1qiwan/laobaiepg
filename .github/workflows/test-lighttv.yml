@@ -1,0 +1,27 @@
+name: 测试 lighttv API 直连
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 测试 lighttv 直连
+    runs-on: ubuntu-latest
+    steps:
+      - name: 直连 lighttv API (CCTV2)
+        run: |
+          echo "=== 直连 lighttv.tvmao.com ==="
+          RESP=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+            -H "Accept: application/json" \
+            -H "Referer: https://www.tvmao.com/" \
+            "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=CCTV2&op=getProgramByChnid&epgName=&isNew=on&day=2")
+          HTTP_CODE=$(echo "$RESP" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESP" | grep -v "HTTP_CODE:")
+          echo "HTTP 状态码: $HTTP_CODE"
+          echo "响应前200字符: ${BODY:0:200}"
+          if echo "$BODY" | python3 -c "import sys,json; d=json.load(sys.stdin); progs=d[2]['pro']; print(f'✅ 成功！共 {len(progs)} 条节目，首条: {progs[0][\"name\"]} {progs[0][\"time\"]}')" 2>/dev/null; then
+            echo "直连可用"
+          else
+            echo "直连不可用，返回: $BODY"
+          fi
