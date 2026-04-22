@@ -97,12 +97,12 @@
 | `cntv` | CCTV 官方 API，CCTV 全系列 + 30 个卫视，3 天覆盖 | 无限制 |
 | `tvmao` | 电视猫 lighttv，覆盖大多数卫视/地方台，3 天覆盖 | **需要中国大陆 IP**，海外 IP 返回限速响应 |
 | `brtv` | 北京广播电视台官方 API（BTV2/3/4/5/7/9/10/12，数据精准）| **需要中国大陆住宅 IP**，数据中心 IP 被阿里云 WAF 拦截 |
-| `kankanews` | 上海广播电视台（SMG）官方 API，今日节目单精准 | **需要中国大陆 IP** |
+| `kankanews` | 上海广播电视台（SMG）官方 API，今日节目单精准 | 无限制 |
 | `shaanxi` | 陕西广播电视台官方 API，陕西卫视 + 5 个地方台，7 天覆盖 | 无限制 |
 | `tdm` | 澳门广播电视 TDM，澳视系列 6 个频道 | 无限制 |
 
-> ⚠️ **部署注意**：`brtv`、`tvmao`、`kankanews` 数据源需要中国大陆 IP 才能正常抓取。
-> - 使用 GitHub Actions（海外 IP）时，`tvmao` 可直连，但 `brtv` 和 `kankanews` 需要通过国内代理访问。
+> ⚠️ **部署注意**：`brtv` 数据源需要中国大陆住宅 IP 才能正常抓取。
+> - 使用 GitHub Actions（海外 IP）时，`tvmao`、`kankanews`、`cntv`、`shaanxi` 均可直连，但 `brtv` 需要通过国内住宅 IP 代理访问。
 > - 本仓库通过在路由器部署 HTTP 代理（`BRTV_PROXY_URL` 环境变量）解决 `brtv` 的访问问题。
 > - 如果你没有国内住宅 IP 代理，建议将 `brtv` 频道改用 `tvmao` 或 `epgpw_api` 作为数据源。
 > - `tvmao` 在 GitHub Actions 环境（海外 IP）下已验证可正常访问。
