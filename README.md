@@ -12,7 +12,7 @@
 ## ✨ 特性
 
 - **纯边缘化** — 完全运行在 Cloudflare 全球网络，无需自建服务器
-- **多源聚合** — 支持 epg.pw、CNTV官方(cntv)、北京台(brtv)、电视猫(tvmao)、看看新闻(kankanews)、陕西台(shaanxi)、澳门 TDM 等多个数据源，自动换源
+- **多源聚合** — 支持 epg.pw、CNTV官方(cntv)、北京台(brtv)、电视猫(tvmao)、看看新闻(kankanews)、陕西台(shaanxi)、澳门 TDM、香港 TVB 等多个数据源，自动换源
 - **数据保护** — 按日期维度合并新旧数据，抓取失败不丢失已有节目单，7 天窗口始终完整
 - **智能匹配** — CCTV 正则自动归一化 + 繁简自动转换 + 多别名匹配
 - **自动更新** — GitHub Actions 每天定时抓取，epg.pw 数据源一次抓取 7 天覆盖，节目单始终保持充足
@@ -100,6 +100,7 @@
 | `kankanews` | 上海广播电视台（SMG）官方 API，今日节目单精准 | 无限制 |
 | `shaanxi` | 陕西广播电视台官方 API，陕西卫视 + 5 个地方台，7 天覆盖 | 无限制 |
 | `tdm` | 澳门广播电视 TDM，澳视系列 6 个频道 | 无限制 |
+| `tvb` | 香港无线电视官方 API（翡翠台/明珠台/TVB Plus/无线新闻台，4 天覆盖）| 无限制 |
 
 > ⚠️ **部署注意**：`brtv` 数据源需要中国大陆住宅 IP 才能正常抓取。
 > - 使用 GitHub Actions（海外 IP）时，`tvmao`、`kankanews`、`cntv`、`shaanxi` 均可直连，但 `brtv` 需要通过国内住宅 IP 代理访问。
