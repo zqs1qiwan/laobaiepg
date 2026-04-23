@@ -1,0 +1,42 @@
+name: 💡 新功能申请
+description: 建议新功能或改进现有功能
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        欢迎提出建议！请描述你希望实现的功能和使用场景。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你遇到了什么问题？
+      description: 描述这个功能要解决的痛点（可选）
+      placeholder: 例如：我经常需要手动触发抓取，但找不到方便的入口
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 期望的解决方案
+      description: 描述你希望的功能是什么样的
+      placeholder: 例如：在管理面板首页加一个"立即更新"按钮
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 其他方案（可选）
+      description: 你考虑过的其他解决方式
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 截图、参考链接或其他说明
+    validations:
+      required: false

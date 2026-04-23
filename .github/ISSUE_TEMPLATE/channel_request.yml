@@ -1,0 +1,56 @@
+name: 📺 新增频道申请
+description: 申请添加新的频道节目单支持
+labels: ["channel request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请提供尽量详细的频道信息，方便我们找到合适的数据源。
+
+  - type: input
+    id: channel_name
+    attributes:
+      label: 频道名称
+      description: 频道的标准名称
+      placeholder: 例如：广东卫视
+    validations:
+      required: true
+
+  - type: input
+    id: channel_aliases
+    attributes:
+      label: 频道别名（可选）
+      description: 你的播放列表中使用的频道名，多个用逗号分隔
+      placeholder: 例如：广东卫视、广东TV、GDTV
+    validations:
+      required: false
+
+  - type: dropdown
+    id: region
+    attributes:
+      label: 频道地区
+      options:
+        - 中国大陆（央视/卫视/地方台）
+        - 香港
+        - 澳门
+        - 台湾
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: epg_source
+    attributes:
+      label: 已知的节目单来源（可选）
+      description: 如果你知道哪里有这个频道的节目单，请提供链接
+      placeholder: 例如：epg.pw 上的频道 ID，或官方网站地址
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 其他你认为有帮助的信息
+    validations:
+      required: false

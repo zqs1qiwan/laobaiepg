@@ -1,0 +1,54 @@
+name: 🐛 节目单问题
+description: 报告节目单缺失、错误或无法匹配的问题
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量填写完整信息，方便我们定位问题。
+
+  - type: input
+    id: channel
+    attributes:
+      label: 频道名称
+      description: 播放列表中的频道名称（原始写法）
+      placeholder: 例如：浙江卫视4K
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: 问题类型
+      options:
+        - 节目单完全没有（频道未匹配）
+        - 节目单不完整（部分时段空白）
+        - 节目单内容错误（时间/标题不对）
+        - 节目单长时间未更新
+    validations:
+      required: true
+
+  - type: input
+    id: player
+    attributes:
+      label: 使用的播放器
+      placeholder: 例如：TiviMate、Kodi、DIYP
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 详细描述
+      description: 描述具体现象，如有截图请粘贴
+      placeholder: 例如：浙江卫视4K 在 TiviMate 里显示"无节目单"，其他频道正常
+    validations:
+      required: true
+
+  - type: input
+    id: epg_url
+    attributes:
+      label: 使用的 EPG 地址
+      placeholder: 例如：https://laobaiepg.laobaitv.net/guide.xml.gz
+    validations:
+      required: false
