@@ -588,6 +588,88 @@ channels:
         id: '495015'
       - type: cntv
         id: shandong
+
+  - id: qiluweishi
+    name: 齐鲁频道
+    group: 地方台
+    aliases:
+      - 齐鲁频道
+      - 山东齐鲁
+      - QLChannel
+    sources:
+      - type: iqilu
+        id: '25'
+
+  - id: shandongzongyi
+    name: 山东综艺频道
+    group: 地方台
+    aliases:
+      - 山东综艺
+      - 山东综艺频道
+    sources:
+      - type: iqilu
+        id: '28'
+
+  - id: shandongshenghuo
+    name: 山东生活频道
+    group: 地方台
+    aliases:
+      - 山东生活
+      - 山东生活频道
+    sources:
+      - type: iqilu
+        id: '29'
+
+  - id: shandongtiyu
+    name: 山东体育休闲频道
+    group: 地方台
+    aliases:
+      - 山东体育
+      - 山东体育休闲
+    sources:
+      - type: iqilu
+        id: '26'
+
+  - id: shandongwenlv
+    name: 山东文旅频道
+    group: 地方台
+    aliases:
+      - 山东文旅
+      - 山东旅游
+    sources:
+      - type: iqilu
+        id: '27'
+
+  - id: shandongnongke
+    name: 山东农科频道
+    group: 地方台
+    aliases:
+      - 山东农科
+      - 山东农业
+    sources:
+      - type: iqilu
+        id: '30'
+
+  - id: shandongnews
+    name: 山东新闻频道
+    group: 地方台
+    aliases:
+      - 山东新闻
+      - 山东新闻频道
+    sources:
+      - type: iqilu
+        id: '31'
+
+  - id: shandongshaoer
+    name: 山东少儿频道
+    group: 地方台
+    aliases:
+      - 山东少儿
+      - 山东少儿频道
+    sources:
+      - type: iqilu
+        id: '32'
+
   - id: sichuanweishi
     name: 四川卫视
     group: 卫视

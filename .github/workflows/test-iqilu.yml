@@ -1,0 +1,20 @@
+name: 测试 iqilu 数据源
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 测试 iqilu API 海外可达性
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 测试 iqilu API 可达性
+        run: |
+          echo "=== 测试山东省台各频道 ==="
+          for id in 24 25 26 27 28 29 30 31 32; do
+            resp=$(curl -s "https://sdxw.iqilu.com/v1/app/play/program/qilu?channelID=${id}&date=$(date +%Y-%m-%d)" --max-time 10)
+            count=$(echo "$resp" | python3 -c "import json,sys; d=json.load(sys.stdin); print(len((d.get('data') or {}).get('infos') or []))" 2>/dev/null || echo "ERROR")
+            echo "channelID=${id}: ${count} 条节目"
+          done
