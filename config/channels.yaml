@@ -904,8 +904,8 @@ channels:
       - TVB1
       - tvbfeicuitai
     sources:
-      - type: epgpw_api
-        id: '460917'
+      - type: tvb
+        id: 'J'
   - id: tvbmingzhutai
     name: TVB 明珠台
     group: 港澳台
@@ -917,8 +917,8 @@ channels:
       - TVB2
       - tvbmingzhutai
     sources:
-      - type: epgpw_api
-        id: '368369'
+      - type: tvb
+        id: 'P'
   - id: viutv
     name: ViuTV
     group: 港澳台
@@ -1371,8 +1371,8 @@ channels:
       - TVB互动新闻台
       - tvbhudongxinwentai
     sources:
-      - type: epgpw_api
-        id: '460810'
+      - type: tvb
+        id: 'C'
   - id: tvbplus
     name: TVB Plus
     group: 港澳台
@@ -1381,8 +1381,8 @@ channels:
       - TVBPlus
       - TVB Plus
     sources:
-      - type: epgpw_api
-        id: '368361'
+      - type: tvb
+        id: 'B'
   - id: tvbj2
     name: TVB J2
     group: 港澳台
