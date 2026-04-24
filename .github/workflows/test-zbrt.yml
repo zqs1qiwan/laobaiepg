@@ -1,0 +1,60 @@
+name: 测试淄博频道 tvmao lighttv ID
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 测试淄博台频道 ID
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 测试淄博台各频道
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          REFERER="https://www.tvmao.com/"
+          
+          # 今天周五 day=5，明天day=6，后天day=7
+          TODAY=5
+          
+          echo "=== 基准测试：山东教育 SDETV1 ==="
+          curl -s "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=SDETV1&op=getProgramByChnid&epgName=&isNew=on&day=${TODAY}" \
+            -H "User-Agent: ${UA}" -H "Referer: ${REFERER}" --max-time 10 | head -c 100
+          echo ""
+          sleep 5
+          
+          echo "=== 淄博台各频道测试 ==="
+          for id in ZBRT1 ZBRT2 ZBRT3 ZBRT4 ZBRT5 ZBRT6; do
+            echo -n "  ${id} day=${TODAY}: "
+            resp=$(curl -s "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=${id}&op=getProgramByChnid&epgName=&isNew=on&day=${TODAY}" \
+              -H "User-Agent: ${UA}" -H "Referer: ${REFERER}" --max-time 10)
+            echo "$resp" | head -c 120
+            echo ""
+            sleep 8
+          done
+          
+          echo ""
+          echo "=== 对有数据的频道测试明天/后天 ==="
+          for id in ZBRT1 ZBRT2 ZBRT3 ZBRT4 ZBRT5 ZBRT6; do
+            for day in 6 7; do
+              echo -n "  ${id} day=${day}: "
+              resp=$(curl -s "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=${id}&op=getProgramByChnid&epgName=&isNew=on&day=${day}" \
+                -H "User-Agent: ${UA}" -H "Referer: ${REFERER}" --max-time 10)
+              # 只显示前100字节
+              echo "$resp" | head -c 100
+              echo ""
+              sleep 8
+            done
+          done
+          
+          echo ""
+          echo "=== 也测试可能的变体 ID ==="
+          for id in ZBTV1 ZBTV2 ZBTV3 ZD1 ZBRD1; do
+            echo -n "  ${id} day=${TODAY}: "
+            resp=$(curl -s "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=${id}&op=getProgramByChnid&epgName=&isNew=on&day=${TODAY}" \
+              -H "User-Agent: ${UA}" -H "Referer: ${REFERER}" --max-time 10)
+            echo "$resp" | head -c 100
+            echo ""
+            sleep 8
+          done
