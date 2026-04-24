@@ -670,6 +670,72 @@ channels:
       - type: iqilu
         id: '32'
 
+  - id: zibonewszonghe
+    name: 淄博新闻综合
+    group: 地方台
+    aliases:
+      - 淄博新闻综合
+      - 淄博新闻
+      - 淄博1
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT1'
+
+  - id: zibogonggong
+    name: 淄博公共频道
+    group: 地方台
+    aliases:
+      - 淄博公共
+      - 淄博公共频道
+      - 淄博2
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT2'
+
+  - id: zibominsheng
+    name: 淄博民生频道
+    group: 地方台
+    aliases:
+      - 淄博民生
+      - 淄博民生频道
+      - 淄博3
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT3'
+
+  - id: zibowenlv
+    name: 淄博文旅频道
+    group: 地方台
+    aliases:
+      - 淄博文旅
+      - 淄博文旅频道
+      - 淄博4
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT4'
+
+  - id: zibokejiaoyu
+    name: 淄博科教频道
+    group: 地方台
+    aliases:
+      - 淄博科教
+      - 淄博科教频道
+      - 淄博5
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT5'
+
+  - id: ziboshiyuan
+    name: 淄博新视源导视
+    group: 地方台
+    aliases:
+      - 淄博新视源
+      - 淄博导视
+      - 淄博6
+    sources:
+      - type: tvmao
+        id: 'ZBRT-ZBRT6'
+
   - id: sichuanweishi
     name: 四川卫视
     group: 卫视
