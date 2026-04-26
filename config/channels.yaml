@@ -17,19 +17,14 @@ channels:
       - 中国国际电视台
       - CGTNEnglish
       - CGTN英语
-      - cgtnyingyupindao
-    sources:
-      - type: tvmao
-        id: "CCTV-CCTV19"
-  - id: cgtnnews
-    name: CGTN 新闻
-    group: 卫星
-    aliases:
       - CGTN新闻
       - CGTN News
       - CGTNNews
       - CGTN新闻频道
-    sources: []
+      - cgtnyingyupindao
+    sources:
+      - type: tvmao
+        id: "CCTV-CCTV19"
   - id: cgtnxiyu
     name: CGTN 西语
     group: 卫星
