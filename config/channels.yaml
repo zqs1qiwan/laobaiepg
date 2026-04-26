@@ -99,6 +99,7 @@ channels:
   - id: shandongjiaoyu
     name: 山东教育
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东教育
       - ShandongEdu
@@ -144,6 +145,7 @@ channels:
   - id: beijingwenyi
     name: 北京文艺
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京文艺
       - BTV文艺
@@ -155,6 +157,7 @@ channels:
   - id: beijingtiyuxiuxian
     name: 北京体育休闲
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京体育休闲
       - BTV体育休闲
@@ -167,6 +170,7 @@ channels:
   - id: beijingyingshi
     name: 北京影视
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京影视
       - BTV影视
@@ -178,6 +182,7 @@ channels:
   - id: beijingcaijing
     name: 北京财经
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京财经
       - BTV财经
@@ -189,6 +194,7 @@ channels:
   - id: beijingshenghuo
     name: 北京生活
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京生活
       - BTV生活
@@ -200,6 +206,7 @@ channels:
   - id: beijingxinwen
     name: 北京新闻
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京新闻
       - BTV新闻
@@ -211,6 +218,7 @@ channels:
   - id: kakushaoer
     name: 卡酷少儿
     group: 地方台
+    region: 北京频道
     aliases:
       - 卡酷少儿
       - BTV10
@@ -227,6 +235,7 @@ channels:
   - id: beijingjishikejiao
     name: 北京纪实科教
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京纪实科教
       - 北京纪实
@@ -600,6 +609,7 @@ channels:
   - id: qiluweishi
     name: 齐鲁频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 齐鲁频道
       - 山东齐鲁
@@ -611,6 +621,7 @@ channels:
   - id: shandongzongyi
     name: 山东综艺频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东综艺
       - 山东综艺频道
@@ -621,6 +632,7 @@ channels:
   - id: shandongshenghuo
     name: 山东生活频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东生活
       - 山东生活频道
@@ -631,6 +643,7 @@ channels:
   - id: shandongtiyu
     name: 山东体育休闲频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东体育
       - 山东体育休闲
@@ -641,6 +654,7 @@ channels:
   - id: shandongwenlv
     name: 山东文旅频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东文旅
       - 山东旅游
@@ -651,6 +665,7 @@ channels:
   - id: shandongnongke
     name: 山东农科频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东农科
       - 山东农业
@@ -661,6 +676,7 @@ channels:
   - id: shandongnews
     name: 山东新闻频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东新闻
       - 山东新闻频道
@@ -671,6 +687,7 @@ channels:
   - id: shandongshaoer
     name: 山东少儿频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 山东少儿
       - 山东少儿频道
@@ -681,6 +698,7 @@ channels:
   - id: zibonewszonghe
     name: 淄博新闻综合
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博新闻综合
       - 淄博新闻
@@ -692,6 +710,7 @@ channels:
   - id: zibogonggong
     name: 淄博公共频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博公共
       - 淄博公共频道
@@ -703,6 +722,7 @@ channels:
   - id: zibominsheng
     name: 淄博民生频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博民生
       - 淄博民生频道
@@ -714,6 +734,7 @@ channels:
   - id: zibowenlv
     name: 淄博文旅频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博文旅
       - 淄博文旅频道
@@ -725,6 +746,7 @@ channels:
   - id: zibokejiaoyu
     name: 淄博科教频道
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博科教
       - 淄博科教频道
@@ -736,6 +758,7 @@ channels:
   - id: ziboshiyuan
     name: 淄博新视源导视
     group: 地方台
+    region: 山东频道
     aliases:
       - 淄博新视源
       - 淄博导视
@@ -1423,6 +1446,7 @@ channels:
   - id: beijingtaoyule
     name: 北京淘娱乐
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京淘娱乐
       - 淘娱乐
@@ -1431,6 +1455,7 @@ channels:
   - id: beijingtaojuchang
     name: 北京淘剧场
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京淘剧场
       - 淘剧场
@@ -1439,6 +1464,7 @@ channels:
   - id: beijingtaodianying
     name: 北京淘电影
     group: 地方台
+    region: 北京频道
     aliases:
       - 北京淘电影
       - 淘电影
@@ -2055,6 +2081,7 @@ channels:
   - id: shanghaixinwenzonghe
     name: 上海新闻综合
     group: 地方台
+    region: 上海频道
     aliases:
       - 上海新闻综合
       - ShanghaiNews
@@ -2066,6 +2093,7 @@ channels:
   - id: shanghaidiyicaijing
     name: 上海第一财经
     group: 地方台
+    region: 上海频道
     aliases:
       - 上海第一财经
       - 第一财经
@@ -2078,6 +2106,7 @@ channels:
   - id: shangshidongfangyingshi
     name: 上视东方影视
     group: 地方台
+    region: 上海频道
     aliases:
       - 上视东方影视
       - 东方影视
@@ -2087,6 +2116,7 @@ channels:
   - id: jiangsuchengshi
     name: 江苏城市频道
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏城市频道
       - 江苏城市
@@ -2097,6 +2127,7 @@ channels:
   - id: jiangsuyingshi
     name: 江苏影视频道
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏影视频道
       - 江苏影视
@@ -2105,6 +2136,7 @@ channels:
   - id: jiangsujiaoyu
     name: 江苏教育
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏教育
       - JiangsuEdu
@@ -2112,6 +2144,7 @@ channels:
   - id: jiangsuzongyi
     name: 江苏综艺频道
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏综艺频道
       - 江苏综艺
@@ -2122,6 +2155,7 @@ channels:
   - id: jiangsuguoji
     name: 江苏国际
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏国际
       - JiangsuIntl
@@ -2129,6 +2163,7 @@ channels:
   - id: jiangsuxiuxiantiyu
     name: 江苏休闲体育频道
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏休闲体育频道
       - 江苏体育
@@ -2139,6 +2174,7 @@ channels:
   - id: jiangsumanhua
     name: 江苏优漫卡通频道
     group: 地方台
+    region: 江苏频道
     aliases:
       - 江苏优漫卡通频道
       - 江苏卡通
@@ -2149,6 +2185,7 @@ channels:
   - id: shaanxixinwen
     name: 陕西新闻资讯频道
     group: 地方台
+    region: 陕西频道
     aliases:
       - 陕西新闻资讯频道
       - 陕西新闻
@@ -2158,6 +2195,7 @@ channels:
   - id: shaanxitiyu
     name: 陕西体育休闲频道
     group: 地方台
+    region: 陕西频道
     aliases:
       - 陕西体育休闲频道
       - 陕西体育
@@ -2167,6 +2205,7 @@ channels:
   - id: shaanxiqinqiang
     name: 陕西秦腔频道
     group: 地方台
+    region: 陕西频道
     aliases:
       - 陕西秦腔频道
       - 陕西秦腔
@@ -2176,6 +2215,7 @@ channels:
   - id: shaanxidushi
     name: 陕西都市青春频道
     group: 地方台
+    region: 陕西频道
     aliases:
       - 陕西都市青春频道
       - 陕西都市
@@ -2185,6 +2225,7 @@ channels:
   - id: shaanxiyinling
     name: 陕西银龄频道
     group: 地方台
+    region: 陕西频道
     aliases:
       - 陕西银龄频道
       - 陕西银龄

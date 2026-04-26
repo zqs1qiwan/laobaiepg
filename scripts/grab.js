@@ -320,7 +320,7 @@ function writeChannelIndex(channels, epgData) {
   const outputDir = join(ROOT_DIR, 'output');
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
   const index = channels.map(ch => ({
-    id: ch.id, name: ch.name, group: ch.group, logo: ch.logo || '',
+    id: ch.id, name: ch.name, group: ch.group, region: ch.region || null, logo: ch.logo || '',
     aliases: ch.aliases || [],
     sources: (ch.sources || []).map(s => ({ type: s.type, id: s.id || s.name || '' })),
     hasEpg: (epgData.get(ch.id) || []).length > 0,
