@@ -655,10 +655,11 @@ channels:
         id: shandong
     logo: 山东卫视
   - id: qiluweishi
-    name: 齐鲁频道
+    name: 山东齐鲁频道
     group: 地方台
     region: 山东频道
     aliases:
+      - 山东齐鲁频道
       - 齐鲁频道
       - 山东齐鲁
       - QLChannel
@@ -2287,14 +2288,15 @@ channels:
     sources: []
     logo: 江苏影视
   - id: jiangsujiaoyu
-    name: 江苏教育
+    name: 江苏教育频道
     group: 地方台
     region: 江苏频道
     aliases:
+      - 江苏教育频道
       - 江苏教育
       - JiangsuEdu
     sources: []
-    logo: 江苏教育
+    logo: 江苏教育频道
   - id: jiangsuzongyi
     name: 江苏综艺频道
     group: 地方台
@@ -2308,14 +2310,15 @@ channels:
         id: JSTV-JSTV2
     logo: 江苏综艺
   - id: jiangsuguoji
-    name: 江苏国际
+    name: 江苏国际频道
     group: 地方台
     region: 江苏频道
     aliases:
+      - 江苏国际频道
       - 江苏国际
       - JiangsuIntl
     sources: []
-    logo: 江苏国际
+    logo: 江苏国际频道
   - id: jiangsuxiuxiantiyu
     name: 江苏休闲体育频道
     group: 地方台

@@ -165,7 +165,7 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
   return merged;
 }
 
-async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao, datesBrtv) {
+async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
   const sources   = channel.sources || [];
   if (sources.length === 0) return [];
 
@@ -183,10 +183,8 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao, datesBrt
     const { type: sourceType, id: sourceId = '' } = sources[srcIdx];
     let epgs    = [];
     let success = false;
-    // 根据源类型选择日期范围
-    const effectiveDates = (sourceType === 'tvmao' && datesTvmao) ? datesTvmao
-      : (sourceType === 'brtv' && datesBrtv) ? datesBrtv
-      : dates;
+    // tvmao 用独立天数配置，其他源用全量 dates
+    const effectiveDates = (sourceType === 'tvmao' && datesTvmao) ? datesTvmao : dates;
 
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
@@ -352,11 +350,9 @@ async function main() {
   const { channels, crawlConfig, outputConfig } = loadConfig();
   const days       = DAYS_OVERRIDE || crawlConfig.days || 7;
   const daysTvmao  = DAYS_OVERRIDE || crawlConfig.days_tvmao || days;
-  const daysBrtv   = DAYS_OVERRIDE || crawlConfig.days_brtv || days;
   const dates      = getDateRange(days);
   const datesTvmao = getDateRange(daysTvmao).reverse(); // 倒序：先抓最远的天，今天的数据下次跑会补
-  const datesBrtv  = getDateRange(daysBrtv);            // brtv 正序，当天可能为空由 fallback 补
-  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序, brtv: ${daysBrtv} 天)`);
+  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序)`);
 
   let targetChannels = channels;
   if (SINGLE_CHANNEL) {
@@ -377,7 +373,7 @@ async function main() {
     const channel = targetChannels[i];
     logger.info(`[${i + 1}/${targetChannels.length}] ${channel.name}`);
 
-    const epgs = await fetchChannelEpg(channel, dates, crawlConfig, datesTvmao, datesBrtv);
+    const epgs = await fetchChannelEpg(channel, dates, crawlConfig, datesTvmao);
     if (epgs.length > 0) {
       epgData.set(channel.id, epgs);
       successCount++;
