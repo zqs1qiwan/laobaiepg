@@ -28,6 +28,8 @@ channels:
       - CGTN西语
       - CGTN西班牙语
       - CGTNSpanish
+      - CGTNEspanol
+      - CGTN Español
       - cgtnxiyupindao
     sources:
       - type: tvmao
@@ -38,6 +40,8 @@ channels:
     aliases:
       - CGTN法语
       - CGTNFrench
+      - CGTNFrancais
+      - CGTN Français
       - cgtnfayupindao
     sources:
       - type: tvmao
@@ -155,7 +159,7 @@ channels:
       - 北京体育休闲
       - BTV体育休闲
       - BTV体育
-      - BTV3
+      - BTV6
       - BRTV体育休闲
     sources:
       - type: brtv
@@ -178,7 +182,6 @@ channels:
       - 北京财经
       - BTV财经
       - BTV5
-      - 财富天下
       - BRTV财经
     sources:
       - type: brtv
@@ -212,6 +215,11 @@ channels:
       - 卡酷少儿
       - BTV10
       - 北京卡酷
+      - 北京卡酷少儿
+      - 卡酷卫视
+      - 卡酷动画
+      - 卡酷卡通
+      - BTV卡酷
       - BRTV卡酷少儿
     sources:
       - type: brtv
@@ -758,7 +766,6 @@ channels:
       - 河南卫视
       - 河南台
       - HenanTV
-      - HNTV河南
     sources:
       - type: epgpw_api
         id: '495024'
@@ -811,7 +818,6 @@ channels:
       - 湖北卫视
       - 湖北台
       - HubeiTV
-      - HBTV
     sources:
       - type: epgpw_api
         id: '495025'
@@ -837,6 +843,7 @@ channels:
       - 山西卫视
       - 山西台
       - ShanxiTV
+      - SXanxiTV
     sources:
       - type: epgpw_api
         id: '495030'
@@ -847,6 +854,7 @@ channels:
       - 陕西卫视
       - 陕西台
       - ShaanxiTV
+      - SXTV
     sources:
       - type: shaanxi
         id: star
@@ -1037,7 +1045,7 @@ channels:
       - 凤凰香港台
       - 凤凰香港
       - PhoenixHK
-      - fenghuangxianggangta
+      - PhoenixHongKong
     sources:
       - type: epgpw_api
         id: '495071'
@@ -1173,11 +1181,13 @@ channels:
       - type: epgpw_api
         id: '456557'
   - id: chcgaoqingdianying
-    name: CHC 高清电影
+    name: CHC 影迷电影
     group: 数字付费
     aliases:
       - CHC高清电影
       - CHC高清
+      - CHC影迷电影
+      - CHCCinephile
       - CHCHd
       - chcgaoqingdianying
     sources:
@@ -1224,9 +1234,10 @@ channels:
     name: CGTN 纪录
     group: 卫星
     aliases:
-      - CGTN记录
       - CGTN纪录
-      - CGTN外语纪录
+      - CGTN纪录频道
+      - CGTN Documentary
+      - CGTNDocumentary
       - CGTNDoc
       - cgtnjilupin
     sources:
@@ -1494,13 +1505,15 @@ channels:
       - type: cntv
         id: hebei
   - id: tvbhudongxinwentai
-    name: TVB 互动新闻台
+    name: TVB 无线新闻台
     group: 港澳台
     aliases:
       - 无线新闻
+      - 无线新闻台
       - TVB新闻台
       - TVBNews
       - TVB互动新闻台
+      - TVB无线新闻台
       - tvbhudongxinwentai
     sources:
       - type: tvb
@@ -1512,6 +1525,7 @@ channels:
       - TVB PLUS
       - TVBPlus
       - TVB Plus
+      - J2
     sources:
       - type: tvb
         id: 'B'
