@@ -319,13 +319,18 @@ function writeOutput(channels, epgData, outputConfig) {
 function writeChannelIndex(channels, epgData) {
   const outputDir = join(ROOT_DIR, 'output');
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
-  const index = channels.map(ch => ({
-    id: ch.id, name: ch.name, group: ch.group, region: ch.region || null, logo: ch.logo || '',
-    aliases: ch.aliases || [],
-    sources: (ch.sources || []).map(s => ({ type: s.type, id: s.id || s.name || '' })),
-    hasEpg: (epgData.get(ch.id) || []).length > 0,
-    programmeCount: (epgData.get(ch.id) || []).length,
-  }));
+  const LOGO_BASE = 'https://logo.laobaitv.net/';
+  const index = channels.map(ch => {
+    const logoSlug = (ch.logo || ch.name || '').replace(/\s+/g, '');
+    return {
+      id: ch.id, name: ch.name, group: ch.group, region: ch.region || null, logo: ch.logo || '',
+      logo_url: logoSlug ? `${LOGO_BASE}${logoSlug}` : '',
+      aliases: ch.aliases || [],
+      sources: (ch.sources || []).map(s => ({ type: s.type, id: s.id || s.name || '' })),
+      hasEpg: (epgData.get(ch.id) || []).length > 0,
+      programmeCount: (epgData.get(ch.id) || []).length,
+    };
+  });
   writeFileSync(join(outputDir, 'channels.json'), JSON.stringify(index, null, 2), 'utf-8');
   logger.info(`写入 channels.json (${index.length} 个频道)`);
 }
