@@ -21,6 +21,15 @@ channels:
     sources:
       - type: tvmao
         id: "CCTV-CCTV19"
+  - id: cgtnnews
+    name: CGTN 新闻
+    group: 卫星
+    aliases:
+      - CGTN新闻
+      - CGTN News
+      - CGTNNews
+      - CGTN新闻频道
+    sources: []
   - id: cgtnxiyu
     name: CGTN 西语
     group: 卫星
@@ -1259,6 +1268,8 @@ channels:
     aliases:
       - CGTN纪录
       - CGTN纪录频道
+      - CGTN记录
+      - CGTN 记录
       - CGTN Documentary
       - CGTNDocumentary
       - CGTNDoc
