@@ -14,6 +14,7 @@
 crawl:
   days: 7               # 默认抓取天数（epgpw_api 用，无限速）
   days_tvmao: 3         # tvmao 单独配置，有限速，保持 3 天
+  days_brtv: 7          # brtv 单独配置，当天可能无数据，多抓几天存粮
   retry: 2              # 失败重试次数
   delay: 300            # 请求间隔毫秒（防止被限速）
   change_source: true   # 主数据源失败时自动切换备用源

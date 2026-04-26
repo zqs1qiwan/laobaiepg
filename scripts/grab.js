@@ -165,7 +165,7 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
   return merged;
 }
 
-async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
+async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao, datesBrtv) {
   const sources   = channel.sources || [];
   if (sources.length === 0) return [];
 
@@ -183,8 +183,10 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
     const { type: sourceType, id: sourceId = '' } = sources[srcIdx];
     let epgs    = [];
     let success = false;
-    // tvmao 用独立天数配置，其他源用全量 dates
-    const effectiveDates = (sourceType === 'tvmao' && datesTvmao) ? datesTvmao : dates;
+    // 根据源类型选择日期范围
+    const effectiveDates = (sourceType === 'tvmao' && datesTvmao) ? datesTvmao
+      : (sourceType === 'brtv' && datesBrtv) ? datesBrtv
+      : dates;
 
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
@@ -288,11 +290,15 @@ function writeOutput(channels, epgData, outputConfig) {
       const merged = [];
       let addedFallback = 0;
       for (const date of [...allDates].sort()) {
-        if (newBuckets.has(date)) {
-          merged.push(...newBuckets.get(date));
-        } else if (oldBuckets.has(date)) {
-          merged.push(...oldBuckets.get(date));
-          addedFallback += oldBuckets.get(date).length;
+        const newProgsForDate = newBuckets.get(date) || [];
+        const oldProgsForDate = oldBuckets.get(date) || [];
+        if (newProgsForDate.length > 0) {
+          // 新数据有内容，用新的
+          merged.push(...newProgsForDate);
+        } else if (oldProgsForDate.length > 0) {
+          // 新数据为空（如 brtv 当天返回空），保留旧数据不覆盖
+          merged.push(...oldProgsForDate);
+          addedFallback += oldProgsForDate.length;
         }
       }
 
@@ -346,9 +352,11 @@ async function main() {
   const { channels, crawlConfig, outputConfig } = loadConfig();
   const days       = DAYS_OVERRIDE || crawlConfig.days || 7;
   const daysTvmao  = DAYS_OVERRIDE || crawlConfig.days_tvmao || days;
+  const daysBrtv   = DAYS_OVERRIDE || crawlConfig.days_brtv || days;
   const dates      = getDateRange(days);
   const datesTvmao = getDateRange(daysTvmao).reverse(); // 倒序：先抓最远的天，今天的数据下次跑会补
-  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序)`);
+  const datesBrtv  = getDateRange(daysBrtv);            // brtv 正序，当天可能为空由 fallback 补
+  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序, brtv: ${daysBrtv} 天)`);
 
   let targetChannels = channels;
   if (SINGLE_CHANNEL) {
@@ -369,7 +377,7 @@ async function main() {
     const channel = targetChannels[i];
     logger.info(`[${i + 1}/${targetChannels.length}] ${channel.name}`);
 
-    const epgs = await fetchChannelEpg(channel, dates, crawlConfig, datesTvmao);
+    const epgs = await fetchChannelEpg(channel, dates, crawlConfig, datesTvmao, datesBrtv);
     if (epgs.length > 0) {
       epgData.set(channel.id, epgs);
       successCount++;
