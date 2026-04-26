@@ -1355,6 +1355,9 @@ channels:
       - CGTNDocumentary
       - CGTNDoc
       - cgtnjilupin
+      - CGTN英文纪录
+      - CGTN-英文纪录
+      - CGTN English
     sources:
       - type: tvmao
         id: CCTV-CCTV18
