@@ -199,8 +199,6 @@ channels:
     sources:
       - type: brtv
         id: "137"
-      - type: tvmao
-        id: "BTV-BTV4"
     logo: 北京影视
   - id: beijingcaijing
     name: 北京财经
@@ -272,8 +270,6 @@ channels:
     sources:
       - type: brtv
         id: "136"
-      - type: tvmao
-        id: "BTV-BTV12"
     logo: 北京纪实科教
   - id: CCTV1
     name: CCTV-1 综合
