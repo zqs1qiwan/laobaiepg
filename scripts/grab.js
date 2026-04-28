@@ -101,11 +101,22 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
   let kankanewsEpgs = [];
   let tvmaoEpgs = [];
 
-  // 1. 抓 kankanews（仅当天）
+  // 1. 抓 kankanews（仅今天和昨天，API 不支持明天及以后的数据）
   if (kankanewsSrc) {
+    // kankanews API 只有今天和昨天的数据，过滤掉明天及以后的日期，避免无效请求和 ERROR 日志
+    const beijingNow = new Date(Date.now() + 8 * 3600000);
+    const todayStr = `${beijingNow.getUTCFullYear()}-${String(beijingNow.getUTCMonth() + 1).padStart(2, '0')}-${String(beijingNow.getUTCDate()).padStart(2, '0')}`;
+    const yesterdayMs = Date.now() + 8 * 3600000 - 86400000;
+    const yesterday = new Date(yesterdayMs);
+    const yesterdayStr = `${yesterday.getUTCFullYear()}-${String(yesterday.getUTCMonth() + 1).padStart(2, '0')}-${String(yesterday.getUTCDate()).padStart(2, '0')}`;
+    const kankanewsDates = dates.filter(d => {
+      const bj = new Date(d.getTime() + 8 * 3600000);
+      const ds = `${bj.getUTCFullYear()}-${String(bj.getUTCMonth() + 1).padStart(2, '0')}-${String(bj.getUTCDate()).padStart(2, '0')}`;
+      return ds === todayStr || ds === yesterdayStr;
+    });
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
-        kankanewsEpgs = await fetchEpg(channel, 'kankanews', kankanewsSrc.id, dates);
+        kankanewsEpgs = await fetchEpg(channel, 'kankanews', kankanewsSrc.id, kankanewsDates);
         if (kankanewsEpgs.length > 0) break;
       } catch (err) {
         logger.warn(`${channel.name}: [kankanews] 第${retry + 1}次失败: ${err.message}`);
