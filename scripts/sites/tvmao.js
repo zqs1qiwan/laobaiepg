@@ -98,18 +98,32 @@ const jitter = () => Math.floor(1000 + Math.random() * 1000);
  * 计算 day 参数
  * lighttv API: day=1 本周一, day=2 本周二 ... day=7 本周日, day=8 下周一 ...
  *
- * @param {Date} targetDate - 目标日期
+ * 注意：使用纯 UTC + 北京时间偏移计算，与运行环境（GitHub Actions = UTC，本地 = Asia/Shanghai）无关。
+ * 原来使用 setHours(0,0,0,0) + getDay() 依赖本地时区，在 UTC 环境下会因日期边界错位导致 day 偏小 1，
+ * 使得 tvmao 返回前一天的节目单并被贴上今天的时间戳写入 XML。
+ *
+ * @param {Date} targetDate - 目标日期（北京时间 00:00:00 对应的 UTC Date 对象）
  * @returns {number} day 参数
  */
 function getDayParam(targetDate) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(targetDate);
-  target.setHours(0, 0, 0, 0);
+  const BEIJING_OFFSET_MS = 8 * 3600 * 1000;
 
-  const todayWeekday = today.getDay() === 0 ? 7 : today.getDay();
-  const deltaDays = Math.round((target - today) / 86400000);
-  return todayWeekday + deltaDays;
+  // 以北京时间计算今天和目标日期的零点（UTC 方法，不受本地时区影响）
+  const nowBJ = new Date(Date.now() + BEIJING_OFFSET_MS);
+  const todayBJMidnightUTC = Date.UTC(
+    nowBJ.getUTCFullYear(), nowBJ.getUTCMonth(), nowBJ.getUTCDate()
+  );
+
+  const targetBJ = new Date(targetDate.getTime() + BEIJING_OFFSET_MS);
+  const targetBJMidnightUTC = Date.UTC(
+    targetBJ.getUTCFullYear(), targetBJ.getUTCMonth(), targetBJ.getUTCDate()
+  );
+
+  // 北京时间今天的星期几（0=周日→7，其余不变）
+  const todayWeekday = new Date(todayBJMidnightUTC).getUTCDay();
+  const todayWeekdayAdj = todayWeekday === 0 ? 7 : todayWeekday;
+  const deltaDays = Math.round((targetBJMidnightUTC - todayBJMidnightUTC) / 86400000);
+  return todayWeekdayAdj + deltaDays;
 }
 
 /**
