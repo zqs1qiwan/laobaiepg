@@ -173,6 +173,8 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
     logger.error(`✗ ${channel.name}: 双源均无数据`);
   }
 
+  // 按开始时间升序排序，确保跨源合并后顺序正确
+  merged.sort((a, b) => a.start - b.start);
   return merged;
 }
 
@@ -209,6 +211,8 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
 
     if (success) {
       logger.info(`✓ ${channel.name}: [${sourceType}] 获取 ${epgs.length} 条节目`);
+      // 按开始时间升序排序，防止倒序抓取（如 tvmao datesTvmao.reverse()）导致节目乱序
+      epgs.sort((a, b) => a.start - b.start);
       return epgs;
     }
 
