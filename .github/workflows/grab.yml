@@ -2,9 +2,10 @@ name: 抓取 EPG 节目单
 
 on:
   schedule:
-    # 每天两次抓取
+    # 每天三次抓取
     - cron: '55 16 * * *'   # 北京时间 00:55
-    - cron: '55 4 * * *'    # 北京时间 12:55
+    - cron: '55 0 * * *'    # 北京时间 08:55
+    - cron: '55 13 * * *'   # 北京时间 21:55
   workflow_dispatch:
     inputs:
       days:
