@@ -1014,20 +1014,6 @@ channels:
   - type: cntv
     id: gansu
   logo: 甘肃卫视
-- id: fujianweishi
-  name: 福建卫视
-  group: 卫视
-  aliases:
-  - 福建卫视
-  - 福建台
-  - FujianTV
-  - FJTV
-  sources:
-  - type: tvmao
-    id: FJTV-FJTV2
-  - type: epgpw_api
-    id: '495002'
-  logo: 东南卫视
 - id: heilongjiangweishi
   name: 黑龙江卫视
   group: 卫视
@@ -1665,6 +1651,10 @@ channels:
   - SETV
   - 福建东南卫视
   - SoutheastTV
+  - 福建卫视
+  - 福建台
+  - FujianTV
+  - FJTV
   sources:
   - type: tvmao
     id: FJTV-FJTV2
