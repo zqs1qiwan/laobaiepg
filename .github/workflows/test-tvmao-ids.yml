@@ -1,0 +1,136 @@
+name: 验证 tvmao 卫视频道 ID
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 批量验证 tvmao ID
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 验证卫视频道 ID
+        run: |
+          # tvmao lighttv API
+          BASE="https://lighttv.tvmao.com/qa/qachannelschedule"
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+          # 今天周几 (1=Mon..7=Sun)
+          DAY=$(date -u -d '+8 hours' +%u)
+          echo "Today day param: $DAY"
+          echo ""
+
+          # 频道ID映射表: tvmao_code channel_name
+          CHANNELS="
+          BTV1 北京卫视
+          HUNANTV1 湖南卫视
+          ZJTV1 浙江卫视
+          JSTV1 江苏卫视
+          SHHAI3 东方卫视
+          AHTV1 安徽卫视
+          SDTV1 山东卫视
+          SCTV1 四川卫视
+          HNTV1 河南卫视
+          GDTV1 广东卫视
+          CQTV1 重庆卫视
+          LNTV1 辽宁卫视
+          HBTV1 湖北卫视
+          JXTV1 江西卫视
+          SXTVS1 山西卫视
+          SHAANXITV1 陕西卫视
+          YNTV1 云南卫视
+          GZTV1 贵州卫视
+          GSTV1 甘肃卫视
+          FJTV1 福建卫视
+          HLJTV1 黑龙江卫视
+          JLTV1 吉林卫视
+          TJTV1 天津卫视
+          HAINANTV1 海南卫视
+          NMGTV1 内蒙古卫视
+          XJTV1 新疆卫视
+          XZTV1 西藏卫视
+          NXTV1 宁夏卫视
+          QHTV1 青海卫视
+          GXTV1 广西卫视
+          SZTV1 深圳卫视
+          SETV1 东南卫视
+          HEBEITV1 河北卫视
+          XIAMENTV1 厦门卫视
+          "
+
+          OK=0
+          FAIL=0
+          RATE=0
+
+          echo "$CHANNELS" | while read -r code name; do
+            [ -z "$code" ] && continue
+            URL="${BASE}?epgCode=${code}&op=getProgramByChnid&epgName=&isNew=on&day=${DAY}"
+            RESP=$(curl -sL --max-time 10 "$URL" \
+              -H "User-Agent: $UA" \
+              -H "Referer: https://www.tvmao.com/")
+            
+            # 解析结果
+            RESULT=$(echo "$RESP" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin)
+              if isinstance(d,list) and len(d)>=3 and d[2].get('pro'):
+                  pros = d[2]['pro']
+                  # 取 16:00 左右的节目名作为样本
+                  sample = ''
+                  for p in pros:
+                      t = p.get('time','')
+                      if t.startswith('16:') or t.startswith('17:'):
+                          sample = p.get('name','')
+                          break
+                  print(f'OK {len(pros)} {sample}')
+              elif isinstance(d,list) and d[0]==0:
+                  print('RATELIMIT')
+              else:
+                  print('EMPTY')
+          except:
+              print('ERROR')
+          " 2>/dev/null)
+
+            STATUS=$(echo "$RESULT" | cut -d' ' -f1)
+            if [ "$STATUS" = "OK" ]; then
+              COUNT=$(echo "$RESULT" | cut -d' ' -f2)
+              SAMPLE=$(echo "$RESULT" | cut -d' ' -f3-)
+              printf "✓ %-14s %-12s %3s条  样本: %s\n" "$code" "$name" "$COUNT" "$SAMPLE"
+            elif [ "$STATUS" = "RATELIMIT" ]; then
+              printf "⏳ %-14s %-12s 限速，等待60s...\n" "$code" "$name"
+              sleep 60
+              # 重试一次
+              RESP=$(curl -sL --max-time 10 "$URL" \
+                -H "User-Agent: $UA" \
+                -H "Referer: https://www.tvmao.com/")
+              RESULT=$(echo "$RESP" | python3 -c "
+          import json,sys
+          try:
+              d=json.load(sys.stdin)
+              if isinstance(d,list) and len(d)>=3 and d[2].get('pro'):
+                  print(f'OK {len(d[2][\"pro\"])}')
+              elif isinstance(d,list) and d[0]==0:
+                  print('RATELIMIT')
+              else:
+                  print('EMPTY')
+          except:
+              print('ERROR')
+          " 2>/dev/null)
+              STATUS2=$(echo "$RESULT" | cut -d' ' -f1)
+              if [ "$STATUS2" = "OK" ]; then
+                COUNT=$(echo "$RESULT" | cut -d' ' -f2)
+                printf "  ✓ 重试成功 %s条\n" "$COUNT"
+              else
+                printf "  ✗ 重试仍失败: %s\n" "$RESULT"
+              fi
+            else
+              printf "✗ %-14s %-12s %s\n" "$code" "$name" "$RESULT"
+            fi
+
+            sleep 4
+          done
+
+          echo ""
+          echo "验证完成"
