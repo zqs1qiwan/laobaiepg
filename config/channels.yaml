@@ -998,6 +998,8 @@ channels:
       - 黑龙江台
       - HeilongjiangTV
     sources:
+      - type: tvmao
+        id: HLJTV-HLJTV1
       - type: epgpw_api
         id: "495023"
       - type: cntv
