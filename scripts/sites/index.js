@@ -7,7 +7,7 @@
 
 import { getEpgCctv, getChannelsCctv } from './cctv.js';
 import { getEpgCntv, getChannelsCntv } from './cntv.js';
-import { getEpgTvmao, getChannelsTvmao } from './tvmao.js';
+import { getEpgTvmao, getChannelsTvmao, isTvmaoCircuitBroken } from './tvmao.js';
 import { getEpgTvb, getChannelsTvb } from './tvb.js';
 import { getEpgNowtv, getChannelsNowtv } from './nowtv.js';
 import { getEpgTbc, getChannelsTbc } from './tbc.js';
@@ -78,12 +78,17 @@ export const scraperRegistry = {
  * @param {Object} channel    - 频道配置
  * @param {string} sourceType - 数据源类型
  * @param {string} sourceId   - 频道在该数据源中的 ID
- * @param {Date[]} dates      - 日期数组（对按日期抓取的爬虫有效）
+ * @param {Date[]} dates      - 日期数组
  */
 export async function fetchEpg(channel, sourceType, sourceId, dates) {
   const scraper = scraperRegistry[sourceType];
   if (!scraper) {
     throw new Error(`未知数据源类型: ${sourceType}`);
+  }
+
+  // tvmao 熔断器检查：如果已熔断，直接返回空（避免无意义的等待）
+  if (sourceType === 'tvmao' && isTvmaoCircuitBroken()) {
+    return [];
   }
 
   // epgpw_api 返回全量数据，只需调用一次
@@ -98,7 +103,11 @@ export async function fetchEpg(channel, sourceType, sourceId, dates) {
       const epgs = await scraper.getEpg(channel, sourceId, date);
       all.push(...epgs);
     } catch (err) {
-      // 单日失败不影响其他日期
+      // tvmao 限速/熔断错误：返回已获取的数据，不再继续请求后续天数
+      if (sourceType === 'tvmao' && (err.message.includes('限速') || err.message.includes('熔断'))) {
+        break;
+      }
+      // 其他源单日失败不影响后续日期
     }
   }
   return all;

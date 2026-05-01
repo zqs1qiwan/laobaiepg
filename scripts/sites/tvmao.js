@@ -17,57 +17,36 @@ const LIGHTTV_HEADERS = {
 // ---------- 并发控制：Semaphore ----------
 
 class Semaphore {
-  /**
-   * @param {number} max - 最大并发数
-   */
   constructor(max) {
     this.max = max;
     this.current = 0;
-    /** @type {Array<() => void>} */
     this.queue = [];
   }
-
-  /** 获取许可（如果已满则等待） */
   acquire() {
     return new Promise((resolve) => {
-      if (this.current < this.max) {
-        this.current++;
-        resolve();
-      } else {
-        this.queue.push(resolve);
-      }
+      if (this.current < this.max) { this.current++; resolve(); }
+      else { this.queue.push(resolve); }
     });
   }
-
-  /** 释放许可 */
   release() {
-    if (this.queue.length > 0) {
-      const next = this.queue.shift();
-      next();
-    } else {
-      this.current--;
-    }
+    if (this.queue.length > 0) { this.queue.shift()(); }
+    else { this.current--; }
   }
 }
 
-/** 全局信号量：最多同时 2 个请求 */
-const semaphore = new Semaphore(2);
+/** 全局信号量：最多同时 1 个请求（降低并发，减少限速风险） */
+const semaphore = new Semaphore(1);
 
 // ---------- 全局限速状态 ----------
 
-/**
- * 全局限速退避时间戳（毫秒）
- * 收到 [0,""] 限速响应时，设置为 Date.now() + 5分钟
- * 所有请求进入前检查：如果 Date.now() < rateLimitUntil，等到期后再继续
- */
 let rateLimitUntil = 0;
+/** 本次运行累计被限速次数 */
+let totalRateLimitHits = 0;
+/** 连续限速次数达到此阈值后，跳过所有后续 tvmao 请求 */
+const CIRCUIT_BREAKER_THRESHOLD = 3;
 
-const RATE_LIMIT_WAIT_MS = 5 * 60 * 1000; // 5 分钟
+const RATE_LIMIT_WAIT_MS = 2 * 60 * 1000; // 2 分钟（从 5 分钟降低）
 
-/**
- * 检查并等待全局限速
- * 如果当前处于限速等待期，阻塞直到等待期结束
- */
 async function waitForRateLimit() {
   const now = Date.now();
   if (now < rateLimitUntil) {
@@ -77,61 +56,34 @@ async function waitForRateLimit() {
   }
 }
 
-/**
- * 触发全局限速退避
- * 所有挂起的请求都会被阻塞 5 分钟
- */
 function triggerGlobalRateLimit() {
+  totalRateLimitHits++;
   rateLimitUntil = Date.now() + RATE_LIMIT_WAIT_MS;
-  logger.warn(`[tvmao] 触发全局限速退避 ${RATE_LIMIT_WAIT_MS / 1000}s，所有请求暂停至 ${new Date(rateLimitUntil).toISOString()}`);
+  logger.warn(`[tvmao] 触发全局限速退避 ${RATE_LIMIT_WAIT_MS / 1000}s (累计第 ${totalRateLimitHits} 次)，暂停至 ${new Date(rateLimitUntil).toISOString()}`);
+}
+
+/** 检查断路器：累计限速次数过多则放弃 */
+function isCircuitBroken() {
+  return totalRateLimitHits >= CIRCUIT_BREAKER_THRESHOLD;
 }
 
 // ---------- 工具函数 ----------
 
-/** 等待指定毫秒 */
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const jitter = () => Math.floor(1500 + Math.random() * 1500); // 1.5-3s
 
-/** 随机抖动：1000-2000ms */
-const jitter = () => Math.floor(1000 + Math.random() * 1000);
-
-/**
- * 计算 day 参数
- * lighttv API: day=1 本周一, day=2 本周二 ... day=7 本周日, day=8 下周一 ...
- *
- * 注意：使用纯 UTC + 北京时间偏移计算，与运行环境（GitHub Actions = UTC，本地 = Asia/Shanghai）无关。
- * 原来使用 setHours(0,0,0,0) + getDay() 依赖本地时区，在 UTC 环境下会因日期边界错位导致 day 偏小 1，
- * 使得 tvmao 返回前一天的节目单并被贴上今天的时间戳写入 XML。
- *
- * @param {Date} targetDate - 目标日期（北京时间 00:00:00 对应的 UTC Date 对象）
- * @returns {number} day 参数
- */
 function getDayParam(targetDate) {
   const BEIJING_OFFSET_MS = 8 * 3600 * 1000;
-
-  // 以北京时间计算今天和目标日期的零点（UTC 方法，不受本地时区影响）
   const nowBJ = new Date(Date.now() + BEIJING_OFFSET_MS);
-  const todayBJMidnightUTC = Date.UTC(
-    nowBJ.getUTCFullYear(), nowBJ.getUTCMonth(), nowBJ.getUTCDate()
-  );
-
+  const todayBJMidnightUTC = Date.UTC(nowBJ.getUTCFullYear(), nowBJ.getUTCMonth(), nowBJ.getUTCDate());
   const targetBJ = new Date(targetDate.getTime() + BEIJING_OFFSET_MS);
-  const targetBJMidnightUTC = Date.UTC(
-    targetBJ.getUTCFullYear(), targetBJ.getUTCMonth(), targetBJ.getUTCDate()
-  );
-
-  // 北京时间今天的星期几（0=周日→7，其余不变）
+  const targetBJMidnightUTC = Date.UTC(targetBJ.getUTCFullYear(), targetBJ.getUTCMonth(), targetBJ.getUTCDate());
   const todayWeekday = new Date(todayBJMidnightUTC).getUTCDay();
   const todayWeekdayAdj = todayWeekday === 0 ? 7 : todayWeekday;
   const deltaDays = Math.round((targetBJMidnightUTC - todayBJMidnightUTC) / 86400000);
   return todayWeekdayAdj + deltaDays;
 }
 
-/**
- * 解析频道 ID: "ZJTV-ZJTV1" → "ZJTV1", "BTV-BTV1" → "BTV1"
- *
- * @param {string} fullId - 完整频道 ID
- * @returns {string} shortId
- */
 function parseChannelId(fullId) {
   const parts = fullId.split('-');
   if (parts.length === 2) return parts[1];
@@ -140,49 +92,36 @@ function parseChannelId(fullId) {
 }
 
 /**
- * 带全局限速退避和重试的 lighttv API 请求
- * - 每次请求前检查全局限速状态
- * - 每次请求前随机等待 1000-2000ms
- * - 最多重试 3 次
- * - 返回 [0,""] 视为限速 → 触发全局退避 5 分钟，然后重试
- * - 网络/HTTP 错误 → 指数退避重试（2s → 4s → 8s）
- *
- * @param {string} url - 请求 URL
- * @returns {Promise<any>} 解析后的 JSON
+ * 带限速退避的 lighttv API 请求
+ * 关键改进：限速时只重试 1 次（不再 3 次），快速失败，交给上层决策
  */
 async function fetchLighttv(url) {
-  const MAX_RETRIES = 3;
+  const MAX_RATE_LIMIT_RETRIES = 1; // 限速只重试 1 次（原来 3 次）
 
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    // 每次请求前检查全局限速
+  for (let attempt = 0; attempt <= MAX_RATE_LIMIT_RETRIES; attempt++) {
     await waitForRateLimit();
-
-    // 每次请求前随机抖动
     await sleep(jitter());
 
     try {
       const res = await fetch(url, { headers: LIGHTTV_HEADERS, signal: AbortSignal.timeout(15000) });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const json = await res.json();
 
-      // 限速检测：返回 [0, ""] 表示被限速
+      // 限速检测
       if (Array.isArray(json) && json[0] === 0 && json[1] === '' && json.length === 2) {
-        logger.warn(`[tvmao] 限速检测触发 (attempt ${attempt + 1}/${MAX_RETRIES})`);
+        logger.warn(`[tvmao] 限速检测触发 (attempt ${attempt + 1}/${MAX_RATE_LIMIT_RETRIES + 1})`);
         triggerGlobalRateLimit();
-        if (attempt < MAX_RETRIES) continue;
-        throw new Error('持续被限速，已重试 ' + MAX_RETRIES + ' 次（每次全局等待5分钟）');
+        if (attempt < MAX_RATE_LIMIT_RETRIES) continue;
+        throw new Error(`被限速，已重试 ${MAX_RATE_LIMIT_RETRIES} 次`);
       }
 
       return json;
     } catch (err) {
-      if (err.message.startsWith('持续被限速')) throw err;
-      if (attempt < MAX_RETRIES) {
-        const backoff = Math.pow(2, attempt + 1) * 1000; // 2s, 4s, 8s
-        logger.warn(`[tvmao] 请求失败: ${err.message}，${backoff}ms 后重试 (attempt ${attempt + 1}/${MAX_RETRIES})`);
+      if (err.message.includes('被限速')) throw err;
+      if (attempt < MAX_RATE_LIMIT_RETRIES) {
+        const backoff = Math.pow(2, attempt + 1) * 1000;
+        logger.warn(`[tvmao] 请求失败: ${err.message}，${backoff}ms 后重试`);
         await sleep(backoff);
       } else {
         throw err;
@@ -193,26 +132,23 @@ async function fetchLighttv(url) {
 
 // ---------- 导出函数 ----------
 
-/**
- * 获取电视猫某频道某天的节目单
- *
- * @param {Object} channel   - 频道配置
- * @param {string} channelId - 频道在 tvmao 中的 ID（如 "ZJTV-ZJTV1"）
- * @param {Date}   date      - 日期（北京时间 00:00:00 的 Date 对象）
- * @returns {Promise<Array<{start: Date, stop: Date|null, title: string, desc: string}>>}
- */
 export async function getEpgTvmao(channel, channelId, date) {
   const epgs = [];
+
+  // 断路器检查：如果累计限速次数过多，跳过
+  if (isCircuitBroken()) {
+    logger.warn(`[tvmao] ${channel.name}: 断路器已触发（累计 ${totalRateLimitHits} 次限速），跳过`);
+    return epgs;
+  }
+
   const dayParam = getDayParam(new Date(date));
   const shortId = parseChannelId(channelId);
-
   const url = `${LIGHTTV_BASE}?epgCode=${shortId}&op=getProgramByChnid&epgName=&isNew=on&day=${dayParam}`;
 
   await semaphore.acquire();
   try {
     const json = await fetchLighttv(url);
 
-    // 响应格式: [status, "", {epgName, pro: [{name, time, typeid, pid, status}]}]
     const progs = json?.[2]?.pro;
     if (!Array.isArray(progs)) throw new Error('节目列表为空或格式错误');
 
@@ -226,7 +162,6 @@ export async function getEpgTvmao(channel, channelId, date) {
       epgs.push({ start, stop: null, title, desc: '' });
     }
 
-    // 推算 stop 时间：每条节目的结束 = 下一条的开始
     for (let i = 0; i < epgs.length - 1; i++) {
       epgs[i].stop = epgs[i + 1].start;
     }
@@ -238,6 +173,8 @@ export async function getEpgTvmao(channel, channelId, date) {
     logger.info(`[tvmao] ${channel.name} (${shortId}) day=${dayParam}: ${epgs.length} 条节目`);
   } catch (err) {
     logger.error(`[tvmao] ${channel.name} (${shortId}) day=${dayParam} 失败: ${err.message}`);
+    // 如果是限速错误，向上层抛出，让 grab.js 跳过该频道剩余天数
+    if (err.message.includes('被限速')) throw err;
   } finally {
     semaphore.release();
   }
@@ -245,10 +182,6 @@ export async function getEpgTvmao(channel, channelId, date) {
   return epgs;
 }
 
-/**
- * 获取频道列表（内置，无需远程拉取）
- * @returns {Promise<Array>}
- */
 export async function getChannelsTvmao() {
   logger.info('[tvmao] 频道列表（内置）');
   return [];
