@@ -63,7 +63,7 @@ function triggerGlobalRateLimit() {
 }
 
 /** 检查断路器：累计限速次数过多则放弃 */
-function isCircuitBroken() {
+export function isTvmaoCircuitBroken() {
   return totalRateLimitHits >= CIRCUIT_BREAKER_THRESHOLD;
 }
 
@@ -136,7 +136,7 @@ export async function getEpgTvmao(channel, channelId, date) {
   const epgs = [];
 
   // 断路器检查：如果累计限速次数过多，跳过
-  if (isCircuitBroken()) {
+  if (isTvmaoCircuitBroken()) {
     logger.warn(`[tvmao] ${channel.name}: 断路器已触发（累计 ${totalRateLimitHits} 次限速），跳过`);
     return epgs;
   }
