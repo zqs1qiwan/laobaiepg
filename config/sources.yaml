@@ -29,7 +29,7 @@ crawl:
   #   - tvmao 请求量过大触发限速 → 退避 5 分钟 × N 次 → 超时
   source_days:
     epgpw_api: 7         # 无限速，7 天没问题
-    tvmao: 3             # 有严格限速，3 天是安全上限
+    tvmao: 2             # 限速阈值~125次/IP，2天×43频道=86次安全线
     cctv: 7              # 官方 API，稳定
     cntv: 7              # 官方 API，支持多天
     tvb: 7               # 稳定
