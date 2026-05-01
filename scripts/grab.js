@@ -5,7 +5,7 @@
  * 用法:
  *   node scripts/grab.js                    # 抓取所有频道
  *   node scripts/grab.js --channel CCTV1    # 测试单个频道
- *   node scripts/grab.js --days 3           # 指定抓取天数
+ *   node scripts/grab.js --days 3           # 指定抓取天数（覆盖所有源）
  *   node scripts/grab.js --test             # 测试模式（不写文件）
  */
 
@@ -60,6 +60,30 @@ function getDateRange(days) {
   return Array.from({ length: days }, (_, i) => new Date(beijingMidnightUTC + i * 86400000));
 }
 
+/**
+ * 根据数据源类型获取该源应抓取的天数
+ * 优先级：命令行 --days > source_days[type] > crawl.days > 7
+ */
+function getDaysForSource(sourceType, crawlConfig) {
+  if (DAYS_OVERRIDE) return DAYS_OVERRIDE;
+  const sourceDays = crawlConfig.source_days || {};
+  if (sourceDays[sourceType] !== undefined) return sourceDays[sourceType];
+  return crawlConfig.days || 7;
+}
+
+/**
+ * 根据数据源类型获取日期列表
+ * tvmao 使用倒序（先抓近的天，今天最重要）
+ * 其他源使用正序
+ */
+function getDatesForSource(sourceType, crawlConfig) {
+  const days = getDaysForSource(sourceType, crawlConfig);
+  const dates = getDateRange(days);
+  // tvmao: 不再倒序，从今天开始正序抓取
+  // 原因：倒序导致先抓远期空数据，浪费请求配额，加速触发限速
+  return dates;
+}
+
 // ============================================================
 // 为单个频道抓取 EPG（多源 + 换源重试 + 双源合并）
 // ============================================================
@@ -80,8 +104,6 @@ function groupByBeijingDate(progs) {
 
 /**
  * 检测频道是否配置了双源合并模式（kankanews + tvmao）
- * 双源模式：sources 中同时存在 kankanews 和 tvmao 类型
- * 合并策略：kankanews 的今天数据覆盖 tvmao 的今天数据；tvmao 的明天/后天数据直接追加
  */
 function isDualSourceMerge(sources) {
   const types = sources.map(s => s.type);
@@ -91,7 +113,7 @@ function isDualSourceMerge(sources) {
 /**
  * 双源合并抓取：kankanews（今天优先）+ tvmao（补充明后天）
  */
-async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
+async function fetchDualSource(channel, crawlConfig) {
   const sources = channel.sources || [];
   const maxRetry = crawlConfig.retry || 2;
 
@@ -103,20 +125,21 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
 
   // 1. 抓 kankanews（仅今天和昨天，API 不支持明天及以后的数据）
   if (kankanewsSrc) {
-    // kankanews API 只有今天和昨天的数据，过滤掉明天及以后的日期，避免无效请求和 ERROR 日志
+    const kankanewsDates = getDatesForSource('kankanews', crawlConfig);
+    // 额外过滤：kankanews 只有今天和昨天
     const beijingNow = new Date(Date.now() + 8 * 3600000);
     const todayStr = `${beijingNow.getUTCFullYear()}-${String(beijingNow.getUTCMonth() + 1).padStart(2, '0')}-${String(beijingNow.getUTCDate()).padStart(2, '0')}`;
     const yesterdayMs = Date.now() + 8 * 3600000 - 86400000;
     const yesterday = new Date(yesterdayMs);
     const yesterdayStr = `${yesterday.getUTCFullYear()}-${String(yesterday.getUTCMonth() + 1).padStart(2, '0')}-${String(yesterday.getUTCDate()).padStart(2, '0')}`;
-    const kankanewsDates = dates.filter(d => {
+    const filteredDates = kankanewsDates.filter(d => {
       const bj = new Date(d.getTime() + 8 * 3600000);
       const ds = `${bj.getUTCFullYear()}-${String(bj.getUTCMonth() + 1).padStart(2, '0')}-${String(bj.getUTCDate()).padStart(2, '0')}`;
       return ds === todayStr || ds === yesterdayStr;
     });
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
-        kankanewsEpgs = await fetchEpg(channel, 'kankanews', kankanewsSrc.id, kankanewsDates);
+        kankanewsEpgs = await fetchEpg(channel, 'kankanews', kankanewsSrc.id, filteredDates);
         if (kankanewsEpgs.length > 0) break;
       } catch (err) {
         logger.warn(`${channel.name}: [kankanews] 第${retry + 1}次失败: ${err.message}`);
@@ -132,10 +155,10 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
 
   // 2. 抓 tvmao（补充）
   if (tvmaoSrc) {
-    const effectiveDates = datesTvmao || dates;
+    const tvmaoDates = getDatesForSource('tvmao', crawlConfig);
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
-        tvmaoEpgs = await fetchEpg(channel, 'tvmao', tvmaoSrc.id, effectiveDates);
+        tvmaoEpgs = await fetchEpg(channel, 'tvmao', tvmaoSrc.id, tvmaoDates);
         if (tvmaoEpgs.length > 0) break;
       } catch (err) {
         logger.warn(`${channel.name}: [tvmao] 第${retry + 1}次失败: ${err.message}`);
@@ -157,10 +180,8 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
   const merged = [];
   for (const date of [...allDates].sort()) {
     if (kankanewsByDate.has(date)) {
-      // kankanews 有数据的日期，优先使用 kankanews
       merged.push(...kankanewsByDate.get(date));
     } else if (tvmaoByDate.has(date)) {
-      // kankanews 没有的日期（明后天），用 tvmao 补充
       merged.push(...tvmaoByDate.get(date));
     }
   }
@@ -173,18 +194,17 @@ async function fetchDualSource(channel, dates, crawlConfig, datesTvmao) {
     logger.error(`✗ ${channel.name}: 双源均无数据`);
   }
 
-  // 按开始时间升序排序，确保跨源合并后顺序正确
   merged.sort((a, b) => a.start - b.start);
   return merged;
 }
 
-async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
+async function fetchChannelEpg(channel, crawlConfig) {
   const sources   = channel.sources || [];
   if (sources.length === 0) return [];
 
   // 双源合并模式（kankanews + tvmao）
   if (isDualSourceMerge(sources)) {
-    return fetchDualSource(channel, dates, crawlConfig, datesTvmao);
+    return fetchDualSource(channel, crawlConfig);
   }
 
   const maxRetry    = crawlConfig.retry || 2;
@@ -196,8 +216,8 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
     const { type: sourceType, id: sourceId = '' } = sources[srcIdx];
     let epgs    = [];
     let success = false;
-    // tvmao 用独立天数配置，其他源用全量 dates
-    const effectiveDates = (sourceType === 'tvmao' && datesTvmao) ? datesTvmao : dates;
+    // 每个源使用自己的天数配置
+    const effectiveDates = getDatesForSource(sourceType, crawlConfig);
 
     for (let retry = 0; retry <= maxRetry; retry++) {
       try {
@@ -211,7 +231,6 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
 
     if (success) {
       logger.info(`✓ ${channel.name}: [${sourceType}] 获取 ${epgs.length} 条节目`);
-      // 按开始时间升序排序，防止倒序抓取（如 tvmao datesTvmao.reverse()）导致节目乱序
       epgs.sort((a, b) => a.start - b.start);
       return epgs;
     }
@@ -230,7 +249,6 @@ async function fetchChannelEpg(channel, dates, crawlConfig, datesTvmao) {
 // ============================================================
 /**
  * 从已有 XML 文件中解析出旧 EPG 数据，用于在新抓取失败时兜底
- * 返回 Map<channelId, programme[]>
  */
 function loadExistingEpg(outputDir, filename) {
   const outPath = join(outputDir, filename);
@@ -238,7 +256,6 @@ function loadExistingEpg(outputDir, filename) {
   try {
     const xml = readFileSync(outPath, 'utf-8');
     const old = new Map();
-    // 解析 <programme start="..." stop="..." channel="..."><title>...</title></programme>
     const re = /<programme[^>]+start="([^"]+)"[^>]+stop="([^"]+)"[^>]+channel="([^"]+)"[^>]*>\s*<title[^>]*>([^<]*)<\/title>(?:[\s\S]*?<desc[^>]*>([^<]*)<\/desc>)?/g;
     let m;
     while ((m = re.exec(xml)) !== null) {
@@ -264,16 +281,11 @@ function writeOutput(channels, epgData, outputConfig) {
 
   for (const fileConfig of files) {
     const outPath = join(outputDir, fileConfig.filename);
-
-    // 读取旧数据用于 fallback
     const oldEpg = loadExistingEpg(outputDir, fileConfig.filename);
 
-    // 按日期维度合并：对每个频道每一天，有新数据用新的，没有则保留旧的
-    // 这样 7 天中某天抓取失败，不会丢失该天已有的节目数据
     const mergedEpg = new Map();
     let fallbackChannels = 0, fallbackProgs = 0;
 
-    // 把节目列表按「北京时间日期 YYYY-MM-DD」分桶
     function bucketByDate(progs) {
       const buckets = new Map();
       for (const p of progs) {
@@ -290,15 +302,12 @@ function writeOutput(channels, epgData, outputConfig) {
       const oldProgs  = oldEpg.get(ch.id)  || [];
 
       if (oldProgs.length === 0) {
-        // 没有旧数据，直接用新数据（可能也是空）
         if (newProgs.length > 0) mergedEpg.set(ch.id, newProgs);
         continue;
       }
 
       const newBuckets = bucketByDate(newProgs);
       const oldBuckets = bucketByDate(oldProgs);
-
-      // 合并：新有的日期用新的，新没有的日期补旧的
       const allDates = new Set([...newBuckets.keys(), ...oldBuckets.keys()]);
       const merged = [];
       let addedFallback = 0;
@@ -306,10 +315,8 @@ function writeOutput(channels, epgData, outputConfig) {
         const newProgsForDate = newBuckets.get(date) || [];
         const oldProgsForDate = oldBuckets.get(date) || [];
         if (newProgsForDate.length > 0) {
-          // 新数据有内容，用新的
           merged.push(...newProgsForDate);
         } else if (oldProgsForDate.length > 0) {
-          // 新数据为空（如 brtv 当天返回空），保留旧数据不覆盖
           merged.push(...oldProgsForDate);
           addedFallback += oldProgsForDate.length;
         }
@@ -363,11 +370,20 @@ async function main() {
   logger.info('='.repeat(60));
 
   const { channels, crawlConfig, outputConfig } = loadConfig();
-  const days       = DAYS_OVERRIDE || crawlConfig.days || 7;
-  const daysTvmao  = DAYS_OVERRIDE || crawlConfig.days_tvmao || days;
-  const dates      = getDateRange(days);
-  const datesTvmao = getDateRange(daysTvmao).reverse(); // 倒序：先抓最远的天，今天的数据下次跑会补
-  logger.info(`抓取日期: ${dates[0].toISOString().slice(0, 10)} ~ ${dates[days - 1].toISOString().slice(0, 10)} (${days} 天, tvmao: ${daysTvmao} 天 倒序)`);
+
+  // 打印各数据源天数配置
+  const sourceDays = crawlConfig.source_days || {};
+  const defaultDays = DAYS_OVERRIDE || crawlConfig.days || 7;
+  logger.info(`默认抓取天数: ${defaultDays}${DAYS_OVERRIDE ? ' (命令行覆盖)' : ''}`);
+  const sourceDaysSummary = Object.entries(sourceDays)
+    .map(([k, v]) => `${k}=${DAYS_OVERRIDE || v}`)
+    .join(', ');
+  if (sourceDaysSummary) logger.info(`各源天数: ${sourceDaysSummary}`);
+
+  // 用最大天数打印日期范围
+  const maxDays = DAYS_OVERRIDE || Math.max(defaultDays, ...Object.values(sourceDays));
+  const dateRangePreview = getDateRange(maxDays);
+  logger.info(`日期范围: ${dateRangePreview[0].toISOString().slice(0, 10)} ~ ${dateRangePreview[maxDays - 1].toISOString().slice(0, 10)} (最大 ${maxDays} 天)`);
 
   let targetChannels = channels;
   if (SINGLE_CHANNEL) {
@@ -388,7 +404,7 @@ async function main() {
     const channel = targetChannels[i];
     logger.info(`[${i + 1}/${targetChannels.length}] ${channel.name}`);
 
-    const epgs = await fetchChannelEpg(channel, dates, crawlConfig, datesTvmao);
+    const epgs = await fetchChannelEpg(channel, crawlConfig);
     if (epgs.length > 0) {
       epgData.set(channel.id, epgs);
       successCount++;
@@ -405,7 +421,6 @@ async function main() {
   logger.info('='.repeat(60));
   logger.info(`完成: 成功 ${successCount}，失败 ${failCount}，节目 ${totalProgrammes} 条`);
 
-  // 记录失败频道信息（用于后续补抓）
   const failedChannels = targetChannels
     .filter(ch => !epgData.has(ch.id) || !(epgData.get(ch.id) || []).length)
     .map(ch => ({
@@ -431,7 +446,6 @@ async function main() {
   writeOutput(channels, epgData, outputConfig);
   writeChannelIndex(channels, epgData);
 
-  // 写入失败频道记录（上传到 R2 供下次跑参考）
   const outputDir = join(ROOT_DIR, outputConfig.local_dir || 'output');
   if (failedChannels.length > 0) {
     writeFileSync(
@@ -442,7 +456,6 @@ async function main() {
     logger.warn(`失败频道 (${failedChannels.length}): ${failedChannels.map(c => c.name).join(', ')}`);
     logger.info(`已写入 failed_channels.json（将随 output 上传到 R2）`);
   } else {
-    // 全部成功，删除旧的失败记录
     const failedPath = join(outputDir, 'failed_channels.json');
     if (existsSync(failedPath)) {
       writeFileSync(failedPath, JSON.stringify({ timestamp: new Date().toISOString(), channels: [] }, null, 2), 'utf-8');
