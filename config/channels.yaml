@@ -1492,19 +1492,6 @@ channels:
   - type: epgpw_api
     id: '495082'
   logo: 中国教育4台
-- id: cha
-  name: 茶频道
-  group: 数字付费
-  aliases:
-  - 茶
-  - 茶频道
-  - 茶TV
-  - ChaCha
-  - chapindao
-  sources:
-  - type: epgpw_api
-    id: '538722'
-  logo: 茶频道
 - id: guangxiweishi
   name: 广西卫视
   group: 卫视
@@ -1998,7 +1985,7 @@ channels:
   - Eurosport
   sources:
   - type: epgpw_api
-    id: '464123'
+    id: '76619'
   logo: EUROSPORT 1
 - id: eurosport2
   name: EUROSPORT 2
@@ -2009,7 +1996,7 @@ channels:
   - EUROSPORT2
   sources:
   - type: epgpw_api
-    id: '464027'
+    id: '76744'
   logo: EUROSPORT 2
 - id: skysportsmainevent
   name: SKY SPORTS MAIN EVENT
