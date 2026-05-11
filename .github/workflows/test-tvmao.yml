@@ -1,0 +1,71 @@
+name: 测试 tvmao 网页可达性
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 测试 tvmao SSR 页面
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 测试 tvmao HTML 页面
+        run: |
+          echo "=== Test 1: program_satellite page ==="
+          HTTP_CODE=$(curl -s -o /tmp/tvmao.html -w "%{http_code}" \
+            "https://www.tvmao.com/program_satellite/HUNANTV1-w7.html" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            --max-time 15)
+          SIZE=$(wc -c < /tmp/tvmao.html)
+          echo "HTTP: $HTTP_CODE, Size: $SIZE bytes"
+          
+          # Parse schedule
+          PROGRAMS=$(python3 -c "
+          import re
+          html = open('/tmp/tvmao.html').read()
+          items = re.findall(r'<span class=\"(?:am|pm)\">\s*(\d{2}:\d{2})\s*</span>\s*<span class=\"p_show\"[^>]*>(.*?)</span>', html, re.DOTALL)
+          for t, raw in items[:5]:
+              name = re.sub(r'<[^>]+>', '', raw).strip()
+              print(f'  {t}  {name}')
+          print(f'Total: {len(items)} programs')
+          ")
+          echo "$PROGRAMS"
+          
+          echo ""
+          echo "=== Test 2: lighttv API (expect [0,\"\"]) ==="
+          curl -s "https://lighttv.tvmao.com/qa/qachannelschedule?epgCode=HUNANTV1&op=getProgramByChnid&epgName=&isNew=on&day=7" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+            -H "Referer: https://www.tvmao.com/" --max-time 10
+          
+          echo ""
+          echo ""
+          echo "=== Test 3: CCTV1 page ==="
+          HTTP_CODE2=$(curl -s -o /tmp/tvmao2.html -w "%{http_code}" \
+            "https://www.tvmao.com/program_satellite/CCTV1-w7.html" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+            --max-time 15)
+          PROGRAMS2=$(python3 -c "
+          import re
+          html = open('/tmp/tvmao2.html').read()
+          items = re.findall(r'<span class=\"(?:am|pm)\">\s*(\d{2}:\d{2})\s*</span>\s*<span class=\"p_show\"[^>]*>(.*?)</span>', html, re.DOTALL)
+          print(f'HTTP: $HTTP_CODE2, Programs: {len(items)}')
+          for t, raw in items[:3]:
+              name = re.sub(r'<[^>]+>', '', raw).strip()
+              print(f'  {t}  {name}')
+          ")
+          echo "$PROGRAMS2"
+          
+          echo ""
+          echo "=== Test 4: Local channel (BTV1) ==="
+          HTTP_CODE3=$(curl -s -o /tmp/tvmao3.html -w "%{http_code}" \
+            "https://www.tvmao.com/program_satellite/BTV1-w7.html" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+            --max-time 15)
+          PROGRAMS3=$(python3 -c "
+          import re
+          html = open('/tmp/tvmao3.html').read()
+          items = re.findall(r'<span class=\"(?:am|pm)\">\s*(\d{2}:\d{2})\s*</span>\s*<span class=\"p_show\"[^>]*>(.*?)</span>', html, re.DOTALL)
+          print(f'HTTP: $HTTP_CODE3, Programs: {len(items)}')
+          ")
+          echo "$PROGRAMS3"
