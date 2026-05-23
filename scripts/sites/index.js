@@ -91,12 +91,7 @@ export async function fetchEpg(channel, sourceType, sourceId, dates) {
     return [];
   }
 
-  // epgpw_api 返回全量数据，只需调用一次
-  if (sourceType === 'epgpw_api') {
-    return scraper.getEpg(channel, sourceId, dates[0]);
-  }
-
-  // 其他爬虫按日期循环
+  // 其他爬虫均按日期循环顺序获取
   const all = [];
   for (const date of dates) {
     try {
@@ -110,5 +105,17 @@ export async function fetchEpg(channel, sourceType, sourceId, dates) {
       // 其他源单日失败不影响后续日期
     }
   }
-  return all;
+
+  // 精密去重：以开始时间为唯一 Key，保留最先获取的数据，过滤掉重复的节目节点
+  const merged = [];
+  const seen = new Set();
+  for (const item of all) {
+    const key = item.start.getTime();
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(item);
+    }
+  }
+
+  return merged;
 }

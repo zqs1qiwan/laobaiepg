@@ -81,7 +81,10 @@ function getDayParam(targetDate) {
   const todayWeekday = new Date(todayBJMidnightUTC).getUTCDay();
   const todayWeekdayAdj = todayWeekday === 0 ? 7 : todayWeekday;
   const deltaDays = Math.round((targetBJMidnightUTC - todayBJMidnightUTC) / 86400000);
-  return todayWeekdayAdj + deltaDays;
+  
+  // 关键修复：防止 dayParam 超过 7（跨周处理）
+  // 电视猫的 day 参数是 1-7 (周一到周日)，如果跨周需要循环
+  return ((todayWeekdayAdj + deltaDays - 1) % 7) + 1;
 }
 
 function parseChannelId(fullId) {
