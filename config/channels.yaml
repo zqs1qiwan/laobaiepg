@@ -2459,3 +2459,88 @@ channels:
   - type: shaanxi
     id: nl
   logo: 农林卫视
+
+# ── Red Bull TV ──────────────────────────────────────────────
+- id: redbulltv
+  name: Red Bull TV
+  group: 海外体育
+  aliases:
+  - Red Bull TV
+  - RedBull TV
+  - World of Red Bull
+  sources:
+  - type: redbull
+    id: c81f8686-ab67-4965-ba04-5f6658bb96cc
+  logo: Red Bull TV
+- id: redbullwinter
+  name: Red Bull Winter
+  group: 海外体育
+  aliases:
+  - Red Bull Winter
+  sources:
+  - type: redbull
+    id: f4aa4fe4-5ce6-4b1c-a60b-abc6f21f16d0
+  logo: Red Bull Winter
+- id: redbullactionreel
+  name: Red Bull Action Reel
+  group: 海外体育
+  aliases:
+  - Red Bull Action Reel
+  sources:
+  - type: redbull
+    id: 69a66f02-21fd-42a1-be5b-6965541cfe6a
+  logo: Red Bull Action Reel
+- id: redbullpadel
+  name: Red Bull Padel
+  group: 海外体育
+  aliases:
+  - Red Bull Padel
+  sources:
+  - type: redbull
+    id: e0e6dee0-8c39-4de1-9488-72828468efe0
+  logo: Red Bull Padel
+- id: redbullbike
+  name: Red Bull Bike
+  group: 海外体育
+  aliases:
+  - Red Bull Bike
+  sources:
+  - type: redbull
+    id: ee30c528-32b1-4604-8976-e3bcee4ae7f0
+  logo: Red Bull Bike
+- id: redbulladventure
+  name: Red Bull Adventure
+  group: 海外体育
+  aliases:
+  - Red Bull Adventure
+  sources:
+  - type: redbull
+    id: 870bcfa8-62b1-4e84-9c85-39f083df368a
+  logo: Red Bull Adventure
+- id: redbullmotorsports
+  name: Red Bull Motorsports
+  group: 海外体育
+  aliases:
+  - Red Bull Motorsports
+  sources:
+  - type: redbull
+    id: fd4ed3c9-1800-477b-9909-53255da06632
+  logo: Red Bull Motorsports
+- id: redbullsurfing
+  name: Red Bull Surfing
+  group: 海外体育
+  aliases:
+  - Red Bull Surfing
+  sources:
+  - type: redbull
+    id: 2f6afaec-7ade-4fb8-961a-a51aa8279a99
+  logo: Red Bull Surfing
+- id: redbullskateboarding
+  name: Red Bull Skateboarding
+  group: 海外体育
+  aliases:
+  - Red Bull Skateboarding
+  sources:
+  - type: redbull
+    id: 5021f46c-6f34-4f51-ba1f-967f2885ac97
+  logo: Red Bull Skateboarding

@@ -17,6 +17,7 @@ import { getEpgBrtv, getChannelsBrtv } from './brtv.js';
 import { getEpgKankanews, getChannelsKankanews } from './kankanews.js';
 import { getEpgShaanxi, getChannelsShaanxi } from './shaanxi.js';
 import { getEpgIqilu, getChannelsIqilu } from './iqilu.js';
+import { getEpgRedbull, getChannelsRedbull } from './redbull.js';
 
 /**
  * 数据源注册表
@@ -69,6 +70,10 @@ export const scraperRegistry = {
   iqilu: {
     getEpg: getEpgIqilu,
     getChannels: getChannelsIqilu,
+  },
+  redbull: {
+    getEpg: getEpgRedbull,
+    getChannels: getChannelsRedbull,
   },
 };
 
