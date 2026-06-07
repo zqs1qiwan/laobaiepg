@@ -102,6 +102,7 @@
 | `iqilu` | 齐鲁网（山东广播电视台），山东卫视+8个地方台，仅当天 | 无限制 |
 | `tdm` | 澳门广播电视 TDM，澳视系列 6 个频道 | 无限制 |
 | `tvb` | 香港无线电视官方 API（翡翠台/明珠台/TVB Plus/无线新闻台，4 天覆盖）| 无限制 |
+| `redbull` | Red Bull TV 官方 API（9 个运动频道，无鉴权，仅当天约 20 条）| 无限制 |
 
 > ⚠️ **部署注意**：`brtv` 数据源需要中国大陆住宅 IP 才能正常抓取。
 > - 使用 GitHub Actions（海外 IP）时，`tvmao`、`kankanews`、`cntv`、`shaanxi` 均可直连，但 `brtv` 需要通过国内住宅 IP 代理访问。
