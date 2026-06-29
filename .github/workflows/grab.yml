@@ -70,11 +70,30 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           UPLOAD_COUNT=0
+          upload_file() {
+            local file="$1"
+            local filename
+            filename=$(basename "$file")
+            local attempt=1
+            local max_attempts=4
+
+            while [ "$attempt" -le "$max_attempts" ]; do
+              echo "上传 $filename... attempt $attempt/$max_attempts"
+              if npx wrangler r2 object put "epg-data/xmltv/$filename" --file="$file" --remote; then
+                return 0
+              fi
+              if [ "$attempt" -eq "$max_attempts" ]; then
+                echo "上传失败: $filename"
+                return 1
+              fi
+              sleep $((attempt * 5))
+              attempt=$((attempt + 1))
+            done
+          }
+
           for file in output/*.xml output/*.xml.gz output/*.json; do
             if [ -f "$file" ]; then
-              filename=$(basename "$file")
-              echo "上传 $filename..."
-              npx wrangler r2 object put "epg-data/xmltv/$filename" --file="$file" --remote
+              upload_file "$file"
               UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
             fi
           done
